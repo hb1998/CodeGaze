@@ -5,14 +5,15 @@ import { langs } from '@uiw/codemirror-extensions-langs';
 
 function App() {
 
-  const [code, setcode] = useState('')
+  const [code, setcode] = useState('');
+  const [output, setoutput] = useState('')
 
   const onSubmit = () => {
     Axios.post('http://localhost:2358/submissions/?base64_encoded=false&wait=true', {
       source_code: code,
       language_id: 63,
     }).then((response) => {
-
+      setoutput(response.data.stdout)
       console.log(response.data);
     })
   }
@@ -30,6 +31,9 @@ function App() {
         onChange={onChange}
       />
       <button onClick={onSubmit}>Submit</button>
+      <div>
+        {output}
+      </div>
     </div >
   );
 }
