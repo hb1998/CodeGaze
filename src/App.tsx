@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import CodeMirror from '@uiw/react-codemirror';
 import Axios from 'axios';
-import { langs } from '@uiw/codemirror-extensions-langs';
+import Home from './Home';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 function App() {
 
@@ -22,19 +22,9 @@ function App() {
     setcode(value)
   }, []);
   return (
-    <div>
-      <CodeMirror
-        value={code}
-        height="200px"
-        theme={'dark'}
-        extensions={[langs.python()]}
-        onChange={onChange}
-      />
-      <button onClick={onSubmit}>Submit</button>
-      <div>
-        {output}
-      </div>
-    </div >
+    <Router>
+      <Home />
+    </Router>
   );
 }
 export default App;
