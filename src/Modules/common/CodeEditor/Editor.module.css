@@ -1,0 +1,29 @@
+.main{
+  display: flex;
+  flex-direction: row;
+  padding: 1rem;
+  height: 90vh;
+  gap:8px
+}
+
+.content{
+  width: 100%;
+  padding: 0.5rem;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 1rem;
+}
+
+.editorHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.split-pane {
+  color: black;
+  border: 1px solid black;
+}
