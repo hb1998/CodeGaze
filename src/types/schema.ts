@@ -11,42 +11,42 @@ export interface Database {
     Tables: {
       assessment: {
         Row: {
-          candidateId: number | null
+          candidate_id: number | null
           code: string | null
-          createdAt: string | null
-          examId: number | null
+          created_at: string | null
+          exam_id: number | null
           id: number
           joined: string | null
           status: number | null
         }
         Insert: {
-          candidateId?: number | null
+          candidate_id?: number | null
           code?: string | null
-          createdAt?: string | null
-          examId?: number | null
+          created_at?: string | null
+          exam_id?: number | null
           id?: number
           joined?: string | null
           status?: number | null
         }
         Update: {
-          candidateId?: number | null
+          candidate_id?: number | null
           code?: string | null
-          createdAt?: string | null
-          examId?: number | null
+          created_at?: string | null
+          exam_id?: number | null
           id?: number
           joined?: string | null
           status?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "assessment_candidateId_fkey"
-            columns: ["candidateId"]
+            foreignKeyName: "assessment_candidate_id_fkey"
+            columns: ["candidate_id"]
             referencedRelation: "candidate"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "assessment_examId_fkey"
-            columns: ["examId"]
+            foreignKeyName: "assessment_exam_id_fkey"
+            columns: ["exam_id"]
             referencedRelation: "exam"
             referencedColumns: ["id"]
           }
@@ -54,19 +54,19 @@ export interface Database {
       }
       candidate: {
         Row: {
-          createdAt: string | null
+          created_at: string | null
           emailId: string | null
           id: number
           name: string | null
         }
         Insert: {
-          createdAt?: string | null
+          created_at?: string | null
           emailId?: string | null
           id?: number
           name?: string | null
         }
         Update: {
-          createdAt?: string | null
+          created_at?: string | null
           emailId?: string | null
           id?: number
           name?: string | null
@@ -79,88 +79,84 @@ export interface Database {
           description: string | null
           difficulty: number | null
           id: number
-          languageInfoId: number | null
-          shortDescription: string | null
+          input_output: Json | null
+          short_description: string | null
+          test_cases: string | null
         }
         Insert: {
           created_at?: string | null
           description?: string | null
           difficulty?: number | null
           id?: number
-          languageInfoId?: number | null
-          shortDescription?: string | null
+          input_output?: Json | null
+          short_description?: string | null
+          test_cases?: string | null
         }
         Update: {
           created_at?: string | null
           description?: string | null
           difficulty?: number | null
           id?: number
-          languageInfoId?: number | null
-          shortDescription?: string | null
+          input_output?: Json | null
+          short_description?: string | null
+          test_cases?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "challenge_languageInfoId_fkey"
-            columns: ["languageInfoId"]
-            referencedRelation: "languageInfo"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       exam: {
         Row: {
-          challengeId: number | null
-          createdAt: string | null
-          createdBy: string | null
+          created_at: string | null
+          created_by: string | null
           id: number
           name: string | null
         }
         Insert: {
-          challengeId?: number | null
-          createdAt?: string | null
-          createdBy?: string | null
+          created_at?: string | null
+          created_by?: string | null
           id?: number
           name?: string | null
         }
         Update: {
-          challengeId?: number | null
-          createdAt?: string | null
-          createdBy?: string | null
+          created_at?: string | null
+          created_by?: string | null
           id?: number
           name?: string | null
+        }
+        Relationships: []
+      }
+      exam_challenge: {
+        Row: {
+          challenge_id: number
+          created_at: string | null
+          exam_id: number
+          id: number
+        }
+        Insert: {
+          challenge_id: number
+          created_at?: string | null
+          exam_id: number
+          id?: number
+        }
+        Update: {
+          challenge_id?: number
+          created_at?: string | null
+          exam_id?: number
+          id?: number
         }
         Relationships: [
           {
-            foreignKeyName: "exam_challengeId_fkey"
-            columns: ["challengeId"]
+            foreignKeyName: "exam_challenge_challenge_id_fkey"
+            columns: ["challenge_id"]
             referencedRelation: "challenge"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_challenge_exam_id_fkey"
+            columns: ["exam_id"]
+            referencedRelation: "exam"
             referencedColumns: ["id"]
           }
         ]
-      }
-      languageInfo: {
-        Row: {
-          created_at: string | null
-          id: number
-          inputOutput: Json | null
-          starterCode: string | null
-          tests: Json | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: number
-          inputOutput?: Json | null
-          starterCode?: string | null
-          tests?: Json | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: number
-          inputOutput?: Json | null
-          starterCode?: string | null
-          tests?: Json | null
-        }
-        Relationships: []
       }
     }
     Views: {

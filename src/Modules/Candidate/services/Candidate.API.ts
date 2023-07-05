@@ -1,11 +1,11 @@
-import { AssessmentInsertDto, AssessmentUpdateDto } from '../../../types/Models';
+import { CandidateInsertDto, CandidateUpdateDto } from '../../../types/Models';
 import { supabase } from '../../API/supabase';
 
 
-export class AssessmentAPIService {
+export class CandidateAPIService {
 
     static async getAll() {
-        const { data, error } = await supabase.from('assessment').select('*');
+        const { data, error } = await supabase.from('candidate').select('*');
         if (error) {
             throw error;
         }
@@ -14,7 +14,7 @@ export class AssessmentAPIService {
 
     static async getById(id: number) {
         const { data, error } = await supabase
-            .from('assessment')
+            .from('candidate')
             .select('*')
             .eq('id', id)
             .single();
@@ -24,19 +24,19 @@ export class AssessmentAPIService {
         return data || null;
     }
 
-    static async create(assessment: AssessmentInsertDto) {
-        const { data, error } = await supabase.from('assessment').insert(assessment);
+    static async create(candidate: CandidateInsertDto) {
+        const { data, error } = await supabase.from('candidate').insert(candidate);
         if (error) {
             throw error;
         }
         return data?.[0];
     }
 
-    static async update(assessment: AssessmentUpdateDto) {
+    static async update(candidate: CandidateUpdateDto) {
         const { data, error } = await supabase
-            .from('assessment')
-            .update(assessment)
-            .eq('id', assessment.id);
+            .from('candidate')
+            .update(candidate)
+            .eq('id', candidate.id);
         if (error) {
             throw error;
         }
@@ -44,7 +44,7 @@ export class AssessmentAPIService {
     }
 
     static async delete(id: number): Promise<void> {
-        const { error } = await supabase.from('assessment').delete().eq('id', id);
+        const { error } = await supabase.from('candidate').delete().eq('id', id);
         if (error) {
             throw error;
         }

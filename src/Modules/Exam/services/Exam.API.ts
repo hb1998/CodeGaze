@@ -1,11 +1,11 @@
-import { AssessmentInsertDto, AssessmentUpdateDto } from '../../../types/Models';
+import { ExamInsertDto, ExamUpdateDto } from '../../../types/Models';
 import { supabase } from '../../API/supabase';
 
 
-export class AssessmentAPIService {
+export class ExamAPIService {
 
     static async getAll() {
-        const { data, error } = await supabase.from('assessment').select('*');
+        const { data, error } = await supabase.from('exam').select('*');
         if (error) {
             throw error;
         }
@@ -14,8 +14,8 @@ export class AssessmentAPIService {
 
     static async getById(id: number) {
         const { data, error } = await supabase
-            .from('assessment')
-            .select('*')
+            .from('exam')
+            .select('*, challenge(*)')
             .eq('id', id)
             .single();
         if (error) {
@@ -24,19 +24,19 @@ export class AssessmentAPIService {
         return data || null;
     }
 
-    static async create(assessment: AssessmentInsertDto) {
-        const { data, error } = await supabase.from('assessment').insert(assessment);
+    static async create(exam: ExamInsertDto) {
+        const { data, error } = await supabase.from('exam').insert(exam);
         if (error) {
             throw error;
         }
         return data?.[0];
     }
 
-    static async update(assessment: AssessmentUpdateDto) {
+    static async update(exam: ExamUpdateDto) {
         const { data, error } = await supabase
-            .from('assessment')
-            .update(assessment)
-            .eq('id', assessment.id);
+            .from('exam')
+            .update(exam)
+            .eq('id', exam.id);
         if (error) {
             throw error;
         }
@@ -44,7 +44,7 @@ export class AssessmentAPIService {
     }
 
     static async delete(id: number): Promise<void> {
-        const { error } = await supabase.from('assessment').delete().eq('id', id);
+        const { error } = await supabase.from('exam').delete().eq('id', id);
         if (error) {
             throw error;
         }
