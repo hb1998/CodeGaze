@@ -11,7 +11,7 @@ interface OutputProps {
 
 const Output = (props: OutputProps) => {
   return (
-    <div className={classes.content}>
+    <div className={`${classes.content} ${classes.pane3}`}>
       <Text strong>Output:</Text>
       <div
         style={{

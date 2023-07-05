@@ -9,6 +9,7 @@
 .content{
   width: 100%;
   padding: 0.5rem;
+  height: 100%;
 }
 
 .buttonContainer {
@@ -23,7 +24,6 @@
   margin-bottom: 0.5rem;
 }
 
-.pane {
-  border-left: 2px solid rgb(97, 97, 97);
-  border-right: 2px solid rgb(97, 97, 97);
+.pane1 {
+  background-color: gray;
 }
