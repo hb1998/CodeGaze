@@ -1,11 +1,11 @@
 // import Editor from "../common/CodeEditor/Editor";
 // import CodeEditor from "../common/CodeEditor/Editor1";
-import Editor from "../common/CodeEditor/Editor";
+import Main from "../common/CodeEditor/Main";
 
 const Candidates = () => {
   return (
     <div>
-      <Editor />
+      <Main />
     </div>
   );
 };
