@@ -1,7 +1,5 @@
 const Candidates = () => {
-  return (
-    <div>Candidates</div>
-  )
-}
+    return <div>Candidates</div>;
+};
 
-export default Candidates
+export default Candidates;
