@@ -5,8 +5,8 @@ import { supabase } from '../../API/supabase';
 export class CandidateAPIService {
 
     static async getAll() {
-        const { data, error } = await supabase.from('candidate').select('*');
-        if (error) {
+        const { data, error } = await supabase.from('candidate').select('*, assessment(*)');
+        if (error) {    
             throw error;
         }
         return data || [];
