@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import Axios from "axios";
-import Home from "./Home";
-import { BrowserRouter as Router } from "react-router-dom";
+import React, { useState } from 'react';
+import Axios from 'axios';
+import Home from './Home';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 function App() {
     const [code, setcode] = useState('');
