@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import Userdata, { LoginData } from "./Userdata";
-import { supabase } from "./client";
+import { supabase } from "../API/supabase";
 
 export default function Register() {
   const navigate = useNavigate();
