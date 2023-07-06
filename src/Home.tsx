@@ -9,6 +9,8 @@ import Analytics from "./Modules/Assessments/Analytics/Analytics";
 import Open from "./Modules/Assessments/Open/Open";
 
 import OpenAssessment from "./Modules/Assessments/Open/OpenAssessment";
+import ChallengesAssessment from "./Modules/Assessments/Open/ChallengesAssessment";
+import SettingsAssessments from "./Modules/Assessments/Open/SettingsAssessment";
 
 const { Header, Content } = Layout;
 
@@ -47,15 +49,28 @@ const Home = () => {
           <Routes>
             <Route path="/dashboard" Component={Dashboard} />
             <Route path="/assessments" Component={Assessments}>
-             <Route path="open" Component={Open}/>           
-              <Route path="analytics" Component={Analytics} />  
+              <Route path="open" Component={Open} />
+              <Route path="analytics" Component={Analytics} />
             </Route>
             <Route path="/challenges" Component={Challenges} />
             <Route path="/candidates" Component={Candidates} />
           </Routes>
-          <Routes>          
-              <Route path="/assessments/open/openAssessment" Component={OpenAssessment}/>  
+          <Routes>
+            <Route
+              path="/assessments/open/openAssessment"
+              Component={OpenAssessment}
+            />
+
+            <Route
+              path="/assessments/open/openAssessment/challengeAssessment"
+              Component={ChallengesAssessment}
+            />
+            <Route
+              path="/assessments/open/openAssessment/challengeSettings"
+              Component={SettingsAssessments}
+            />
           </Routes>
+          
         </div>
       </Content>
     </Layout>
