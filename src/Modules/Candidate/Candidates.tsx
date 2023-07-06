@@ -3,7 +3,7 @@ import { Table } from 'antd';
 import { CandidateAPIService } from './services/Candidate.API';
 import Search from 'antd/es/input/Search';
 import { Typography } from 'antd';
-import { candidateColumn } from './components/CandidateColumn';
+import { candidateColumn } from './support/CandidateColumn';
 
 // import Main from "../common/CodeEditor/Main";
 
@@ -11,7 +11,6 @@ const { Title } = Typography;
 
 const Candidates = () => {
     const [candidates, setCandidates] = useState([]);
-    const onSearch = (value: string) => console.log(value);
 
     const fetchCandidates = async () => {
         try {
@@ -28,16 +27,19 @@ const Candidates = () => {
         fetchCandidates();
     }, []);
 
+    const handleSearch = (value: string) => {
+        console.log(value);
+    };
+
     return (
         <div style={{ padding: '10px' }}>
             <Title>Candidates</Title>
             <Search
                 placeholder="Search Candidate"
                 style={{ width: 200, marginBottom: '10px' }}
-                onSearch={onSearch}
-                enterButton
+                onSearch={handleSearch}
             />
-            <Table dataSource={candidates} columns={candidateColumn} />
+            <Table dataSource={candidates} columns={candidateColumn} size="small" />
         </div>
     );
     // return <div>{/* <Main /> */}</div>;
