@@ -18,6 +18,7 @@ export interface Database {
           id: number
           joined: string | null
           status: number | null
+          language: number | null
         }
         Insert: {
           candidate_id?: number | null
@@ -27,6 +28,7 @@ export interface Database {
           id?: number
           joined?: string | null
           status?: number | null
+          language?: number | null
         }
         Update: {
           candidate_id?: number | null
@@ -36,6 +38,7 @@ export interface Database {
           id?: number
           joined?: string | null
           status?: number | null
+          language?: number | null
         }
         Relationships: [
           {
