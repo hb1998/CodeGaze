@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from "react";
-import Axios from "axios";
-import Home from "./Home";
-import { BrowserRouter as Router } from "react-router-dom";
-import { supabase } from "./Modules/API/supabase";
-import { connect } from "react-redux";
-import { IDispatch, IRootState } from "./store";
+import React, { useEffect, useState } from 'react';
+import Axios from 'axios';
+import Home from './Home';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { supabase } from './Modules/API/supabase';
+import { connect } from 'react-redux';
+import { IDispatch, IRootState } from './store';
 
 type IAppProps = TMapState & TMapDispatch;
 const AppComponent = (props: IAppProps) => {
-  console.log(props);
-  return (
-    <Router>
-      <Home />
-    </Router>
-  );
+    // console.log(props, 'app,running');
+    return (
+        <Router>
+            <Home />
+        </Router>
+    );
 };
 const mapDispatch = (dispatch: IDispatch) => ({
-  updateSession: dispatch.session.update,
+    updateSession: dispatch.session.update,
 });
 const mapState = (state: IRootState) => ({
-  getSession: state.session,
+    getSession: state.session,
 });
 
 type TMapState = ReturnType<typeof mapState>;

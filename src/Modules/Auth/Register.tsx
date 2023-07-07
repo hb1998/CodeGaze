@@ -1,25 +1,33 @@
-import { useNavigate } from "react-router";
-import Userdata, { LoginData } from "./Userdata";
-import { supabase } from "../API/supabase";
-
+import { useNavigate } from 'react-router';
+import LoginForm, { ILoginData } from './LoginForm';
+import { supabase } from '../API/supabase';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function Register() {
-  const navigate = useNavigate();
-  const storeData = async (data: LoginData) => {
-    try {
-      const userInfo = await supabase.auth.signUp({
-        email: data.Email,
-        password: data.Password,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-    alert("please confrim your email and login");
-    navigate("/Login");
-  };
+    const navigate = useNavigate();
+    const onRegister = (data: ILoginData) => {
+        const instruct = (message: string) => toast(message);
 
-  const onRegister = (data: LoginData) => {
-    storeData(data);
-  };
+        const storeData = async (data: ILoginData) => {
+            try {
+                const userInfo = await supabase.auth.signUp({
+                    email: data.Email,
+                    password: data.Password,
+                });
+            } catch (error) {
+                instruct('User Already exists');
+            }
+            alert('please confrim your email and login');
+            navigate('/Login');
+        };
 
-  return <Userdata action="Register" SubmitHandler={onRegister} />;
+        storeData(data);
+    };
+
+    return (
+        <>
+            <LoginForm action="Register" SubmitHandler={onRegister} />
+            <ToastContainer />
+        </>
+    );
 }

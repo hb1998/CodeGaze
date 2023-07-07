@@ -1,9 +1,7 @@
 import { AssessmentInsertDto, AssessmentUpdateDto } from '../../../types/Models';
 import { supabase } from '../../API/supabase';
 
-
 export class AssessmentAPIService {
-
     static async getAll() {
         const { data, error } = await supabase.from('assessment').select('*');
         if (error) {
@@ -13,11 +11,7 @@ export class AssessmentAPIService {
     }
 
     static async getById(id: number) {
-        const { data, error } = await supabase
-            .from('assessment')
-            .select('*')
-            .eq('id', id)
-            .single();
+        const { data, error } = await supabase.from('assessment').select('*').eq('id', id).single();
         if (error) {
             throw error;
         }
@@ -33,10 +27,7 @@ export class AssessmentAPIService {
     }
 
     static async update(assessment: AssessmentUpdateDto) {
-        const { data, error } = await supabase
-            .from('assessment')
-            .update(assessment)
-            .eq('id', assessment.id);
+        const { data, error } = await supabase.from('assessment').update(assessment).eq('id', assessment.id);
         if (error) {
             throw error;
         }
