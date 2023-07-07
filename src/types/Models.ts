@@ -20,6 +20,8 @@ export type Exam = Row<'exam'>;
 export type ExamInsertDto = InsertDto<'exam'>;
 export type ExamUpdateDto = UpdateDto<'exam'>;
 
-export type LanguageInfo = Row<'languageInfo'>;
-export type LanguageInfoInsertDto = InsertDto<'languageInfo'>;
-export type LanguageInfoUpdateDto = UpdateDto<'languageInfo'>;
+export enum Status {
+  FAILED = 1,
+  PASSED = 2,
+  PENDING = 3,
+}

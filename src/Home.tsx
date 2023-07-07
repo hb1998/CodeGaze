@@ -37,15 +37,30 @@ const Home = () => {
                 </Menu>
             </Header>
             <Content style={{ padding: '0 50px' }}>
-                <div className="site-layout-content" style={{ background: '#fff' }}>
+                <div className="site-layout-content">
                     <Routes>
                         <Route path="/" Component={Auth} />
                         <Route path="/Login" Component={Login} />
                         <Route path="/Register" Component={Register} />
                         <Route path="/dashboard" Component={Dashboard} />
-                        <Route path="/assessments" Component={Assessments} />
+                        <Route path="/assessments" Component={Assessments}>
+                            <Route path="open" Component={Open} />
+                            <Route path="analytics" Component={Analytics} />
+                        </Route>
+
                         <Route path="/challenges" Component={Challenges} />
                         <Route path="/candidates" Component={Candidates} />
+                    </Routes>
+                    <Routes>
+                        <Route path="/assessments/open/openAssessment" Component={OpenAssessment} />
+                        <Route
+                            path="/assessments/open/openAssessment/challengeAssessment"
+                            Component={ChallengesAssessment}
+                        />
+                        <Route
+                            path="/assessments/open/openAssessment/challengeSettings"
+                            Component={SettingsAssessments}
+                        />
                     </Routes>
                 </div>
             </Content>
