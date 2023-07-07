@@ -34,7 +34,7 @@ const Home = () => {
                 </Menu>
             </Header>
             <Content style={{ padding: '0 50px' }}>
-                <div className="site-layout-content" style={{ background: '#fff' }}>
+                <div className="site-layout-content">
                     <Routes>
                         <Route path="/dashboard" Component={Dashboard} />
                         <Route path="/assessments" Component={Assessments} />
