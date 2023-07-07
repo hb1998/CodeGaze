@@ -5,11 +5,10 @@ const formatTimestamp = (timestamp: string) => {
     const year = date.getFullYear();
     const hours = date.getHours() % 12 || 12;
     const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
     const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
 
     const formattedDate = `${day}/${month}/${year}`;
-    const formattedTime = `${hours}:${minutes}:${seconds} ${ampm}`;
+    const formattedTime = `${hours}:${minutes} ${ampm}`;
 
     return `${formattedDate} ${formattedTime}`;
 };
