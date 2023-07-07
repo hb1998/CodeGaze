@@ -1,24 +1,36 @@
-const SettingsAssessments =()=>{
-    return(
-            <div style={{display:'flex', flexDirection:"row", alignItems:"" }}> hello Settings
-                <div >
-                    <h1>Assessment settings</h1>
-                    <header>Templates</header>
-                    <div style={{display:'flex', flexDirection:"column"}}>
-                    <select><option>Default email templates</option></select>
-                    <select><option>Default welcome templates</option></select>
-                    </div>
-                    <header>Time Limit</header>
-                    <select><option>No hour limit</option></select>
-                    <select><option>No minute Limit</option></select>
+import { Button, Layout, Select } from 'antd';
 
-                </div>
-                <div>
-                 <h1> Candidate settings</h1>
-                 <header>Link settings</header>
-                </div>
+const { Option } = Select;
+
+const handleTimeLimitChange = (value) => {
+    // Handle the selected time limit
+    console.log(value);
+};
+
+const SettingsAssessments = () => {
+    return (
+        <div>
+            <h1>Assessment settings</h1>
+            <div>
+                <Layout>
+                    
+                        <Select
+                            transitionName="hello"
+                            style={{ display: 'flex', flexDirection: 'row' }}
+                            defaultValue="1 hour"
+                            onChange={handleTimeLimitChange}
+                        >
+                            time limit:
+                            <Option value="1 hour">1 hour</Option>
+                            <Option value="2 hours">2 hours</Option>
+                            <Option value="3 hours">3 hours</Option>
+                            {/* Add more options as needed */}
+                        </Select>
+                    
+                </Layout>
             </div>
-            )
-}
+        </div>
+    );
+};
 
-export default SettingsAssessments
+export default SettingsAssessments;

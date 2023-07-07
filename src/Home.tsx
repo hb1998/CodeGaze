@@ -39,10 +39,28 @@ const Home = () => {
                 <div className="site-layout-content" style={{ background: '#fff' }}>
                     <Routes>
                         <Route path="/dashboard" Component={Dashboard} />
-                        <Route path="/assessments" Component={Assessments} />
+                           <Route path="/assessments" Component={Assessments} >
+                            <Route path="open" Component={Open} />
+                            <Route path="analytics" Component={Analytics} />
+                         </Route>
+
                         <Route path="/challenges" Component={Challenges} />
                         <Route path="/candidates" Component={Candidates} />
                     </Routes>
+                    <Routes>
+            <Route
+              path="/assessments/open/openAssessment"
+              Component={OpenAssessment}
+            />
+            <Route
+              path="/assessments/open/openAssessment/challengeAssessment"
+              Component={ChallengesAssessment}
+            />
+            <Route
+              path="/assessments/open/openAssessment/challengeSettings"
+              Component={SettingsAssessments}
+            />
+          </Routes>
                 </div>
             </Content>
         </Layout>
