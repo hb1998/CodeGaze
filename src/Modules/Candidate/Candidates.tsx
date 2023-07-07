@@ -3,20 +3,28 @@ import { Table } from 'antd';
 import { CandidateAPIService } from './services/Candidate.API';
 import Search from 'antd/es/input/Search';
 import { Typography } from 'antd';
-import { candidateColumn } from './support/CandidateColumn';
+import { candidateColumn } from './CandidateColumn';
 
-// import Main from "../common/CodeEditor/Main";
+// Code Editor Main File
+// import Main from '../common/CodeEditor/Main';
 
 const { Title } = Typography;
 
+interface ICandidate {
+    id: string;
+    name: string;
+    emailId: string;
+    language: string;
+    status: string;
+    createdAt: Date;
+}
+
 const Candidates = () => {
-    const [candidates, setCandidates] = useState([]);
+    const [candidates, setCandidates] = useState<ICandidate[]>([]);
 
     const fetchCandidates = async () => {
         try {
             const data = await CandidateAPIService.getAll();
-            // const assessmentData = data.map();
-            console.log('🚀 ~ file: Candidates.tsx:16 ~ fetchCandidates ~ data:', data);
             setCandidates(data);
         } catch (error) {
             console.error('Error fetching candidates:', error);
@@ -42,7 +50,11 @@ const Candidates = () => {
             <Table dataSource={candidates} columns={candidateColumn} size="small" />
         </div>
     );
-    // return <div>{/* <Main /> */}</div>;
+    // return (
+    //     <div>
+    //         <Main />
+    //     </div>
+    // );
 };
 
 export default Candidates;
