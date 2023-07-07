@@ -47,7 +47,7 @@ const Candidates = () => {
                 style={{ width: 200, marginBottom: '10px' }}
                 onSearch={handleSearch}
             />
-            <Table dataSource={candidates} columns={candidateColumn} size="small" />
+            <Table rowKey="id" dataSource={candidates} columns={candidateColumn} size="small" />
         </div>
     );
     // return (

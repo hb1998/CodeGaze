@@ -8,7 +8,6 @@
 
 .content{
   width: 100%;
-  padding: 0.5rem;
   height: 100%;
 }
 
@@ -25,5 +24,17 @@
 }
 
 .pane1 {
-  background-color: gray;
+  background-color: white;
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+}
+
+.pane2 {
+  margin-left: 0.5rem;
+  background-color: white;
+  border-radius: 0.5rem;
+}
+
+.pane3 {
+  padding: 0.5rem;
 }
