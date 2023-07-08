@@ -4,6 +4,7 @@ import { CandidateAPIService } from './services/Candidate.API';
 import Search from 'antd/es/input/Search';
 import { Typography } from 'antd';
 import { candidateColumn } from './CandidateColumn';
+import Main from '../common/CodeEditor/Main';
 
 // Code Editor Main File
 import Main from '../common/CodeEditor/Main';
