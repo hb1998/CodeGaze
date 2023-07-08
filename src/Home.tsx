@@ -10,9 +10,6 @@ import Register from './Modules/Auth/Register';
 import Auth from './Modules/Auth/Auth';
 import Open from './Modules/Exam/Open/Open';
 import Analytics from './Modules/Exam/Analytics/Analytics';
-import OpenAssessment from './Modules/Exam/Open/OpenAssessment';
-import ChallengesAssessment from './Modules/Exam/Open/ChallengesAssessment';
-import SettingsAssessments from './Modules/Exam/Open/SettingsAssessment';
 import './App.css'
 
 const { Header, Content } = Layout;
@@ -26,7 +23,7 @@ const Home = () => {
                         <Link to={'/dashboard'}>Dashboard</Link>
                     </Menu.Item>
                     <Menu.Item key="assessments">
-                        <Link to={'/assessments'}>Assessments</Link>
+                        <Link to={'/assessments/open'}>Assessments</Link>
                     </Menu.Item>
                     <Menu.Item key="challenges">
                         <Link to={'/challenges'}>Challenges</Link>
@@ -45,28 +42,17 @@ const Home = () => {
             <Content style={{ padding: '0 50px' }}>
                 <div className="site-layout-content">
                     <Routes>
-                        <Route path="/" Component={Auth} />
-                        <Route path="/Login" Component={Login} />
-                        <Route path="/Register" Component={Register} />
-                        <Route path="/dashboard" Component={Dashboard} />
-                        <Route path="/assessments" Component={Exam}>
-                            <Route path="open" Component={Open} />
+                        <Route path="" Component={Auth} />
+                        <Route path="Login" Component={Login} />
+                        <Route path="Register" Component={Register} />
+                        <Route path="dashboard" Component={Dashboard} />
+                        <Route path="assessments"  Component={Exam}>
+                            <Route index path="open" Component={Open} />
                             <Route path="analytics" Component={Analytics} />
                         </Route>
 
                         <Route path="/challenges" Component={Challenges} />
                         <Route path="/candidates" Component={Candidates} />
-                    </Routes>
-                    <Routes>
-                        <Route path="/assessments/open/openAssessment" Component={OpenAssessment} />
-                        <Route
-                            path="/assessments/open/openAssessment/challengeAssessment"
-                            Component={ChallengesAssessment}
-                        />
-                        <Route
-                            path="/assessments/open/openAssessment/challengeSettings"
-                            Component={SettingsAssessments}
-                        />
                     </Routes>
                 </div>
             </Content>
