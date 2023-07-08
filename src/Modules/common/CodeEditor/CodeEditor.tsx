@@ -16,6 +16,11 @@ interface ICodeEditorProps {
     handleCodeChange: (value: string) => void;
 }
 
+const options = Object.entries(ProgrammingLanguages).map(([key, value]) => ({
+    label: value.name,
+    value: value.name,
+}));
+
 const CodeEditor = (props: ICodeEditorProps) => {
     return (
         <div className={`${classes.content} ${classes.pane2}`} style={{ padding: '1rem', marginRight: '0.5rem' }}>
@@ -30,10 +35,7 @@ const CodeEditor = (props: ICodeEditorProps) => {
                             props.handleLanguageChange(value as 'C' | 'C++' | 'Java' | 'Javascript' | 'Python')
                         }
                         style={{ width: '7rem' }}
-                        options={Object.entries(ProgrammingLanguages).map(([key, value]) => ({
-                            label: value.name,
-                            value: value.name,
-                        }))}
+                        options={options}
                     />
                 </div>
                 <Button type="primary" onClick={props.handleReset}>
@@ -46,6 +48,7 @@ const CodeEditor = (props: ICodeEditorProps) => {
                 theme="dark"
                 extensions={[props.codeEditorLang]}
                 onChange={props.handleCodeChange}
+                style={{ borderRadius: '1rem' }}
             />
         </div>
     );

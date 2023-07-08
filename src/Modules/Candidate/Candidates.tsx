@@ -6,7 +6,7 @@ import { Typography } from 'antd';
 import { candidateColumn } from './CandidateColumn';
 
 // Code Editor Main File
-// import Main from '../common/CodeEditor/Main';
+import Main from '../common/CodeEditor/Main';
 
 const { Title } = Typography;
 
@@ -48,13 +48,9 @@ const Candidates = () => {
                 onSearch={handleSearch}
             />
             <Table rowKey="id" dataSource={candidates} columns={candidateColumn} size="small" />
+            <Main />
         </div>
     );
-    // return (
-    //     <div>
-    //         <Main />
-    //     </div>
-    // );
 };
 
 export default Candidates;
