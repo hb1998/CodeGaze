@@ -40,22 +40,18 @@ const Candidates = () => {
         console.log(value);
     };
 
-    // return (
-    //     <div style={{ padding: '10px' }}>
-    //         <Title>Candidates</Title>
-    //         <Search
-    //             placeholder="Search Candidate"
-    //             style={{ width: 200, marginBottom: '10px' }}
-    //             onSearch={handleSearch}
-    //         />
-    //         <Table rowKey="id" dataSource={candidates} columns={candidateColumn} size="small" />
-    //     </div>
-    // );
     return (
-        <div>
-            <Main />
+        <div style={{ padding: '10px' }}>
+            <Title>Candidates</Title>
+            <Search
+                placeholder="Search Candidate"
+                style={{ width: 200, marginBottom: '10px' }}
+                onSearch={handleSearch}
+            />
+            <Table rowKey="id" dataSource={candidates} columns={candidateColumn} size="small" />
         </div>
     );
+ 
 };
 
 export default Candidates;

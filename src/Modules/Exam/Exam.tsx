@@ -1,29 +1,25 @@
 import { Layout, Tabs } from "antd";
-import { Link, Outlet } from "react-router-dom";
+import Title from "antd/es/typography/Title";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const { TabPane } = Tabs;
 const { Content } = Layout;
 
 
 
-const handleTabClick=()=>{
-  console.log("tab clicked");
-
-}
 const Exam = () => {
 
+  const navigate = useNavigate();
 
   return (
     <Layout>
       <header>
-        Assessments
+        <Title>Assessments</Title>
         <div style={{ padding: "5px" }}>
-          <Tabs defaultActiveKey="1" onTabClick={handleTabClick}>
-            <TabPane tab="Open" tabKey="Open" key="Open" >
-              <Link to="/assessments/open">Open</Link>
-            </TabPane>            
-            <TabPane tab="Analytics" tabKey="Analytics" key="Analytics">
-              <Link to="/assessments/analytics">Analytics</Link>
+          <Tabs defaultActiveKey="1" onTabClick={(key)=>navigate(key)}>
+            <TabPane tab="Open" tabKey="open" key='open'  >
+            </TabPane>
+            <TabPane tab="Analytics" tabKey="analytics" key='analytics'>
             </TabPane>
           </Tabs>
           <Content>
