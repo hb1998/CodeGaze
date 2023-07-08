@@ -1,6 +1,6 @@
 import { Layout, Menu } from 'antd';
 import { Routes, Route, Link } from 'react-router-dom';
-import Assessments from './Modules/Assessments/Assessments';
+import Exam from './Modules/Exam/Exam';
 import Challenges from './Modules/Challenges/Challenges';
 import Dashboard from './Modules/Dashboard/Dashboard';
 import Candidates from './Modules/Candidate/Candidates';
@@ -8,11 +8,11 @@ import { UserOutlined } from '@ant-design/icons';
 import Login from './Modules/Auth/Login';
 import Register from './Modules/Auth/Register';
 import Auth from './Modules/Auth/Auth';
-import Open from './Modules/Assessments/Open/Open';
-import Analytics from './Modules/Assessments/Analytics/Analytics';
-import OpenAssessment from './Modules/Assessments/Open/OpenAssessment';
-import ChallengesAssessment from './Modules/Assessments/Open/ChallengesAssessment';
-import SettingsAssessments from './Modules/Assessments/Open/SettingsAssessment';
+import Open from './Modules/Exam/Open/Open';
+import Analytics from './Modules/Exam/Analytics/Analytics';
+import OpenAssessment from './Modules/Exam/Open/OpenAssessment';
+import ChallengesAssessment from './Modules/Exam/Open/ChallengesAssessment';
+import SettingsAssessments from './Modules/Exam/Open/SettingsAssessment';
 import './App.css'
 
 const { Header, Content } = Layout;
@@ -49,7 +49,7 @@ const Home = () => {
                         <Route path="/Login" Component={Login} />
                         <Route path="/Register" Component={Register} />
                         <Route path="/dashboard" Component={Dashboard} />
-                        <Route path="/assessments" Component={Assessments}>
+                        <Route path="/assessments" Component={Exam}>
                             <Route path="open" Component={Open} />
                             <Route path="analytics" Component={Analytics} />
                         </Route>
