@@ -46,7 +46,7 @@ const Editor = () => {
     };
 
     const handleRun = () => {
-        Axios.post(process.env.compilerEndpoint || '', {
+        Axios.post(import.meta.env.VITE_COMPILER_ENDPOINT || '', {
             source_code: code,
             language_id: selectEditorLanguage.id,
         }).then((response) => {

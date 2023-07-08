@@ -301,25 +301,25 @@ const Challenges: React.FC = () => {
 };
 
 
-const data = [
-  {
-    title: (<><ControlOutlined /> <br />Input/Output</>),
-    content: [
-      {
-        details: "Challenges that an be taken in many languages and requires candidate to to return correct output",
-      }
-    ]
-  },
-  {
-    title: (<><ReadFilled /> <br /> Unit test</>),
-    content: [
-      {
-        details: "Challenges that an be taken in many languages and requires candidate to to return correct output"
-      }
-    ]
-  },
+// const data = [
+//   {
+//     title: (<><ControlOutlined /> <br />Input/Output</>),
+//     content: [
+//       {
+//         details: "Challenges that an be taken in many languages and requires candidate to to return correct output",
+//       }
+//     ]
+//   },
+//   {
+//     title: (<><ReadFilled /> <br /> Unit test</>),
+//     content: [
+//       {
+//         details: "Challenges that an be taken in many languages and requires candidate to to return correct output"
+//       }
+//     ]
+//   },
 
-];
+// ];
 
 const App: React.FC = () => {
   const [open, setOpen] = useState(false);
