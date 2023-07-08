@@ -3,7 +3,7 @@ import { Button, Layout, theme } from 'antd';
 import Card from 'antd/es/card/Card';
 import { Typography } from 'antd';
 import { ExportOutlined } from '@ant-design/icons';
-import { AssessmentAPIService } from '../services/Assessment.api';
+import { ExamAPIService } from '../services/Exam.api';
 
 
 
@@ -34,7 +34,7 @@ const ChallengesAssessment: React.FC = () => {
     // Fetch assessments when the component mounts
     const fetchAssessments = async () => {
         try {
-          const data = await AssessmentAPIService.getAll();
+          const data = await ExamAPIService.getAll();
           setAssessments(data);
           console.log(data,"api")
         } catch (error) {
