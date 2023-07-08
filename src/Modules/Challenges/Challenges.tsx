@@ -250,8 +250,6 @@ const data = [
 ];
 
 
-
-
 const Challenges: React.FC = () => {
   const [open, setOpen] = useState(false);
 
@@ -301,79 +299,5 @@ const Challenges: React.FC = () => {
 };
 
 
-const data = [
-  {
-    title: (<><ControlOutlined /> <br />Input/Output</>),
-    content: [
-      {
-        details: "Challenges that an be taken in many languages and requires candidate to to return correct output",
-      }
-    ]
-  },
-  {
-    title: (<><ReadFilled /> <br /> Unit test</>),
-    content: [
-      {
-        details: "Challenges that an be taken in many languages and requires candidate to to return correct output"
-      }
-    ]
-  },
-
-];
-
-const App: React.FC = () => {
-  const [open, setOpen] = useState(false);
-
-  const onCreate = (values: any) => {
-    console.log('Received values of form: ', values);
-    setOpen(false);
-  };
-
-  return (
-    <div id="pricing" className='block pricingBlock bgGray'>
-      <div className='container-fluid'>
-        <List
-          grid={{
-            gutter: 16,
-            column: 4,
-          }}
-          dataSource={data}
-          renderItem={(item) => (
-            <List.Item>
-              <Card title={item.title}>
-                <p>{item.content[0].details}</p>
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    setOpen(true);
-                  }}
-                >
-                  Create
-                </Button>
-                <CollectionCreateForm
-                  open={open}
-                  onCreate={onCreate}
-                  onCancel={() => {
-                    setOpen(false);
-                  }}
-                />
-
-              </Card>
-            </List.Item>
-          )}
-        />
-      </div>
-
-    </div>
-
-  );
-};
-
-export default App;
-
-
-
-
-
-
+export default Challenges;
 
