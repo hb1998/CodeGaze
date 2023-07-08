@@ -4,6 +4,7 @@ import { CandidateAPIService } from './services/Candidate.API';
 import Search from 'antd/es/input/Search';
 import { Typography } from 'antd';
 import { candidateColumn } from './CandidateColumn';
+import Main from '../common/CodeEditor/Main';
 
 // Code Editor Main File
 // import Main from '../common/CodeEditor/Main';
@@ -39,22 +40,22 @@ const Candidates = () => {
         console.log(value);
     };
 
-    return (
-        <div style={{ padding: '10px' }}>
-            <Title>Candidates</Title>
-            <Search
-                placeholder="Search Candidate"
-                style={{ width: 200, marginBottom: '10px' }}
-                onSearch={handleSearch}
-            />
-            <Table rowKey="id" dataSource={candidates} columns={candidateColumn} size="small" />
-        </div>
-    );
     // return (
-    //     <div>
-    //         <Main />
+    //     <div style={{ padding: '10px' }}>
+    //         <Title>Candidates</Title>
+    //         <Search
+    //             placeholder="Search Candidate"
+    //             style={{ width: 200, marginBottom: '10px' }}
+    //             onSearch={handleSearch}
+    //         />
+    //         <Table rowKey="id" dataSource={candidates} columns={candidateColumn} size="small" />
     //     </div>
     // );
+    return (
+        <div>
+            <Main />
+        </div>
+    );
 };
 
 export default Candidates;

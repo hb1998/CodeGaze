@@ -8,12 +8,18 @@ import { UserOutlined } from '@ant-design/icons';
 import Login from './Modules/Auth/Login';
 import Register from './Modules/Auth/Register';
 import Auth from './Modules/Auth/Auth';
+import Open from './Modules/Assessments/Open/Open';
+import Analytics from './Modules/Assessments/Analytics/Analytics';
+import OpenAssessment from './Modules/Assessments/Open/OpenAssessment';
+import ChallengesAssessment from './Modules/Assessments/Open/ChallengesAssessment';
+import SettingsAssessments from './Modules/Assessments/Open/SettingsAssessment';
+import './App.css'
 
 const { Header, Content } = Layout;
 
 const Home = () => {
     return (
-        <Layout className="layout">
+        <Layout className="main-layout">
             <Header>
                 <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['dashboard']}>
                     <Menu.Item key="dashboard">
