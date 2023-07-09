@@ -22,7 +22,7 @@ const Login = () => {
                 });
                 if (data.user) {
                     dispatch.session.update({ isLoggedIn: true, session: data.session });
-                    navigate('/');
+                    navigate('/dashboard');
                 } else {
                     throw new Error('Invalid credential Or not user found');
                 }
@@ -31,6 +31,7 @@ const Login = () => {
             }
         };
         getUserData(data);
+
     };
 
     return (
