@@ -1,32 +1,33 @@
 import { Layout, Menu } from 'antd';
 import { Routes, Route, Link } from 'react-router-dom';
-import Assessments from './Modules/Assessments/Assessments';
+import Exam from './Modules/Exam/Exam';
 import Challenges from './Modules/Challenges/Challenges';
 import Dashboard from './Modules/Dashboard/Dashboard';
 import Candidates from './Modules/Candidate/Candidates';
 import { UserOutlined } from '@ant-design/icons';
 import Login from './Modules/Auth/Login';
 import Register from './Modules/Auth/Register';
-import Auth from './Modules/Auth/Auth';
-import Open from './Modules/Assessments/Open/Open';
-import Analytics from './Modules/Assessments/Analytics/Analytics';
-import OpenAssessment from './Modules/Assessments/Open/OpenAssessment';
-import ChallengesAssessment from './Modules/Assessments/Open/ChallengesAssessment';
-import SettingsAssessments from './Modules/Assessments/Open/SettingsAssessment';
+import Open from './Modules/Exam/Open/Open';
+import Analytics from './Modules/Exam/Analytics/Analytics';
 import './App.css'
+import { useSelector } from 'react-redux';
+import { IRootState } from './store';
 
 const { Header, Content } = Layout;
 
+
 const Home = () => {
+    const { isLoggedIn } = useSelector((state: IRootState) => (state.session));
+
     return (
         <Layout className="main-layout">
-            <Header>
+            {isLoggedIn && <Header>
                 <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['dashboard']}>
                     <Menu.Item key="dashboard">
                         <Link to={'/dashboard'}>Dashboard</Link>
                     </Menu.Item>
                     <Menu.Item key="assessments">
-                        <Link to={'/assessments'}>Assessments</Link>
+                        <Link to={'/assessments/open'}>Assessments</Link>
                     </Menu.Item>
                     <Menu.Item key="challenges">
                         <Link to={'/challenges'}>Challenges</Link>
@@ -41,32 +42,21 @@ const Home = () => {
                         </Link>
                     </Menu.Item>
                 </Menu>
-            </Header>
+            </Header>}
             <Content style={{ padding: '0 50px' }}>
                 <div className="site-layout-content">
                     <Routes>
-                        <Route path="/" Component={Auth} />
-                        <Route path="/Login" Component={Login} />
-                        <Route path="/Register" Component={Register} />
-                        <Route path="/dashboard" Component={Dashboard} />
-                        <Route path="/assessments" Component={Assessments}>
-                            <Route path="open" Component={Open} />
+                        <Route path="" Component={Login} />
+                        <Route path="Login" Component={Login} />
+                        <Route path="Register" Component={Register} />
+                        <Route path="dashboard" Component={Dashboard} />
+                        <Route path="assessments" Component={Exam}>
+                            <Route index path="open" Component={Open} />
                             <Route path="analytics" Component={Analytics} />
                         </Route>
 
                         <Route path="/challenges" Component={Challenges} />
                         <Route path="/candidates" Component={Candidates} />
-                    </Routes>
-                    <Routes>
-                        <Route path="/assessments/open/openAssessment" Component={OpenAssessment} />
-                        <Route
-                            path="/assessments/open/openAssessment/challengeAssessment"
-                            Component={ChallengesAssessment}
-                        />
-                        <Route
-                            path="/assessments/open/openAssessment/challengeSettings"
-                            Component={SettingsAssessments}
-                        />
                     </Routes>
                 </div>
             </Content>

@@ -21,7 +21,15 @@ export type ExamInsertDto = InsertDto<'exam'>;
 export type ExamUpdateDto = UpdateDto<'exam'>;
 
 export enum Status {
-  FAILED = 1,
-  PASSED = 2,
-  PENDING = 3,
+  JOINED = 1,
+  SUBMITTED = 2,
+}
+
+export interface InputOutput {
+  inputType: string;
+  outputType: string;
+  inputOutput: {
+    input: string | number | boolean | string[] | number[];
+    output: string | number | boolean | string[] | number[];
+  }[]
 }
