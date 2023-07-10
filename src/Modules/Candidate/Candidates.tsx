@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { CandidateAPIService } from './services/Candidate.API';
 import Search from 'antd/es/input/Search';
 import { Typography } from 'antd';
@@ -22,12 +22,14 @@ interface ICandidate {
 
 const Candidates = () => {
     const [candidates, setCandidates] = useState<ICandidate[]>([]);
+    const [filteredCandidates, setFilteredCandidates] = useState<ICandidate[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
     const fetchCandidates = async () => {
         try {
             const data = await CandidateAPIService.getAll();
             setCandidates(data);
+            setFilteredCandidates(data);
         } catch (error) {
             console.error('Error fetching candidates:', error);
         } finally {
@@ -39,8 +41,10 @@ const Candidates = () => {
         fetchCandidates();
     }, []);
 
-    const handleSearch = (value: string) => {
-        console.log(value);
+    const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        const filtered = candidates.filter((candidate) => candidate.name.toLowerCase().includes(value.toLowerCase()));
+        setFilteredCandidates(filtered);
     };
 
     return (
@@ -49,9 +53,15 @@ const Candidates = () => {
             <Search
                 placeholder="Search Candidate"
                 style={{ width: 200, marginBottom: '10px' }}
-                onSearch={handleSearch}
+                onChange={handleSearch}
             />
-            <Table rowKey="id" dataSource={candidates} columns={candidateColumn} size="small" loading={loading} />
+            <Table
+                rowKey="id"
+                dataSource={filteredCandidates}
+                columns={candidateColumn}
+                size="small"
+                loading={loading}
+            />
             <Editor />
         </div>
     );
