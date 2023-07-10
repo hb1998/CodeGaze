@@ -61,6 +61,7 @@ const Candidates = () => {
                 columns={candidateColumn}
                 size="small"
                 loading={loading}
+                style={{ overflowX: 'auto' }}
             />
             <Editor />
         </div>
