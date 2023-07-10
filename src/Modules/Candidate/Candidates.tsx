@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Table } from 'antd';
 import { CandidateAPIService } from './services/Candidate.API';
 import Search from 'antd/es/input/Search';
 import { Typography } from 'antd';
 import { candidateColumn } from './CandidateColumn';
+import { Table } from 'antd';
+import { Status } from '../../types/Models';
 
 // Code Editor Main File
-import Main from '../common/CodeEditor/Main';
+import Editor from '../common/CodeEditor/Editor';
 
 const { Title } = Typography;
 
@@ -15,12 +16,13 @@ interface ICandidate {
     name: string;
     emailId: string;
     language: string;
-    status: string;
+    status: Status;
     createdAt: Date;
 }
 
 const Candidates = () => {
     const [candidates, setCandidates] = useState<ICandidate[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const fetchCandidates = async () => {
         try {
@@ -28,6 +30,8 @@ const Candidates = () => {
             setCandidates(data);
         } catch (error) {
             console.error('Error fetching candidates:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -47,8 +51,8 @@ const Candidates = () => {
                 style={{ width: 200, marginBottom: '10px' }}
                 onSearch={handleSearch}
             />
-            <Table rowKey="id" dataSource={candidates} columns={candidateColumn} size="small" />
-            <Main />
+            <Table rowKey="id" dataSource={candidates} columns={candidateColumn} size="small" loading={loading} />
+            <Editor />
         </div>
     );
 };

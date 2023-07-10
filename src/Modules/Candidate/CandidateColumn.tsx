@@ -1,3 +1,5 @@
+import { Status, statusLabels } from '../../types/Models';
+
 const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
     const day = date.getDate();
@@ -43,39 +45,62 @@ export const candidateColumn = [
     },
     {
         title: 'Language',
-        dataIndex: ['assessment', 0, 'language'],
+        dataIndex: ['assessment'],
         key: 'id',
         filters: [
             {
                 text: 'JavaScript',
-                value: 'javascript',
+                value: 'Javascript',
             },
             {
                 text: 'Python',
-                value: 'python',
+                value: 'Python',
             },
             {
                 text: 'Java',
-                value: 'java',
+                value: 'Java',
             },
             {
                 text: 'C++',
-                value: 'c++',
+                value: 'C++',
             },
             {
                 text: 'C',
-                value: 'c',
+                value: 'C',
             },
         ],
-        // onFilter: (value: string, record) => record.language.indexOf(value) === 0,  // Not fixed the filter in language column
+        onFilter: (value, record) => {
+            for (let i = 0; i < record.assessment.length; i++) {
+                if (record.assessment[i].language === value) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        render: (text, record) => {
+            return record.assessment.map((item) => <div key={item.id}>{item.language}</div>);
+        },
     },
     {
         title: 'Status',
         dataIndex: ['assessment', 0, 'status'],
         key: 'id',
-        sorter: {
-            compare: (a, b) => a.status - b.status,
-            multiple: 3,
+        render: (status: Status) => statusLabels[status],
+        filters: [
+            {
+                text: 'Joined',
+                value: Status.JOINED.toString(),
+            },
+            {
+                text: 'Submitted',
+                value: Status.SUBMITTED.toString(),
+            },
+        ],
+        onFilter: (value, record) => {
+            const filteredAssessments = record.assessment.filter((assessment) => {
+                return assessment.status.toString() === value;
+            });
+            return filteredAssessments.length > 0;
         },
     },
     {
