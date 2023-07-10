@@ -1,10 +1,10 @@
-import { CandidateAssessmenmtAPIService } from "../CandidateAssessment/services/CandidateAssessment.API";
-import { ChallengeAPIService } from "../Challenges/services/Challenge.API";
-import { CodeGenerator, IInputType, Language } from "../CodeGeneration/CodeGenerator";
-import { ExamAPIService } from "../Exam/services/Exam.api";
+import ProtectedRoute from '../../Routes/ProtectedRoute';
+import { CandidateAssessmenmtAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
+import { ChallengeAPIService } from '../Challenges/services/Challenge.API';
+import { CodeGenerator, IInputType, Language } from '../CodeGeneration/CodeGenerator';
+import { ExamAPIService } from '../Exam/services/Exam.api';
 
 const Dashboard = () => {
-
     const handler = () => {
         // ExamAPIService.create({
         // CandidateAssessmenmtAPIService.create({
@@ -15,16 +15,20 @@ const Dashboard = () => {
         // })
         ChallengeAPIService.getAll().then((res) => {
             console.log(res);
-        })
-    }
+        });
+    };
 
-    return <div onClick={handler}>Dashboard</div>;
+    return (
+        <ProtectedRoute>
+            <div onClick={handler}>Dashboard</div>
+        </ProtectedRoute>
+    );
 };
 
 export default Dashboard;
 
 function getRandomNumber() {
-  return Math.floor(Math.random() * 1000) + 1;
+    return Math.floor(Math.random() * 1000) + 1;
 }
 
 const language = Language.CPP;
@@ -35,7 +39,7 @@ const inputTypes: IInputType[] = [
 const outputTypes = ['boolean'];
 
 // Call the function to generate starter code
-const codeGenerator = new CodeGenerator(language, inputTypes, outputTypes)
+const codeGenerator = new CodeGenerator(language, inputTypes, outputTypes);
 const starterCode = codeGenerator.generateStarterCode();
 
 // Print the generated starter code
