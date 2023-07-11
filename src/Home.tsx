@@ -19,6 +19,10 @@ import Account from './Modules/Account/Account';
 
 const { Header, Content } = Layout;
 
+const getProtectedRoute = (component: React.ReactNode) => {
+    return <ProtectedRoute>{component}</ProtectedRoute>;
+};
+
 const Home = () => {
     const { isLoggedIn } = useSelector((state: IRootState) => state.session);
 
@@ -54,16 +58,16 @@ const Home = () => {
                         <Route path="/" Component={Auth} />
                         <Route path="Login" Component={Login} />
                         <Route path="Register" Component={Register} />
-                        <Route path="dashboard" Component={Dashboard} />
+                        <Route path="dashboard" element={getProtectedRoute(<Dashboard />)} />
 
-                        <Route path="assessments" Component={Exam}>
-                            <Route index path="open" Component={Open} />
-                            <Route path="analytics" Component={Analytics} />
+                        <Route path="assessments" element={getProtectedRoute(<Exam />)}>
+                            <Route index path="open" element={getProtectedRoute(<Open />)} />
+                            <Route path="analytics" element={getProtectedRoute(<Analytics />)} />
                         </Route>
 
-                        <Route path="/challenges" Component={Challenges} />
-                        <Route path="/candidates" Component={Candidates} />
-                        <Route path="/account" Component={Account} />
+                        <Route path="/challenges" element={getProtectedRoute(<Challenges />)} />
+                        <Route path="/candidates" element={getProtectedRoute(<Candidates />)} />
+                        <Route path="/account" element={getProtectedRoute(<Account />)} />
                     </Routes>
                 </div>
             </Content>

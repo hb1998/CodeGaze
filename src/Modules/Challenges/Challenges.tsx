@@ -7,7 +7,6 @@ import './styles/challenges.css';
 import { ControlOutlined, ReadFilled } from '@ant-design/icons';
 import { Card, List } from 'antd';
 import MDEditor from '@uiw/react-md-editor';
-import ProtectedRoute from '../../Routes/ProtectedRoute';
 interface IValues {
     title: string;
     description: string;
@@ -256,41 +255,39 @@ const Challenges: React.FC = () => {
     };
 
     return (
-        <ProtectedRoute>
-            <div id="pricing" className="block pricingBlock bgGray">
-                <div className="container-fluid">
-                    <List
-                        grid={{
-                            gutter: 16,
-                            column: 4,
-                        }}
-                        dataSource={data}
-                        renderItem={(item) => (
-                            <List.Item>
-                                <Card title={item.title}>
-                                    <p>{item.content[0].details}</p>
-                                    <Button
-                                        type="primary"
-                                        onClick={() => {
-                                            setOpen(true);
-                                        }}
-                                    >
-                                        Create
-                                    </Button>
-                                    <CollectionCreateForm
-                                        open={open}
-                                        onCreate={onCreate}
-                                        onCancel={() => {
-                                            setOpen(false);
-                                        }}
-                                    />
-                                </Card>
-                            </List.Item>
-                        )}
-                    />
-                </div>
+        <div id="pricing" className="block pricingBlock bgGray">
+            <div className="container-fluid">
+                <List
+                    grid={{
+                        gutter: 16,
+                        column: 4,
+                    }}
+                    dataSource={data}
+                    renderItem={(item) => (
+                        <List.Item>
+                            <Card title={item.title}>
+                                <p>{item.content[0].details}</p>
+                                <Button
+                                    type="primary"
+                                    onClick={() => {
+                                        setOpen(true);
+                                    }}
+                                >
+                                    Create
+                                </Button>
+                                <CollectionCreateForm
+                                    open={open}
+                                    onCreate={onCreate}
+                                    onCancel={() => {
+                                        setOpen(false);
+                                    }}
+                                />
+                            </Card>
+                        </List.Item>
+                    )}
+                />
             </div>
-        </ProtectedRoute>
+        </div>
     );
 };
 

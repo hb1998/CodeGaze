@@ -1,4 +1,3 @@
-import ProtectedRoute from '../../Routes/ProtectedRoute';
 import { CandidateAssessmenmtAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
 import { ChallengeAPIService } from '../Challenges/services/Challenge.API';
 import { CodeGenerator, IInputType, Language } from '../CodeGeneration/CodeGenerator';
@@ -18,11 +17,7 @@ const Dashboard = () => {
         });
     };
 
-    return (
-        <ProtectedRoute>
-            <div onClick={handler}>Dashboard</div>
-        </ProtectedRoute>
-    );
+    return <div onClick={handler}>Dashboard</div>;
 };
 
 export default Dashboard;
