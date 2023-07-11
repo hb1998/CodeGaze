@@ -24,7 +24,7 @@ const Login = () => {
             });
             if (data.user) {
                 dispatch.session.update({ isLoggedIn: true, session: data.session });
-                navigate('/dashboard');
+                navigate('/dashboard', { replace: true });
             } else {
                 toast.error('Please enter a valid credentials to log in');
             }

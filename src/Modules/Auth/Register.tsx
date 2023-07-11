@@ -19,7 +19,7 @@ export default function Register() {
         }
         setLoading(false);
         alert('please confrim your email and login');
-        navigate('/Login');
+        navigate('/Login', { replace: true });
     };
 
     return (
