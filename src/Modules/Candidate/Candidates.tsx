@@ -8,6 +8,7 @@ import { Status } from '../../types/Models';
 
 // Code Editor Main File
 import Editor from '../common/CodeEditor/Editor';
+import { Link } from 'react-router-dom';
 
 const { Title } = Typography;
 
@@ -63,7 +64,7 @@ const Candidates = () => {
                 loading={loading}
                 style={{ overflowX: 'auto' }}
             />
-            <Editor />
+            <Link to="/candidateAssessment" />
         </div>
     );
 };

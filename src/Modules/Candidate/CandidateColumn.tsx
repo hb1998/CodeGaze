@@ -70,12 +70,7 @@ export const candidateColumn = [
             },
         ],
         onFilter: (value, record) => {
-            for (let i = 0; i < record.assessment.length; i++) {
-                if (record.assessment[i].language === value) {
-                    return true;
-                }
-            }
-            return false;
+            return record.assessment.find((item) => item.language === value);
         },
         render: (text, record) => {
             return record.assessment.map((item) => <div key={item.id}>{item.language}</div>);
