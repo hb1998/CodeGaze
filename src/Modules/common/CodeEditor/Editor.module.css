@@ -7,7 +7,7 @@
 }
 
 .content{
-  width: 100%;
+  width: 97%;
   height: 100%;
 }
 
@@ -20,7 +20,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  padding: 1rem;
 }
 
 .pane1 {

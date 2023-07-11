@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
-import { Table } from 'antd';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { CandidateAPIService } from './services/Candidate.API';
 import Search from 'antd/es/input/Search';
 import { Typography } from 'antd';
 import { candidateColumn } from './CandidateColumn';
-import Main from '../common/CodeEditor/Main';
+import { Table } from 'antd';
+import { Status } from '../../types/Models';
 
 // Code Editor Main File
-// import Main from '../common/CodeEditor/Main';
+import Editor from '../common/CodeEditor/Editor';
 
 const { Title } = Typography;
 
@@ -16,19 +16,24 @@ interface ICandidate {
     name: string;
     emailId: string;
     language: string;
-    status: string;
+    status: Status;
     createdAt: Date;
 }
 
 const Candidates = () => {
     const [candidates, setCandidates] = useState<ICandidate[]>([]);
+    const [filteredCandidates, setFilteredCandidates] = useState<ICandidate[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const fetchCandidates = async () => {
         try {
             const data = await CandidateAPIService.getAll();
             setCandidates(data);
+            setFilteredCandidates(data);
         } catch (error) {
             console.error('Error fetching candidates:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -36,8 +41,10 @@ const Candidates = () => {
         fetchCandidates();
     }, []);
 
-    const handleSearch = (value: string) => {
-        console.log(value);
+    const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        const filtered = candidates.filter((candidate) => candidate.name.toLowerCase().includes(value.toLowerCase()));
+        setFilteredCandidates(filtered);
     };
 
     return (
@@ -46,9 +53,17 @@ const Candidates = () => {
             <Search
                 placeholder="Search Candidate"
                 style={{ width: 200, marginBottom: '10px' }}
-                onSearch={handleSearch}
+                onChange={handleSearch}
             />
-            <Table rowKey="id" dataSource={candidates} columns={candidateColumn} size="small" />
+            <Table
+                rowKey="id"
+                dataSource={filteredCandidates}
+                columns={candidateColumn}
+                size="small"
+                loading={loading}
+                style={{ overflowX: 'auto' }}
+            />
+            <Editor />
         </div>
     );
 };

@@ -49,10 +49,23 @@ const Editor = () => {
         Axios.post(import.meta.env.VITE_COMPILER_ENDPOINT || '', {
             source_code: code,
             language_id: selectEditorLanguage.id,
-        }).then((response) => {
-            setOutput(response.data.stdout);
-            console.log(response.data);
-        });
+        })
+            .then((response) => {
+                setOutput(response.data.stdout);
+                console.log(response.data);
+                console.log(response.data.status.description);
+                if (response.data.stdout === null) {
+                    setOutput(response.data.status.description);
+                }
+            })
+            .catch((error) => {
+                if (error.response && error.response.data) {
+                    setOutput(`Compiler Error: ${error.response.data.error}`);
+                } else {
+                    setOutput('An error occurred while compiling the code.');
+                }
+                console.error('Error running code:', error);
+            });
     };
 
     const handleReset = () => {
