@@ -7,7 +7,7 @@ import { Card, Col, Row, Typography, List } from 'antd';
 const { Title } = Typography;
 
 const Challenges: React.FC = () => {
-  const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false);
 
   const onCreate = (values: any) => {
     console.log('Received values of form: ', values);

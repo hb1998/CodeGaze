@@ -22,7 +22,7 @@ export type ExamUpdateDto = UpdateDto<'exam'>;
 
 export enum Status {
   JOINED = 1,
-  SUBMITTED = 2,
+  SUBMITTED = 2,  
 }
 export enum Difficulty{
   easy=1,
@@ -39,6 +39,11 @@ export const  difficultyMap =  {
   [Difficulty.hard]: 'hard'
 
 }
+
+export const statusLabels = {
+  [Status.JOINED]: 'Joined',
+  [Status.SUBMITTED]: 'Submitted',
+};
 
 export interface InputOutput {
   inputType: string;

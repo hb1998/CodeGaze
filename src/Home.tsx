@@ -9,58 +9,67 @@ import Login from './Modules/Auth/Login';
 import Register from './Modules/Auth/Register';
 import Open from './Modules/Exam/Open/Open';
 import Analytics from './Modules/Exam/Analytics/Analytics';
-import './App.css'
+import './App.css';
 import { useSelector } from 'react-redux';
 import { IRootState } from './store';
-import Main from './Modules/common/CodeEditor/Main';
+import Editor from './Modules/common/CodeEditor/Editor';
 // import Edit from './Modules/Challenges/Edit';
+import Auth from './Modules/Auth/Auth';
+import ProtectedRoute from './Routes/ProtectedRoute';
+import Account from './Modules/Account/Account';
 
 const { Header, Content } = Layout;
 
+const getProtectedRoute = (component: React.ReactNode) => {
+    return <ProtectedRoute>{component}</ProtectedRoute>;
+};
 
 const Home = () => {
-    const { isLoggedIn } = useSelector((state: IRootState) => (state.session));
+    const { isLoggedIn } = useSelector((state: IRootState) => state.session);
 
     return (
         <Layout className="main-layout">
-            {isLoggedIn && <Header>
-                <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['dashboard']}>
-                    <Menu.Item key="dashboard">
-                        <Link to={'/dashboard'}>Dashboard</Link>
-                    </Menu.Item>
-                    <Menu.Item key="assessments">
-                        <Link to={'/assessments/open'}>Assessments</Link>
-                    </Menu.Item>
-                    <Menu.Item key="challenges">
-                        <Link to={'/challenges'}>Challenges</Link>
-                    </Menu.Item>
-                    <Menu.Item key="candidates">
-                        <Link to={'/candidates'}>Candidates</Link>
-                    </Menu.Item>
-                    <Menu.Item key="account" style={{ marginLeft: 'auto' }}>
-                        <Link to={'/account'}>
-                            Lumel &nbsp;
-                            <UserOutlined />
-                        </Link>
-                    </Menu.Item>
-                </Menu>
-            </Header>}
+            {isLoggedIn && (
+                <Header>
+                    <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['dashboard']}>
+                        <Menu.Item key="dashboard">
+                            <Link to={'/dashboard'}>Dashboard</Link>
+                        </Menu.Item>
+                        <Menu.Item key="assessments">
+                            <Link to={'/assessments/open'}>Assessments</Link>
+                        </Menu.Item>
+                        <Menu.Item key="challenges">
+                            <Link to={'/challenges'}>Challenges</Link>
+                        </Menu.Item>
+                        <Menu.Item key="candidates">
+                            <Link to={'/candidates'}>Candidates</Link>
+                        </Menu.Item>
+                        <Menu.Item key="account" style={{ marginLeft: 'auto' }}>
+                            <Link to={'/account'}>
+                                Lumel &nbsp;
+                                <UserOutlined />
+                            </Link>
+                        </Menu.Item>
+                    </Menu>
+                </Header>
+            )}
             <Content style={{ padding: '0 50px' }}>
                 <div className="site-layout-content">
                     <Routes>
-                        <Route path="" Component={Login} />
+                        <Route path="/" Component={Auth} />
                         <Route path="Login" Component={Login} />
                         <Route path="Register" Component={Register} />
-                        <Route path="dashboard" Component={Dashboard} />
-                        <Route path="assessments" Component={Exam}>
-                            <Route index path="open" Component={Open} />
-                            <Route path="analytics" Component={Analytics} />
+                        <Route path="dashboard" element={getProtectedRoute(<Dashboard />)} />
+
+                        <Route path="assessments" element={getProtectedRoute(<Exam />)}>
+                            <Route index path="open" element={getProtectedRoute(<Open />)} />
+                            <Route path="analytics" element={getProtectedRoute(<Analytics />)} />
                         </Route>
 
-                        <Route path="/challenges" Component={Challenges} />
-                        <Route path="/candidates" Component={Candidates} />
-                        <Route path="/challenges/:id" Component={Main} />
-                        {/* <Route path="/challenges/edit/:id" Component={Edit} /> */}
+                        <Route path="/challenges" element={getProtectedRoute(<Challenges />)} />
+                        <Route path="/candidates" element={getProtectedRoute(<Candidates />)} />
+                        <Route path="/account" element={getProtectedRoute(<Account />)} />
+                        <Route path="/challenges/:id" element={getProtectedRoute(<Editor />)}/>
                     </Routes>
                 </div>
             </Content>
