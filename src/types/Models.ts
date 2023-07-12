@@ -24,6 +24,21 @@ export enum Status {
   JOINED = 1,
   SUBMITTED = 2,  
 }
+export enum Difficulty{
+  easy=1,
+  medium=2,
+  hard=3,
+}
+
+export const  difficultyMap =  {
+
+  [Difficulty.easy]: 'easy',
+
+  [Difficulty.medium]: 'medium',
+
+  [Difficulty.hard]: 'hard'
+
+}
 
 export const statusLabels = {
   [Status.JOINED]: 'Joined',
