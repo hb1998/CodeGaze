@@ -1,4 +1,4 @@
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Popover } from 'antd';
 import { Routes, Route, Link } from 'react-router-dom';
 import Exam from './Modules/Exam/Exam';
 import Challenges from './Modules/Challenges/Challenges';
@@ -16,7 +16,9 @@ import Auth from './Modules/Auth/Auth';
 import ProtectedRoute from './Routes/ProtectedRoute';
 import account from './Modules/Account/Account';
 import Account from './Modules/Account/Account';
-
+import { Dropdown } from 'antd';
+import Icon from '@ant-design/icons/lib/components/Icon';
+import NavItem from './Modules/Account/NavItem';
 const { Header, Content } = Layout;
 
 const getProtectedRoute = (component: React.ReactNode) => {
@@ -44,10 +46,10 @@ const Home = () => {
                             <Link to={'/candidates'}>Candidates</Link>
                         </Menu.Item>
                         <Menu.Item key="account" style={{ marginLeft: 'auto' }}>
-                            <Link to={'/account'}>
+                            <Popover content={<NavItem />} title="Account Details" trigger="click">
                                 Lumel &nbsp;
                                 <UserOutlined />
-                            </Link>
+                            </Popover>
                         </Menu.Item>
                     </Menu>
                 </Header>
@@ -57,7 +59,6 @@ const Home = () => {
                     <Routes>
                         <Route path="/" Component={Auth} />
                         <Route path="Login" Component={Login} />
-                        <Route path="Register" Component={Register} />
                         <Route path="dashboard" element={getProtectedRoute(<Dashboard />)} />
 
                         <Route path="assessments" element={getProtectedRoute(<Exam />)}>
@@ -67,7 +68,7 @@ const Home = () => {
 
                         <Route path="/challenges" element={getProtectedRoute(<Challenges />)} />
                         <Route path="/candidates" element={getProtectedRoute(<Candidates />)} />
-                        <Route path="/account" element={getProtectedRoute(<Account />)} />
+                        <Route path="/account" element={getProtectedRoute(<Account />)}></Route>
                     </Routes>
                 </div>
             </Content>
