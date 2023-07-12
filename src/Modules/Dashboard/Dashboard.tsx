@@ -1,7 +1,6 @@
-import { ChallengeAPIService } from "../Challenges/services/Challenge.API";
+import { ChallengeAPIService } from '../Challenges/services/Challenge.API';
 
 const Dashboard = () => {
-
     const handler = () => {
         // ExamAPIService.create({
         // CandidateAssessmenmtAPIService.create({
@@ -12,8 +11,8 @@ const Dashboard = () => {
         // })
         ChallengeAPIService.getAll().then((res) => {
             console.log(res);
-        })
-    }
+        });
+    };
 
     return <div onClick={handler}>Dashboard</div>;
 };
