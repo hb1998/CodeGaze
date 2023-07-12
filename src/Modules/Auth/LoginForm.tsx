@@ -1,4 +1,5 @@
 import { Form, Input, Button, Layout, Row, Col } from 'antd';
+import { useState } from 'react';
 
 export interface ILoginData {
     Email: string;
@@ -9,23 +10,17 @@ interface IDataProps {
     action: string;
     SubmitHandler: (v: ILoginData) => void;
     show?: boolean;
+    loading?: boolean;
 }
 
 function LoginForm(props: IDataProps) {
     const onFinish = (values: ILoginData) => {
         props.SubmitHandler(values);
     };
+
     const emailValidator = (rule: any, value: any, callback: any) => {
         if (value && !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
             callback('Please enter a valid email address!');
-        } else {
-            callback();
-        }
-    };
-
-    const passwordValidator = (rule: any, value: any, callback: any) => {
-        if (value.length < 8) {
-            callback('Password must be at least 8 characters ');
         } else {
             callback();
         }
@@ -45,19 +40,21 @@ function LoginForm(props: IDataProps) {
                         >
                             <Input placeholder="Enter your email" />
                         </Form.Item>
-
                         <Form.Item
                             name="Password"
                             rules={[
                                 { required: true, message: 'Please enter your password!' },
-                                { validator: passwordValidator },
+                                {
+                                    min: 8,
+                                    message: 'Password must be at least 8 characters long',
+                                },
                             ]}
                         >
-                            <Input.Password placeholder="Password" />
+                            <Input placeholder="Enter your email" />
                         </Form.Item>
 
                         <Form.Item>
-                            <Button type="primary" htmlType="submit">
+                            <Button type="primary" htmlType="submit" loading={props.loading}>
                                 {props.action}
                             </Button>
                         </Form.Item>
