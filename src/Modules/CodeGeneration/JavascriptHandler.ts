@@ -12,13 +12,12 @@ export class JavascriptHandler implements LanguageHandler {
     generate(): string {
         let functionTemplate = `function ${FUNCTION_NAME}(${this.generateParameterList()}) {
     // TODO: Implement the function logic here
-
     // Return the output
-    return output;
 }
-console.log(${FUNCTION_NAME}())`;
+// Give input 
+console.log(${FUNCTION_NAME}(${this.generateParameterList()}));`;
         // Replace the placeholders in the function template with the input and output variables
-        functionTemplate = functionTemplate.replace('output', 'output');
+        functionTemplate = functionTemplate.replace(/#output/g, this.outputType.name);
         return functionTemplate;
     }
 

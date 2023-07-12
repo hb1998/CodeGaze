@@ -50,7 +50,7 @@ export class CodeGenerator {
     }
 
     generateStarterCode(): string | undefined {
-        return this.generator?.generate?.();
+        return this.generator?.generate();
     }
 }
 

@@ -11,19 +11,22 @@ export class CPPHandler implements LanguageHandler {
     }
 
     generate() {
-        let functionTemplate = `
-        #include <iostream>
-        using namespace std;
+        let functionTemplate = `#include <iostream>
+using namespace std;
 
-        int main(){
-            
-        }
-        ${this.outputType.type} ${FUNCTION_NAME}(${this.generateParameterList()}) {
-            // TODO: Implement the function logic here
+${this.outputType.type} ${FUNCTION_NAME}(${this.generateParameterList()}) {
+    // TODO: Implement the function logic here
     
-            // Return the output
-            return #output;
-        }`;
+    // Return the output
+}
+
+
+int main(){
+    // Call the solve function with sample input and print the output
+    cout << ${FUNCTION_NAME}(0, 0) << endl;
+    return 0;
+}
+`;
 
         // Replace the placeholders in the function template with the input parameters
         functionTemplate = functionTemplate.replace(/#output/g, this.outputType.name);

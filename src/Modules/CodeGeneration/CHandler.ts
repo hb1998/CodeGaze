@@ -5,23 +5,29 @@ export class CHandler implements LanguageHandler {
     inputTypes: IParamType[];
     outputType: IParamType;
 
-    constructor(inputTypes: IParamType[], outputTypes: IParamType) {
+    constructor(inputTypes: IParamType[], outputType: IParamType) {
         this.inputTypes = inputTypes;
-        this.outputType = outputTypes;
+        this.outputType = outputType;
     }
 
     generate(): string {
-        let functionTemplate = `def functionName(${this.generateParameterList()}):
-    // # TODO: Implement the function logic here
+        let functionTemplate = `#include <stdio.h>
 
-    // # Return the output
-    return output`;
+${this.generateParameterList()} {
+// TODO: Implement the function logic here
+// Return the output
+}
 
-        // Replace the placeholders in the function template with the input parameters and output variables
-        functionTemplate = functionTemplate
-            .replace('functionName', 'your_function_name')
-            .replace('output', outputVariables.join(', '));
 
+int main() {
+// Call the solve function with sample input and print the output
+printf("%d", solve(0, 0));
+return 0;
+
+}`;
+
+        // Replace the placeholders in the function template with the input parameters and output variable
+        functionTemplate = functionTemplate.replace(/#output/g, this.outputType.name);
         return functionTemplate;
     }
 

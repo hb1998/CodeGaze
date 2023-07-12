@@ -11,19 +11,20 @@ export class JavaHandler implements LanguageHandler {
     }
 
     generate() {
-        let functionTemplate = `public static ${
-            this.outputType.type
-        } ${FUNCTION_NAME}(${this.generateParameterList()}) {
-            // TODO: Implement the function logic here
-    
-            // Return the output
-            return output;
-        }`;
+        let functionTemplate = `
+public class Main {
+    public static ${this.outputType.type} ${FUNCTION_NAME}(${this.generateParameterList()}) {
+        // TODO: Implement the function logic here
+        // Return the output
+    }
+    public static void main(String[] args) {
+        // Call the solve function with sample input and print the output
+        System.out.println(solve(0, 0));
+    }
+}`;
 
         // Replace the placeholders in the function template with the input parameters
-        functionTemplate = functionTemplate
-            .replace('functionName', 'yourFunctionName')
-            .replace('output', `output${this.outputType. > 1 ? '[]' : ''}`);
+        functionTemplate = functionTemplate.replace(/#output/g, this.outputType.name);
 
         return functionTemplate;
     }
