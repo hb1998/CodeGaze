@@ -12,6 +12,8 @@ import Analytics from './Modules/Exam/Analytics/Analytics';
 import './App.css'
 import { useSelector } from 'react-redux';
 import { IRootState } from './store';
+import Main from './Modules/common/CodeEditor/Main';
+// import Edit from './Modules/Challenges/Edit';
 
 const { Header, Content } = Layout;
 
@@ -57,6 +59,8 @@ const Home = () => {
 
                         <Route path="/challenges" Component={Challenges} />
                         <Route path="/candidates" Component={Candidates} />
+                        <Route path="/challenges/:id" Component={Main} />
+                        {/* <Route path="/challenges/edit/:id" Component={Edit} /> */}
                     </Routes>
                 </div>
             </Content>
