@@ -12,9 +12,10 @@ import Analytics from './Modules/Exam/Analytics/Analytics';
 import './App.css';
 import { useSelector } from 'react-redux';
 import { IRootState } from './store';
+import Editor from './Modules/common/CodeEditor/Editor';
+// import Edit from './Modules/Challenges/Edit';
 import Auth from './Modules/Auth/Auth';
 import ProtectedRoute from './Routes/ProtectedRoute';
-import account from './Modules/Account/Account';
 import Account from './Modules/Account/Account';
 
 const { Header, Content } = Layout;
@@ -68,6 +69,7 @@ const Home = () => {
                         <Route path="/challenges" element={getProtectedRoute(<Challenges />)} />
                         <Route path="/candidates" element={getProtectedRoute(<Candidates />)} />
                         <Route path="/account" element={getProtectedRoute(<Account />)} />
+                        <Route path="/challenges/:id" element={getProtectedRoute(<Editor />)}/>
                     </Routes>
                 </div>
             </Content>
