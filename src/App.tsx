@@ -8,7 +8,6 @@ import { IDispatch, IRootState } from './store';
 
 type IAppProps = TMapState & TMapDispatch;
 const AppComponent = (props: IAppProps) => {
-    // console.log(props, 'app,running');
     return (
         <Router>
             <Home />
