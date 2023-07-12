@@ -2,40 +2,9 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Form, Button, Input, Space } from 'antd';
 import { useContext } from 'react';
 import { InputContext } from './Validation';
+import { validateInputBasedOnOption } from './ValidateInput';
 function DynamicTestcase() {
     const context =useContext(InputContext);
-        
-    const validateInputBasedOnOption = (param: any) => (_: any, value: any, callback: any) => {
-        const selectedOption = param;
-        console.log("test",param);
-
-        if (selectedOption === 'integer' && (!value || !Number.isInteger(Number(value)))) {
-            callback('Please enter a valid integer');
-        } else if (selectedOption === 'string' && (!value || typeof value !== 'string')) {
-            callback('Please enter a valid string');
-        } else if (selectedOption === 'array of integers') {
-            try {
-                const parsedValue = JSON.parse(value);
-
-                if (!Array.isArray(parsedValue) || !parsedValue.every((item) => Number.isInteger(Number(item)))) {
-                    callback('Input should be an array of integers');
-                }
-            } catch (error) {
-                callback('Invalid input format');
-            }
-        } else if (selectedOption === 'array of strings') {
-            try {
-                const parsedValue = JSON.parse(value);
-
-                if (!Array.isArray(parsedValue) || !parsedValue.every((item) => typeof item === 'string')) {
-                    callback('Output should be an array of strings');
-                }
-            } catch (error) {
-                callback('Invalid output format');
-            }
-        }
-        callback();
-    };
     return (
             <Form.List name="fields">
             {(fields, { add, remove }) => {
@@ -45,7 +14,7 @@ function DynamicTestcase() {
                             <div key={field.key}>
                                 <Form.Item
                                     name={[index, 'name']}
-                                    rules={[{ required: true, message: 'Enter Correct Input',validator: validateInputBasedOnOption(context.input) }]}
+                                    rules={[{ required: true, message: 'Enter Correct Input',validator: validateInputBasedOnOption(context.input[index]) }]}
                                 >
                                     <Space key={field.key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
                                         <Input placeholder={`Sample input ${index + 1}`} style={{ width: 385 }} />

@@ -1,8 +1,7 @@
 import React from 'react';
-import { Form,  Input, Modal, Select} from 'antd';
-import MDEditor from "@uiw/react-md-editor";
+import { Form, Input, Modal, Select } from 'antd';
+import MDEditor from '@uiw/react-md-editor';
 import Validation from './Validation';
-import './styles/challenges.css';
 
 const { Option } = Select;
 
@@ -20,7 +19,7 @@ interface ICollectionCreateFormProps {
 
 export const CollectionCreateForm: React.FC<ICollectionCreateFormProps> = ({ open, onCreate, onCancel }) => {
     const [form] = Form.useForm();
-    const [value, setValue] = React.useState("**Hello world!!!**");
+    const [value, setValue] = React.useState('**Hello world!!!**');
     return (
         <div style={{ width: '1200px' }}>
             <Modal
@@ -50,29 +49,28 @@ export const CollectionCreateForm: React.FC<ICollectionCreateFormProps> = ({ ope
                     initialValues={{ modifier: 'public' }}
                 >
                     <Form.Item name="Format Date">
-                        <Input placeholder="Format Date" style={{ width: 825}}/>
+                        <Input placeholder="Format Date" style={{ width: 825 }} />
                     </Form.Item>
-                    <Form.Item name="difficulty" label="Difficult Level" >
-                       <Select placeholder="Easy" allowClear style={{ width: 825 }}>
-                         <Option value="easy">Easy</Option>
-                         <Option value="medium">Medium</Option>
-                         <Option value="hard">Hard</Option>
-                       </Select>
-                     </Form.Item>
+                    <Form.Item name="difficulty" label="Difficult Level">
+                        <Select placeholder="Easy" allowClear style={{ width: 825 }}>
+                            <Option value="easy">Easy</Option>
+                            <Option value="medium">Medium</Option>
+                            <Option value="hard">Hard</Option>
+                        </Select>
+                    </Form.Item>
                     <Form.Item name="Short description" label="Short description">
-                        <Input style={{ width: 825 }}/>
+                        <Input style={{ width: 825 }} />
                     </Form.Item>
                     <Form.Item name="editor" initialValue={value}>
-                         <MDEditor
-                           style={{ width: 825}}
-                           value={value}
-                           onChange={(val) => {
-                             setValue(val!);
-                           }}
-                         />
-                           
-                     </Form.Item>
-                     <Validation form={form} />
+                        <MDEditor
+                            style={{ width: 825 }}
+                            value={value}
+                            onChange={(val) => {
+                                setValue(val!);
+                            }}
+                        />
+                    </Form.Item>
+                    <Validation />
                 </Form>
             </Modal>
         </div>

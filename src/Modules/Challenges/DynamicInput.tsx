@@ -5,23 +5,16 @@ import { InputContext } from './Validation';
 function DynamicInput() {
     const [inputValues, setInputValues] = useState<string[]>([]);
     const { setInput }= useContext(InputContext)
-    // const handleBlur = (event: { target: { value: any; }; }) => {
-    //     const { value } = event.target;
-    //     setInputValues((prevInputValues) => [...prevInputValues, value]);
-    //     setInput(inputValues);
-    //   };
     const handleBlur = (event: { target: { value: any; }; }, index: number) => {
         const { value } = event.target;
         setInputValues((prevInputValues) => {
           const newInputValues = [...prevInputValues];
           newInputValues[index] = value;
+          setInputValues(newInputValues);
+          setInput(newInputValues);
           return newInputValues;
         });
-        console.log(inputValues)
-        setInput(inputValues);
-        
       };
-
     return (
             <Form.List name="fields">
             {(fields, { add, remove }) => {
