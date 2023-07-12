@@ -5,7 +5,6 @@ const { TabPane } = Tabs;
 const { Content } = Layout;
 
 
-
 const handleTabClick=()=>{
   console.log("tab clicked");
 
