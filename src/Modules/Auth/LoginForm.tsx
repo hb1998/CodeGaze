@@ -1,5 +1,6 @@
 import { Form, Input, Button, Layout, Row, Col } from 'antd';
 import { useState } from 'react';
+import logo from '../../assets/Lumel_Logo.png';
 
 export interface ILoginData {
     Email: string;
@@ -28,7 +29,18 @@ function LoginForm(props: IDataProps) {
 
     return (
         <Layout>
-            <Row justify="center" align="middle" style={{ height: '100vh' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginTop: '10px',
+                }}
+            >
+                <img src={logo} alt="" style={{ width: '200px', height: '80px' }} />
+            </div>
+
+            <Row justify="center" align="middle" style={{ height: '90vh' }}>
                 <Col span={12} style={{ width: '50%' }}>
                     <Form name="login-form" onFinish={onFinish}>
                         <Form.Item
@@ -50,7 +62,7 @@ function LoginForm(props: IDataProps) {
                                 },
                             ]}
                         >
-                            <Input placeholder="Enter your email" />
+                            <Input.Password placeholder="Enter your password" />
                         </Form.Item>
 
                         <Form.Item>

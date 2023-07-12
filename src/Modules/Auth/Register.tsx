@@ -15,7 +15,13 @@ export default function Register() {
                 password: data.Password,
             });
         } catch (error) {
-            toast.error('User Already exists');
+            toast.error('User Already exists please enter another user');
+            navigate('/Register', { replace: true });
+            setLoading(false);
+            setTimeout(() => {
+                window.location.reload();
+            }, 4000);
+            return;
         }
         setLoading(false);
         alert('please confrim your email and login');
