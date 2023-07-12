@@ -20,6 +20,36 @@ export type Exam = Row<'exam'>;
 export type ExamInsertDto = InsertDto<'exam'>;
 export type ExamUpdateDto = UpdateDto<'exam'>;
 
-export type LanguageInfo = Row<'languageInfo'>;
-export type LanguageInfoInsertDto = InsertDto<'languageInfo'>;
-export type LanguageInfoUpdateDto = UpdateDto<'languageInfo'>;
+export enum Status {
+  JOINED = 1,
+  SUBMITTED = 2,  
+}
+export enum Difficulty{
+  easy=1,
+  medium=2,
+  hard=3,
+}
+
+export const  difficultyMap =  {
+
+  [Difficulty.easy]: 'easy',
+
+  [Difficulty.medium]: 'medium',
+
+  [Difficulty.hard]: 'hard'
+
+}
+
+export const statusLabels = {
+  [Status.JOINED]: 'Joined',
+  [Status.SUBMITTED]: 'Submitted',
+};
+
+export interface InputOutput {
+  inputType: string;
+  outputType: string;
+  inputOutput: {
+    input: string | number | boolean | string[] | number[];
+    output: string | number | boolean | string[] | number[];
+  }[]
+}

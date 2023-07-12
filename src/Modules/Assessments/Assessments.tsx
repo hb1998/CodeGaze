@@ -33,5 +33,3 @@ const Assessments = () => {
     </Layout>
   );
 };
-
-export default Assessments;

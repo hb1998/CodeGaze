@@ -1,29 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
 import Home from './Home';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { supabase } from './Modules/API/supabase';
+import { connect } from 'react-redux';
+import { IDispatch, IRootState } from './store';
 
-function App() {
-    const [code, setcode] = useState('');
-    const [output, setoutput] = useState('');
-
-    const onSubmit = () => {
-        Axios.post('http://localhost:2358/submissions/?base64_encoded=false&wait=true', {
-            source_code: code,
-            language_id: 63,
-        }).then((response) => {
-            setoutput(response.data.stdout);
-            console.log(response.data);
-        });
-    };
-
-    const onChange = React.useCallback((value, viewUpdate) => {
-        setcode(value);
-    }, []);
+type IAppProps = TMapState & TMapDispatch;
+const AppComponent = (props: IAppProps) => {
     return (
         <Router>
             <Home />
         </Router>
     );
-}
+};
+const mapDispatch = (dispatch: IDispatch) => ({
+    updateSession: dispatch.session.update,
+});
+const mapState = (state: IRootState) => ({
+    getSession: state.session,
+});
+
+type TMapState = ReturnType<typeof mapState>;
+type TMapDispatch = ReturnType<typeof mapDispatch>;
+
+const App = connect(mapState, mapDispatch)(AppComponent);
 export default App;
