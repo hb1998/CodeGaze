@@ -15,7 +15,7 @@ export type languageType = (typeof ProgrammingLanguages)[keyof typeof Programmin
 
 const Editor = () => {
     const [selectEditorLanguage, setSelectEditorLanguage] = useState<languageType>(ProgrammingLanguages.javaScript);
-    const [code, setCode] = useState();
+    const [code, setCode] = useState<IParamType['name']>();
     const [output, setOutput] = useState('');
 
     const handleLanguageChange = (selectedLanguage: languageType['name']) => {
@@ -79,7 +79,10 @@ const Editor = () => {
             { type: 'number', name: 'n' },
             { type: 'arrayOfNumber', name: 'nums' },
         ];
-        const outputTypes: string[] = ['number'];
+        const outputTypes: IParamType = {
+            type: 'number',
+            name: 'int',
+        };
 
         const generator = new CodeGenerator(languageSelected, inputTypes, outputTypes);
 

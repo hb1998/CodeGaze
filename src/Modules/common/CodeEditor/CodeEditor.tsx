@@ -15,7 +15,7 @@ interface ICodeEditorProps {
     languageName: string;
     handleLanguageChange: (lang: languageType['name']) => void;
     handleReset: () => void;
-    code: string;
+    code: string | undefined;
     codeEditorLang: any;
     handleCodeChange: (value: string) => void;
 }
