@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Axios from 'axios';
 // SplitPane imports
 import SplitPane, { Pane } from 'split-pane-react';
@@ -9,37 +9,43 @@ import CodeEditor from './CodeEditor';
 import { ProgrammingLanguages } from './ProgrammingLanguages';
 import Output from './Output';
 import classes from './Editor.module.css';
+import { CodeGenerator, IParamType, Language } from '../../CodeGeneration/CodeGenerator';
 
-type ISelectedEditorLanguage = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
+export type languageType = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
 
 const Editor = () => {
-    const [selectEditorLanguage, setSelectEditorLanguage] = useState<ISelectedEditorLanguage>(
-        ProgrammingLanguages.javaScript,
-    );
-    const [code, setCode] = useState('');
+    const [selectEditorLanguage, setSelectEditorLanguage] = useState<languageType>(ProgrammingLanguages.javaScript);
+    const [code, setCode] = useState<IParamType['name']>();
     const [output, setOutput] = useState('');
 
-    const handleLanguageChange = (
-        selectedLanguage: (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages]['name'],
-    ) => {
+    const handleLanguageChange = (selectedLanguage: languageType['name']) => {
         switch (selectedLanguage) {
             case 'Python':
                 setSelectEditorLanguage(ProgrammingLanguages.python);
+                generateStarterCode(Language.Python);
                 break;
             case 'Java':
                 setSelectEditorLanguage(ProgrammingLanguages.java);
+                generateStarterCode(Language.Java);
                 break;
             case 'C':
                 setSelectEditorLanguage(ProgrammingLanguages.c);
+                generateStarterCode(Language.C);
                 break;
             case 'C++':
                 setSelectEditorLanguage(ProgrammingLanguages.cpp);
+                generateStarterCode(Language.CPP);
                 break;
             default:
                 setSelectEditorLanguage(ProgrammingLanguages.javaScript);
+                generateStarterCode(Language.JavaScript);
                 break;
         }
     };
+
+    useEffect(() => {
+        generateStarterCode(Language.JavaScript);
+    }, []);
 
     const handleCodeChange = (value: string) => {
         setCode(value);
@@ -55,7 +61,7 @@ const Editor = () => {
                 console.log(response.data);
                 console.log(response.data.status.description);
                 if (response.data.stdout === null) {
-                    setOutput(response.data.status.description);
+                    setOutput(`${response.data.status.description}\n${response.data.stderr}`);
                 }
             })
             .catch((error) => {
@@ -66,6 +72,23 @@ const Editor = () => {
                 }
                 console.error('Error running code:', error);
             });
+    };
+
+    const generateStarterCode = (languageSelected: Language) => {
+        const inputTypes: IParamType[] = [
+            { type: 'number', name: 'n' },
+            { type: 'arrayOfNumber', name: 'nums' },
+        ];
+        const outputTypes: IParamType = {
+            type: 'number',
+            name: 'int',
+        };
+
+        const generator = new CodeGenerator(languageSelected, inputTypes, outputTypes);
+
+        const starterCode = generator.generateStarterCode();
+
+        setCode(starterCode);
     };
 
     const handleReset = () => {
