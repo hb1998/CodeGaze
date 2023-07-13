@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Space, Typography } from 'antd';
+import { Select, Space, Typography } from 'antd';
 const { Text } = Typography;
 import { Form, Input } from 'antd';
 import DynamicInput from './DynamicInput';
 import DynamicTestcase from './DynamicTestcase';
 import { validateInputBasedOnOption } from './ValidateInput';
+const { Option } = Select;
 
 type AppContextState = string[];
 const appCtxDefaultValue = {
@@ -13,6 +14,11 @@ const appCtxDefaultValue = {
 };
 
 export const InputContext = React.createContext(appCtxDefaultValue);
+export const TestcaseContext=React.createContext({
+    inputValue: '',
+    outputValue: '',
+  })
+
 export interface IProviderProps {
     children?: any;
 }
@@ -21,25 +27,22 @@ const Validation: React.FC = () => {
     const [inputValue, setInputValue] = useState('');
     const [outputValue, setOutputValue] = useState('');
 
-    const handleBlurIn = (event: { target: { value: any } }) => {
-        const { value } = event.target;
-        setInputValue(value);
-    };
-    const handleBlurOut = (event: { target: { value: any } }) => {
-        const { value } = event.target;
-        setOutputValue(value);
-    };
     return (
         <InputContext.Provider value={{ input, setInput }}>
-            <Form.Item name="InputOutput">
-                <Space style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+            <Form.Item>
+                <Space style={{ display: 'flex' }} align="baseline">
                     <Form.Item>
                         <Text code>Input type</Text>
                         <Space style={{ display: 'flex', marginBottom: 8, marginTop: 8 }} align="baseline">
-                            <Form.Item name="inputType" rules={[{ required: true, message: 'Missing Input' }]}>
-                                <Input placeholder="Input" onBlur={handleBlurIn} />
+                            <Form.Item name="inputType">
+                                <Select placeholder="Array Of Integers" allowClear value={inputValue} onChange={setInputValue} >
+                                <Option value="integer">Integer</Option>
+                                <Option value="string">String</Option>
+                                <Option value="array of integers">Array Of Integer</Option>
+                                <Option value="array of strings">Array Of Strings</Option>
+                                </Select>
                             </Form.Item>
-                            <Form.Item name="inputParam" rules={[{ required: true, message: 'Missing InputParam' }]}>
+                            <Form.Item name="InputParam" rules={[{ required: true, message: 'Missing InputParam' }]}>
                                 <Input placeholder="Input Param" />
                             </Form.Item>
                         </Space>
@@ -48,8 +51,13 @@ const Validation: React.FC = () => {
                     <Form.Item>
                         <Text code>Output type</Text>
                         <Space style={{ display: 'flex', marginBottom: 8, marginTop: 8 }} align="baseline">
-                            <Form.Item name="outputType" rules={[{ required: true, message: 'Missing Output' }]}>
-                                <Input placeholder="Output" onBlur={handleBlurOut} />
+                        <Form.Item name="outputType">
+                                <Select placeholder="Array Of Integer" allowClear value={outputValue} onChange={setOutputValue} >
+                                <Option value="integer">Integer</Option>
+                                <Option value="string">String</Option>
+                                <Option value="array of integers">Array Of Integer</Option>
+                                <Option value="array of strings">Array Of Strings</Option>
+                                </Select>
                             </Form.Item>
                             <Form.Item name="outputParam" rules={[{ required: true, message: 'Missing OutputParam' }]}>
                                 <Input placeholder="Output Param" />
@@ -59,29 +67,31 @@ const Validation: React.FC = () => {
                 </Space>
 
                 <label>Required test cases</label>
-                <Space style={{ display: 'flex', marginBottom: 8, marginTop: 8 }} align="baseline">
+                <Space style={{ display: 'flex', marginTop: 8}} align="baseline">
                     <Form.Item>
                         <Space align="baseline">
                             <Form.Item
-                                name="inputValues"
+                                name="inputValue"
                                 rules={[{ validator: validateInputBasedOnOption(inputValue) }]}
                             >
-                                <Input placeholder="Sample input" style={{ width: 385 }} />
+                                <Input placeholder="Sample input 0"  />
                             </Form.Item>
                         </Space>
-                        <DynamicTestcase />
                     </Form.Item>
                     <Form.Item>
                         <Space align="baseline">
                             <Form.Item
-                                name="outputValues"
+                                name="outputValue"
                                 rules={[{ validator: validateInputBasedOnOption(outputValue) }]}
                             >
-                                <Input placeholder="Sample Output" style={{ width: 385 }} />
+                                <Input placeholder="Sample Output" />
                             </Form.Item>
                         </Space>
                     </Form.Item>
                 </Space>
+                <TestcaseContext.Provider value={{inputValue,outputValue}}>
+                        <DynamicTestcase />
+                </TestcaseContext.Provider>
             </Form.Item>
         </InputContext.Provider>
     );
