@@ -9,43 +9,42 @@ import CodeEditor from './CodeEditor';
 import { ProgrammingLanguages } from './ProgrammingLanguages';
 import Output from './Output';
 import classes from './Editor.module.css';
-import { CodeGenerator, IParamType, Language } from '../../CodeGeneration/CodeGenerator';
+import { CodeGenerator, IParamType } from '../../CodeGeneration/CodeGenerator';
 
-export type languageType = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
+export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
+export type languageNameType = languageObjectType['name'];
 
 const Editor = () => {
-    const [selectEditorLanguage, setSelectEditorLanguage] = useState<languageType>(ProgrammingLanguages.javaScript);
+    const [selectEditorLanguage, setSelectEditorLanguage] = useState<languageObjectType>(
+        ProgrammingLanguages.javaScript,
+    );
     const [code, setCode] = useState<IParamType['name']>();
     const [output, setOutput] = useState('');
 
-    const handleLanguageChange = (selectedLanguage: languageType['name']) => {
+    const handleLanguageChange = (selectedLanguage: languageNameType) => {
         switch (selectedLanguage) {
             case 'Python':
                 setSelectEditorLanguage(ProgrammingLanguages.python);
-                generateStarterCode(Language.Python);
                 break;
             case 'Java':
                 setSelectEditorLanguage(ProgrammingLanguages.java);
-                generateStarterCode(Language.Java);
                 break;
             case 'C':
                 setSelectEditorLanguage(ProgrammingLanguages.c);
-                generateStarterCode(Language.C);
                 break;
             case 'C++':
                 setSelectEditorLanguage(ProgrammingLanguages.cpp);
-                generateStarterCode(Language.CPP);
                 break;
             default:
                 setSelectEditorLanguage(ProgrammingLanguages.javaScript);
-                generateStarterCode(Language.JavaScript);
                 break;
         }
+        updateBoilerCode(selectedLanguage);
     };
 
     useEffect(() => {
-        generateStarterCode(Language.JavaScript);
-    }, []);
+        updateBoilerCode(selectEditorLanguage['name']);
+    }, [selectEditorLanguage]);
 
     const handleCodeChange = (value: string) => {
         setCode(value);
@@ -61,8 +60,14 @@ const Editor = () => {
                 console.log(response.data);
                 console.log(response.data.status.description);
                 if (response.data.stdout === null) {
-                    setOutput(`${response.data.status.description}\n${response.data.stderr}`);
+                    setOutput(
+                        `${response.data.status.description}\n${response.data.stderr}\n${
+                            response.data.compile_output !== null ? response.data.compile_output : ''
+                        }`,
+                    );
                 }
+                console.log(response.data.stderr);
+                console.log(response.data.compile_output);
             })
             .catch((error) => {
                 if (error.response && error.response.data) {
@@ -74,7 +79,7 @@ const Editor = () => {
             });
     };
 
-    const generateStarterCode = (languageSelected: Language) => {
+    const updateBoilerCode = (languageSelected: languageNameType) => {
         const inputTypes: IParamType[] = [
             { type: 'number', name: 'n' },
             { type: 'arrayOfNumber', name: 'nums' },
@@ -92,7 +97,7 @@ const Editor = () => {
     };
 
     const handleReset = () => {
-        setCode('');
+        updateBoilerCode(selectEditorLanguage['name']);
         setOutput('');
     };
 

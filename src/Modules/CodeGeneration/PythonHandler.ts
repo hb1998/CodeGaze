@@ -15,10 +15,9 @@ export class PythonHandler implements LanguageHandler {
     # TODO: Implement the function logic here
 
     # Return the output
+    return output;
 
 # Call the solve function with sample input and print the output
-#Give input
-print(solve(${this.generateParameterList()}))
     `;
 
         // Replace the placeholders in the function template with the input parameters and output variables

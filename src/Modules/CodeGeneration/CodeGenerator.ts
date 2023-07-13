@@ -3,14 +3,16 @@ import { CPPHandler } from './CPPHandler';
 import { JavaHandler } from './JavaHandler';
 import { JavascriptHandler } from './JavascriptHandler';
 import { PythonHandler } from './PythonHandler';
+import { languageNameType } from '../common/CodeEditor/Editor';
 
-export enum Language {
-    JavaScript = 'javascript',
-    Python = 'python',
-    Java = 'java',
-    C = 'c',
-    CPP = 'c++',
-}
+// export enum Language {
+//     JavaScript = 'javascript',
+//     Python = 'python',
+//     Java = 'java',
+//     C = 'c',
+//     CPP = 'c++',
+// }
+
 export const FUNCTION_NAME = 'solve';
 
 export interface IParamType {
@@ -20,12 +22,12 @@ export interface IParamType {
 }
 
 export class CodeGenerator {
-    language: Language;
+    language: languageNameType;
     inputTypes: IParamType[];
     outputType: IParamType;
     generator: JavascriptHandler | PythonHandler | JavaHandler | CHandler | CPPHandler | null;
 
-    constructor(language: Language, inputTypes: IParamType[], outputType: IParamType) {
+    constructor(language: languageNameType, inputTypes: IParamType[], outputType: IParamType) {
         this.language = language;
         this.inputTypes = inputTypes;
         this.outputType = outputType;
@@ -34,15 +36,15 @@ export class CodeGenerator {
 
     private getGenerator() {
         switch (this.language) {
-            case Language.JavaScript:
+            case 'Javascript':
                 return new JavascriptHandler(this.inputTypes, this.outputType);
-            case Language.Python:
+            case 'Python':
                 return new PythonHandler(this.inputTypes, this.outputType);
-            case Language.Java:
+            case 'Java':
                 return new JavaHandler(this.inputTypes, this.outputType);
-            case Language.C:
+            case 'C':
                 return new CHandler(this.inputTypes, this.outputType);
-            case Language.CPP:
+            case 'C++':
                 return new CPPHandler(this.inputTypes, this.outputType);
             default:
                 return null;

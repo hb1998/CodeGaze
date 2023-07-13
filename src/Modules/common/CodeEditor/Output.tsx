@@ -26,6 +26,9 @@ const Output = (props: OutputProps) => {
                     minHeight: 100,
                     border: '1px solid #d9d9d9',
                     padding: 8,
+                    backgroundColor: '#1e293b',
+                    color: 'lightgray',
+                    whiteSpace: 'pre-wrap',
                 }}
             >
                 {props.output}
