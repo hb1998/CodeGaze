@@ -71,6 +71,7 @@ const Home = () => {
                         <Route path="/candidates" element={getProtectedRoute(<Candidates />)} />
                         <Route path="/account" element={getProtectedRoute(<Account />)} />
                         <Route path="/challenges/:id" element={getProtectedRoute(<Editor />)} />
+                        <Route path="/editor" element={<Editor />} />
                     </Routes>
                 </div>
             </Content>
