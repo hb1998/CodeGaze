@@ -15,10 +15,11 @@ export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof Prog
 export type languageNameType = languageObjectType['name'];
 
 const Editor = () => {
+    const [sizes, setSizes] = useState([300, '100%', '25%']);
     const [selectEditorLanguage, setSelectEditorLanguage] = useState<languageObjectType>(
         ProgrammingLanguages.javaScript,
     );
-    const [code, setCode] = useState<IParamType['name']>();
+    const [code, setCode] = useState('');
     const [output, setOutput] = useState('');
 
     const handleLanguageChange = (selectedLanguage: languageNameType) => {
@@ -39,7 +40,6 @@ const Editor = () => {
                 setSelectEditorLanguage(ProgrammingLanguages.javaScript);
                 break;
         }
-        updateBoilerCode(selectedLanguage);
     };
 
     useEffect(() => {
@@ -57,8 +57,6 @@ const Editor = () => {
         })
             .then((response) => {
                 setOutput(response.data.stdout);
-                console.log(response.data);
-                console.log(response.data.status.description);
                 if (response.data.stdout === null) {
                     setOutput(
                         `${response.data.status.description}\n${response.data.stderr}\n${
@@ -66,8 +64,6 @@ const Editor = () => {
                         }`,
                     );
                 }
-                console.log(response.data.stderr);
-                console.log(response.data.compile_output);
             })
             .catch((error) => {
                 if (error.response && error.response.data) {
@@ -88,11 +84,8 @@ const Editor = () => {
             type: 'number',
             name: 'int',
         };
-
         const generator = new CodeGenerator(languageSelected, inputTypes, outputTypes);
-
         const starterCode = generator.generateStarterCode();
-
         setCode(starterCode);
     };
 
@@ -105,7 +98,6 @@ const Editor = () => {
         console.log('Submitted code:', code);
         console.log('Selected language:', selectEditorLanguage.name);
     };
-    const [sizes, setSizes] = useState([300, '100%', '25%']);
 
     return (
         <div>
