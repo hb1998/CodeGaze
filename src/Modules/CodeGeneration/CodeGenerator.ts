@@ -1,8 +1,8 @@
-import { CHandler } from "./CHandler";
-import { CPPHandler } from "./CPPHandler";
-import { JavaHandler } from "./JavaHandler";
-import { JavascriptHandler } from "./JavascriptHandler";
-import { PythonHandler } from "./PythonHandler";
+import { CHandler } from './CHandler';
+import { CPPHandler } from './CPPHandler';
+import { JavaHandler } from './JavaHandler';
+import { JavascriptHandler } from './JavascriptHandler';
+import { PythonHandler } from './PythonHandler';
 
 export enum Language {
     JavaScript = 'javascript',
@@ -11,9 +11,9 @@ export enum Language {
     C = 'c',
     CPP = 'c++',
 }
-export const FUNCTION_NAME = 'solve'
+export const FUNCTION_NAME = 'solve';
 
-export interface IInputType {
+export interface IParamType {
     type: 'string' | 'number' | 'arrayOfString' | 'arrayOfNumber' | 'object' | 'arrayOfObject' | 'boolean';
     name: string;
     objectStructure?: string;
@@ -21,71 +21,38 @@ export interface IInputType {
 
 export class CodeGenerator {
     language: Language;
-    inputTypes: IInputType[];
-    outputTypes: string[];
+    inputTypes: IParamType[];
+    outputType: IParamType;
     generator: JavascriptHandler | PythonHandler | JavaHandler | CHandler | CPPHandler | null;
 
-    constructor(language: Language, inputTypes: IInputType[], outputTypes: string[]) {
+    constructor(language: Language, inputTypes: IParamType[], outputType: IParamType) {
         this.language = language;
         this.inputTypes = inputTypes;
-        this.outputTypes = outputTypes;
+        this.outputType = outputType;
         this.generator = this.getGenerator();
     }
 
     private getGenerator() {
         switch (this.language) {
             case Language.JavaScript:
-                return new JavascriptHandler(this.inputTypes, this.outputTypes);
+                return new JavascriptHandler(this.inputTypes, this.outputType);
             case Language.Python:
-                return new PythonHandler(this.inputTypes, this.outputTypes);
+                return new PythonHandler(this.inputTypes, this.outputType);
             case Language.Java:
-                return new JavaHandler(this.inputTypes, this.outputTypes);
+                return new JavaHandler(this.inputTypes, this.outputType);
             case Language.C:
-                return new CHandler(this.inputTypes, this.outputTypes);
+                return new CHandler(this.inputTypes, this.outputType);
             case Language.CPP:
-                return new CPPHandler(this.inputTypes, this.outputTypes);
+                return new CPPHandler(this.inputTypes, this.outputType);
             default:
-                return null
+                return null;
         }
     }
 
     generateStarterCode(): string | undefined {
-        return this.generator?.generate?.();
+        return this.generator?.generate();
     }
-
-
-    static generateJavaCode(inputTypes: IInputType[], outputTypes: string[]) {
-        let functionTemplate = `public static ${outputTypes[0]} functionName(${generateParameterList()}) {
-            // TODO: Implement the function logic here
-    
-            // Return the output
-            return output;
-        }`;
-
-        // Replace the placeholders in the function template with the input parameters
-        functionTemplate = functionTemplate.replace('functionName', 'yourFunctionName')
-            .replace('output', `output${outputTypes.length > 1 ? '[]' : ''}`);
-
-        return functionTemplate;
-
-        function generateParameterList() {
-            return inputTypes.map(input => {
-                if (input.type === 'arrayOfString') {
-                    return `String[] ${input.name}`;
-                } else if (input.type === 'arrayOfNumber') {
-                    return `int[] ${input.name}`;
-                } else if (input.type === 'object') {
-                    return `${input.objectStructure} ${input.name}`;
-                } else if (input.type === 'arrayOfObject') {
-                    return `List<${input.objectStructure}> ${input.name}`;
-                } else {
-                    return `${input.type} ${input.name}`;
-                }
-            }).join(', ');
-        }
-
-    }
-
 }
+
 console.log('test');
 // Example inputs

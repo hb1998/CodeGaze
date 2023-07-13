@@ -1,11 +1,10 @@
-import { Button, Select, Typography } from 'antd';
+import { Button, Select } from 'antd';
 
 import CodeMirror from '@uiw/react-codemirror';
 import { ProgrammingLanguages } from './ProgrammingLanguages';
 
 import classes from './Editor.module.css';
-
-type LanguageName = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages]['name'];
+import { languageType } from './Editor';
 
 const options = Object.entries(ProgrammingLanguages).map(([key, value]) => ({
     label: value.name,
@@ -14,9 +13,9 @@ const options = Object.entries(ProgrammingLanguages).map(([key, value]) => ({
 
 interface ICodeEditorProps {
     languageName: string;
-    handleLanguageChange: (lang: LanguageName) => void;
+    handleLanguageChange: (lang: languageType['name']) => void;
     handleReset: () => void;
-    code: string;
+    code: string | undefined;
     codeEditorLang: any;
     handleCodeChange: (value: string) => void;
 }
@@ -27,7 +26,7 @@ const CodeEditor = (props: ICodeEditorProps) => {
             <div className={classes.editorHeader}>
                 <Select
                     value={props.languageName}
-                    onChange={(value) => props.handleLanguageChange(value as LanguageName)}
+                    onChange={(value) => props.handleLanguageChange(value as languageType['name'])}
                     style={{ width: '7rem' }}
                     options={options}
                 />

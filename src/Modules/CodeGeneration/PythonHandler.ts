@@ -1,13 +1,13 @@
-import { FUNCTION_NAME, IInputType } from "./CodeGenerator";
-import { LanguageHandler } from "./Handler.types";
+import { FUNCTION_NAME, IParamType } from './CodeGenerator';
+import { LanguageHandler } from './Handler.types';
 
 export class PythonHandler implements LanguageHandler {
-    inputTypes: IInputType[];
-    outputTypes: string[];
+    inputTypes: IParamType[];
+    outputType: IParamType;
 
-    constructor(inputTypes: IInputType[], outputTypes: string[]) {
+    constructor(inputTypes: IParamType[], outputTypes: IParamType) {
         this.inputTypes = inputTypes;
-        this.outputTypes = outputTypes;
+        this.outputType = outputTypes;
     }
 
     generate(): string {
@@ -15,18 +15,19 @@ export class PythonHandler implements LanguageHandler {
     # TODO: Implement the function logic here
 
     # Return the output
-    return output`;
 
-        // Create an array of output variable names based on output types
-        const outputVariables = this.outputTypes.map((type, index) => `output${index + 1}`);
+# Call the solve function with sample input and print the output
+#Give input
+print(solve(${this.generateParameterList()}))
+    `;
 
         // Replace the placeholders in the function template with the input parameters and output variables
-        functionTemplate = functionTemplate.replace('functionName', 'your_function_name').replace('output', outputVariables.join(', '));
+        functionTemplate = functionTemplate.replace(/#output/g, this.outputType.name);
 
         return functionTemplate;
     }
 
     private generateParameterList(): string {
-        return this.inputTypes.map((input) => `${input.type}${input.objectStructure ? ` ${input.objectStructure}` : ''} ${input.name}`).join(', ');
+        return this.inputTypes.map((input) => `${input.name}`).join(', ');
     }
 }

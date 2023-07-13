@@ -1,8 +1,7 @@
-import { IInputType } from "./CodeGenerator";
+import { IParamType } from './CodeGenerator';
 
 export interface LanguageHandler {
-    inputTypes: IInputType[];
-    outputTypes: string[];
+    inputTypes: IParamType[];
+    outputType: IParamType;
     generate: () => string;
-
 }
