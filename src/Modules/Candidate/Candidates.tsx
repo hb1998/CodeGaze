@@ -6,7 +6,6 @@ import { Table } from 'antd';
 import { CandidateAPIService } from './services/Candidate.API';
 import { candidateColumn } from './CandidateColumn';
 import { Status } from '../../types/Models';
-import Editor from '../common/CodeEditor/Editor';
 
 const { Title } = Typography;
 
@@ -48,7 +47,7 @@ const Candidates = () => {
 
     return (
         <div style={{ padding: '10px' }}>
-            {/* <Title>Candidates</Title>
+            <Title>Candidates</Title>
             <Search
                 placeholder="Search Candidate"
                 style={{ width: 200, marginBottom: '10px' }}
@@ -61,8 +60,7 @@ const Candidates = () => {
                 size="small"
                 loading={loading}
                 style={{ overflowX: 'auto' }}
-            /> */}
-            <Editor />
+            />
         </div>
     );
 };

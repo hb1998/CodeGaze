@@ -1,24 +1,23 @@
 import { Button, Select } from 'antd';
-
 import CodeMirror from '@uiw/react-codemirror';
-import { ProgrammingLanguages } from './ProgrammingLanguages';
 
+import { ProgrammingLanguages } from './ProgrammingLanguages';
+import { languageNameType, languageObjectType } from './Editor';
 import classes from './Editor.module.css';
-import { languageType } from './Editor';
+
+interface ICodeEditorProps {
+    languageName: string;
+    handleLanguageChange: (lang: languageNameType) => void;
+    handleReset: () => void;
+    code: string;
+    codeEditorLang: languageObjectType['lang'];
+    handleCodeChange: (value: string) => void;
+}
 
 const options = Object.entries(ProgrammingLanguages).map(([key, value]) => ({
     label: value.name,
     value: value.name,
 }));
-
-interface ICodeEditorProps {
-    languageName: string;
-    handleLanguageChange: (lang: languageType['name']) => void;
-    handleReset: () => void;
-    code: string | undefined;
-    codeEditorLang: any;
-    handleCodeChange: (value: string) => void;
-}
 
 const CodeEditor = (props: ICodeEditorProps) => {
     return (
@@ -26,13 +25,16 @@ const CodeEditor = (props: ICodeEditorProps) => {
             <div className={classes.editorHeader}>
                 <Select
                     value={props.languageName}
-                    onChange={(value) => props.handleLanguageChange(value as languageType['name'])}
+                    onChange={(value) => props.handleLanguageChange(value as languageNameType)}
                     style={{ width: '7rem' }}
                     options={options}
                 />
-                <Button type="primary" onClick={props.handleReset}>
-                    Reset
-                </Button>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <Button type="primary" onClick={props.handleReset}>
+                        Reset
+                    </Button>
+                    <Button type="primary">Save</Button>
+                </div>
             </div>
             <CodeMirror
                 value={props.code}
