@@ -13,7 +13,7 @@ const Exam = () => {
             <header>
                 <Title>Assessments</Title>
                 <div style={{ padding: '5px' }}>
-                    <Tabs defaultActiveKey="1" onTabClick={(key) => navigate(key)}>
+                    <Tabs defaultActiveKey="open" onTabClick={(key) => navigate(key)}>
                         <TabPane tab="Open" tabKey="open" key="open"></TabPane>
                         <TabPane tab="Analytics" tabKey="analytics" key="analytics"></TabPane>
                     </Tabs>
