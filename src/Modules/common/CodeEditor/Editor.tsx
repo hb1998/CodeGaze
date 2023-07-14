@@ -19,8 +19,8 @@ const Editor = () => {
     const [selectEditorLanguage, setSelectEditorLanguage] = useState<languageObjectType>(
         ProgrammingLanguages.javaScript,
     );
-    const [code, setCode] = useState('');
-    const [output, setOutput] = useState('');
+    const [code, setCode] = useState<string>('');
+    const [output, setOutput] = useState<string>('');
 
     const handleLanguageChange = (selectedLanguage: languageNameType) => {
         switch (selectedLanguage) {
@@ -59,9 +59,9 @@ const Editor = () => {
                 setOutput(response.data.stdout);
                 if (response.data.stdout === null) {
                     setOutput(
-                        `${response.data.status.description}\n${response.data.stderr}\n${
-                            response.data.compile_output !== null ? response.data.compile_output : ''
-                        }`,
+                        `${response.data.status.description !== 'Accepted' ? response.data.status.description : ''}\n${
+                            response.data.stderr
+                        }\n${response.data.compile_output !== null ? response.data.compile_output : ''}`,
                     );
                 }
             })
@@ -86,7 +86,7 @@ const Editor = () => {
         };
         const generator = new CodeGenerator(languageSelected, inputTypes, outputTypes);
         const starterCode = generator.generateStarterCode();
-        setCode(starterCode);
+        starterCode !== undefined ? setCode(starterCode) : setCode('');
     };
 
     const handleReset = () => {
@@ -102,7 +102,14 @@ const Editor = () => {
     return (
         <div>
             <div className={classes.main}>
-                <SplitPane split="vertical" sizes={sizes} onChange={setSizes}>
+                <SplitPane
+                    split="vertical"
+                    sizes={sizes}
+                    onChange={setSizes}
+                    sashRender={() => {
+                        return <div></div>;
+                    }}
+                >
                     <Pane>
                         <QuestionContent />
                     </Pane>
