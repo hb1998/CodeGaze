@@ -5,6 +5,8 @@ import { useDispatch } from 'react-redux';
 import { IDispatch } from '../../store';
 
 import { Outlet, useNavigate } from 'react-router';
+import Admin from './Admin';
+import PersonalSettings from './PersonalSettings';
 const { TabPane } = Tabs;
 
 export default function Account() {
@@ -22,7 +24,7 @@ export default function Account() {
             <Layout>
                 <header>
                     <div style={{ padding: '5px' }}>
-                        <Tabs defaultActiveKey="1" onTabClick={(key) => navigate(key)}>
+                        <Tabs defaultActiveKey="admin" onTabClick={(key) => navigate(key)}>
                             <TabPane tab="Admin" tabKey="admin" key="admin"></TabPane>
                             <TabPane
                                 tab="Personal settings"
@@ -38,9 +40,4 @@ export default function Account() {
             </Layout>
         </>
     );
-}
-{
-    /* <Button type="primary" loading={isloading} onClick={logoutHandler}>
-Logout
-</Button> */
 }

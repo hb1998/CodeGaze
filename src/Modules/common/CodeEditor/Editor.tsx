@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Axios from 'axios';
 // SplitPane imports
 import SplitPane, { Pane } from 'split-pane-react';
@@ -9,19 +9,19 @@ import CodeEditor from './CodeEditor';
 import { ProgrammingLanguages } from './ProgrammingLanguages';
 import Output from './Output';
 import classes from './Editor.module.css';
+import { CodeGenerator, IParamType } from '../../CodeGeneration/CodeGenerator';
 
-type ISelectedEditorLanguage = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
+export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
+export type languageNameType = languageObjectType['name'];
 
 const Editor = () => {
-    const [selectEditorLanguage, setSelectEditorLanguage] = useState<ISelectedEditorLanguage>(
+    const [selectEditorLanguage, setSelectEditorLanguage] = useState<languageObjectType>(
         ProgrammingLanguages.javaScript,
     );
-    const [code, setCode] = useState('');
+    const [code, setCode] = useState<IParamType['name']>();
     const [output, setOutput] = useState('');
 
-    const handleLanguageChange = (
-        selectedLanguage: (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages]['name'],
-    ) => {
+    const handleLanguageChange = (selectedLanguage: languageNameType) => {
         switch (selectedLanguage) {
             case 'Python':
                 setSelectEditorLanguage(ProgrammingLanguages.python);
@@ -39,7 +39,12 @@ const Editor = () => {
                 setSelectEditorLanguage(ProgrammingLanguages.javaScript);
                 break;
         }
+        updateBoilerCode(selectedLanguage);
     };
+
+    useEffect(() => {
+        updateBoilerCode(selectEditorLanguage['name']);
+    }, [selectEditorLanguage]);
 
     const handleCodeChange = (value: string) => {
         setCode(value);
@@ -55,8 +60,14 @@ const Editor = () => {
                 console.log(response.data);
                 console.log(response.data.status.description);
                 if (response.data.stdout === null) {
-                    setOutput(response.data.status.description);
+                    setOutput(
+                        `${response.data.status.description}\n${response.data.stderr}\n${
+                            response.data.compile_output !== null ? response.data.compile_output : ''
+                        }`,
+                    );
                 }
+                console.log(response.data.stderr);
+                console.log(response.data.compile_output);
             })
             .catch((error) => {
                 if (error.response && error.response.data) {
@@ -68,8 +79,25 @@ const Editor = () => {
             });
     };
 
+    const updateBoilerCode = (languageSelected: languageNameType) => {
+        const inputTypes: IParamType[] = [
+            { type: 'number', name: 'n' },
+            { type: 'arrayOfNumber', name: 'nums' },
+        ];
+        const outputTypes: IParamType = {
+            type: 'number',
+            name: 'int',
+        };
+
+        const generator = new CodeGenerator(languageSelected, inputTypes, outputTypes);
+
+        const starterCode = generator.generateStarterCode();
+
+        setCode(starterCode);
+    };
+
     const handleReset = () => {
-        setCode('');
+        updateBoilerCode(selectEditorLanguage['name']);
         setOutput('');
     };
 

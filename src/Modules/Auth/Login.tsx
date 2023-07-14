@@ -8,6 +8,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import LoginForm from './LoginForm';
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
+import './styles/Auth.css'
+
+
 const Login = () => {
     const dispatch = useDispatch<IDispatch>();
     const [loading, setLoading] = useState(false);
