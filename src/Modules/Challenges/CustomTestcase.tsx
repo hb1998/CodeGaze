@@ -1,9 +1,9 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Form, Button, Input, Space } from 'antd';
 import { useContext } from 'react';
-import { InputContext } from './Validation';
+import { InputContext } from './InputOutputForm';
 import { validateInputBasedOnOption } from './ValidateInput';
-import { TestcaseContext } from './Validation';
+import { TestcaseContext } from './InputOutputForm';
 
 function CustomTestcase({ len }: any) {
     const context = useContext(InputContext);
