@@ -1,5 +1,5 @@
 import { Layout, Menu, Popover } from 'antd';
-import { Routes, Route, Link, Navigate } from 'react-router-dom';
+import { Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import Exam from './Modules/Exam/Exam';
 import Challenges from './Modules/Challenges/Challenges';
 import Dashboard from './Modules/Dashboard/Dashboard';
@@ -12,12 +12,8 @@ import './App.css';
 import { useSelector } from 'react-redux';
 import { IRootState } from './store';
 import Editor from './Modules/common/CodeEditor/Editor';
-import { Redirect } from 'react-router-dom';
-import Auth from './Modules/Auth/Auth';
 import ProtectedRoute from './Routes/ProtectedRoute';
 import Account from './Modules/Account/Account';
-import { Dropdown } from 'antd';
-import Icon from '@ant-design/icons/lib/components/Icon';
 import NavItem from './Modules/Account/NavItem';
 import Admin from './Modules/Account/Admin';
 import PersonalSettings from './Modules/Account/PersonalSettings';
@@ -30,10 +26,13 @@ const getProtectedRoute = (component: React.ReactNode) => {
 };
 
 const Home = () => {
-    const { isLoggedIn } = useSelector((state: IRootState) => state.session);
+    const session = useSelector((state: IRootState) => state.session);
+    const location = useLocation();
+    const route = location.pathname.split('/')[1];
+    const showHeader = route !== 'Login' && session
     return (
         <Layout className="main-layout">
-            {isLoggedIn && (
+            {showHeader && (
                 <Header>
                     <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['dashboard']}>
                         <Menu.Item key="dashboard">
