@@ -48,7 +48,7 @@ function LoginForm(props: IDataProps) {
                     <img src={logo} alt="" style={{ width: '150px', height: '80px' }} />
                 </div>
                 <Row justify="center" align="middle">
-                    <Col span={12} style={{ width: '500px' }}>
+                    <Col className='login-form-container' span={12} >
                         <Form name="login-form" onFinish={onFinish}>
                             <Form.Item
                                 name="Email"
@@ -71,20 +71,18 @@ function LoginForm(props: IDataProps) {
                             >
                                 <Input.Password placeholder="Enter your password" />
                             </Form.Item>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <Form.Item>
-                                    <Button type="primary" htmlType="submit" loading={props.loading}>
-                                        {props.action}
-                                    </Button>
-                                </Form.Item>
+                            <div  >
+                                <Button size='large' type="primary" htmlType="submit" loading={props.loading}>
+                                    {props.action}
+                                </Button>
 
-                                <Form.Item>
+                                {/* <Form.Item>
                                     <Link to="/RecoverUser">
                                         <Button type="primary" htmlType="button">
                                             Forgot password
                                         </Button>
                                     </Link>
-                                </Form.Item>
+                                </Form.Item> */}
                             </div>
                         </Form>
                     </Col>

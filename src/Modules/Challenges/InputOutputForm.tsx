@@ -10,19 +10,19 @@ const { Option } = Select;
 type AppContextState = string[];
 const appCtxDefaultValue = {
     input: [] as AppContextState,
-    setInput: (input: AppContextState) => {}, // noop default callback
+    setInput: (input: AppContextState) => { }, // noop default callback
 };
 
 export const InputContext = React.createContext(appCtxDefaultValue);
-export const TestcaseContext=React.createContext({
+export const TestcaseContext = React.createContext({
     inputValue: '',
     outputValue: '',
-  })
+})
 
 export interface IProviderProps {
     children?: any;
 }
-const Validation: React.FC = () => {
+const InputOutputForm: React.FC = () => {
     const [input, setInput] = useState<AppContextState>([]);
     const [inputValue, setInputValue] = useState('');
     const [outputValue, setOutputValue] = useState('');
@@ -36,10 +36,10 @@ const Validation: React.FC = () => {
                         <Space style={{ display: 'flex', marginBottom: 8, marginTop: 8 }} align="baseline">
                             <Form.Item name="inputType">
                                 <Select placeholder="Array Of Integers" allowClear value={inputValue} onChange={setInputValue} >
-                                <Option value="integer">Integer</Option>
-                                <Option value="string">String</Option>
-                                <Option value="array of integers">Array Of Integer</Option>
-                                <Option value="array of strings">Array Of Strings</Option>
+                                    <Option value="integer">Integer</Option>
+                                    <Option value="string">String</Option>
+                                    <Option value="array of integers">Array Of Integer</Option>
+                                    <Option value="array of strings">Array Of Strings</Option>
                                 </Select>
                             </Form.Item>
                             <Form.Item name="InputParam" rules={[{ required: true, message: 'Missing InputParam' }]}>
@@ -51,12 +51,12 @@ const Validation: React.FC = () => {
                     <Form.Item>
                         <Text code>Output type</Text>
                         <Space style={{ display: 'flex', marginBottom: 8, marginTop: 8 }} align="baseline">
-                        <Form.Item name="outputType">
+                            <Form.Item name="outputType">
                                 <Select placeholder="Array Of Integer" allowClear value={outputValue} onChange={setOutputValue} >
-                                <Option value="integer">Integer</Option>
-                                <Option value="string">String</Option>
-                                <Option value="array of integers">Array Of Integer</Option>
-                                <Option value="array of strings">Array Of Strings</Option>
+                                    <Option value="integer">Integer</Option>
+                                    <Option value="string">String</Option>
+                                    <Option value="array of integers">Array Of Integer</Option>
+                                    <Option value="array of strings">Array Of Strings</Option>
                                 </Select>
                             </Form.Item>
                             <Form.Item name="outputParam" rules={[{ required: true, message: 'Missing OutputParam' }]}>
@@ -67,14 +67,14 @@ const Validation: React.FC = () => {
                 </Space>
 
                 <label>Required test cases</label>
-                <Space style={{ display: 'flex', marginTop: 8}} align="baseline">
+                <Space style={{ display: 'flex', marginTop: 8 }} align="baseline">
                     <Form.Item>
                         <Space align="baseline">
                             <Form.Item
                                 name="inputValue"
                                 rules={[{ validator: validateInputBasedOnOption(inputValue) }]}
                             >
-                                <Input placeholder="Sample input 0"  />
+                                <Input placeholder="Sample input 0" />
                             </Form.Item>
                         </Space>
                     </Form.Item>
@@ -89,11 +89,11 @@ const Validation: React.FC = () => {
                         </Space>
                     </Form.Item>
                 </Space>
-                <TestcaseContext.Provider value={{inputValue,outputValue}}>
-                        <DynamicTestcase />
+                <TestcaseContext.Provider value={{ inputValue, outputValue }}>
+                    <DynamicTestcase />
                 </TestcaseContext.Provider>
             </Form.Item>
         </InputContext.Provider>
     );
 };
-export default Validation;
+export default InputOutputForm;
