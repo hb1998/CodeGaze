@@ -15,6 +15,7 @@ import Editor from './Modules/common/CodeEditor/Editor';
 import ProtectedRoute from './Routes/ProtectedRoute';
 import Account from './Modules/Account/Account';
 import NavItem from './Modules/Account/NavItem';
+import OpenAssessment from './Modules/Exam/Open/OpenAssessment';
 import Admin from './Modules/Account/Admin';
 import PersonalSettings from './Modules/Account/PersonalSettings';
 import Recover from './Modules/Auth/Recover';
@@ -66,7 +67,12 @@ const Home = () => {
                         <Route path="/updateUser" Component={Update} />
 
                         <Route path="dashboard" element={getProtectedRoute(<Dashboard />)} />
-
+                        {/* <Route path="/assessments/:id/view" element={getProtectedRoute(<ChallengesAssessment />)} />
+                        <Route
+                            path="/assessments/:id/edit"
+                            element={getProtectedRoute(<ChallengesAssessment isEditMode={true} />)} */}
+                        {/* /> */}
+                        {/* <Route path='/assessments/:id/challengeSettings' element={getProtectedRoute(<SettingsAssessments  />)}/> */}
                         <Route path="assessments" element={getProtectedRoute(<Exam />)}>
                             <Route index path="open" element={getProtectedRoute(<Open />)} />
                             <Route path="analytics" element={getProtectedRoute(<Analytics />)} />
@@ -79,6 +85,10 @@ const Home = () => {
                             <Route path="personal_settings" element={getProtectedRoute(<PersonalSettings />)} />
                         </Route>
                         <Route path="/challenges/:id" element={getProtectedRoute(<Editor />)} />
+                        <Route
+                            path="/assessments/open/openAssessment"
+                            element={getProtectedRoute(<OpenAssessment />)}
+                        ></Route>
                         <Route path="/editor" element={<Editor />} />
                         <Route path="/candidateAssessment" element={<CandidateAssessment />} />
                     </Routes>
