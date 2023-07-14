@@ -1,7 +1,7 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Form, Button, Input, Space, Select } from 'antd';
 import { useState, useContext } from 'react';
-import { InputContext } from './Validation';
+import { InputContext } from './InputOutputForm';
 
 const {Option} = Select
 

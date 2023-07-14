@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'antd';
 import { ControlOutlined, ReadFilled } from '@ant-design/icons';
 import ChallengesTable from './ChallengesTable';
-import { CollectionCreateForm } from './FormCollection';
+import { ChallengeForm } from './ChallengeForm';
 import { Card, Col, Row, Typography, List } from 'antd';
 const { Title } = Typography;
 
@@ -27,7 +27,7 @@ const Challenges: React.FC = () => {
             >
               <p>Challenges that an be taken in many languages and requires candidate to to returncorrect output</p>
               <Button type="primary" onClick={() => {setOpen(true);}}>Create</Button>
-              <CollectionCreateForm
+              <ChallengeForm
                 open={open}
                 onCreate={onCreate}
                 onCancel={() => {
