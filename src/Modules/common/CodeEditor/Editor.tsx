@@ -15,11 +15,12 @@ export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof Prog
 export type languageNameType = languageObjectType['name'];
 
 const Editor = () => {
+    const [sizes, setSizes] = useState([300, '100%', '25%']);
     const [selectEditorLanguage, setSelectEditorLanguage] = useState<languageObjectType>(
         ProgrammingLanguages.javaScript,
     );
-    const [code, setCode] = useState<IParamType['name']>();
-    const [output, setOutput] = useState('');
+    const [code, setCode] = useState<string>('');
+    const [output, setOutput] = useState<string>('');
 
     const handleLanguageChange = (selectedLanguage: languageNameType) => {
         switch (selectedLanguage) {
@@ -39,7 +40,6 @@ const Editor = () => {
                 setSelectEditorLanguage(ProgrammingLanguages.javaScript);
                 break;
         }
-        updateBoilerCode(selectedLanguage);
     };
 
     useEffect(() => {
@@ -57,17 +57,13 @@ const Editor = () => {
         })
             .then((response) => {
                 setOutput(response.data.stdout);
-                console.log(response.data);
-                console.log(response.data.status.description);
                 if (response.data.stdout === null) {
                     setOutput(
-                        `${response.data.status.description}\n${response.data.stderr}\n${
-                            response.data.compile_output !== null ? response.data.compile_output : ''
-                        }`,
+                        `${response.data.status.description !== 'Accepted' ? response.data.status.description : ''}\n${
+                            response.data.stderr
+                        }\n${response.data.compile_output !== null ? response.data.compile_output : ''}`,
                     );
                 }
-                console.log(response.data.stderr);
-                console.log(response.data.compile_output);
             })
             .catch((error) => {
                 if (error.response && error.response.data) {
@@ -88,12 +84,9 @@ const Editor = () => {
             type: 'number',
             name: 'int',
         };
-
         const generator = new CodeGenerator(languageSelected, inputTypes, outputTypes);
-
         const starterCode = generator.generateStarterCode();
-
-        setCode(starterCode);
+        starterCode !== undefined ? setCode(starterCode) : setCode('');
     };
 
     const handleReset = () => {
@@ -105,12 +98,18 @@ const Editor = () => {
         console.log('Submitted code:', code);
         console.log('Selected language:', selectEditorLanguage.name);
     };
-    const [sizes, setSizes] = useState([300, '100%', '25%']);
 
     return (
         <div>
             <div className={classes.main}>
-                <SplitPane split="vertical" sizes={sizes} onChange={setSizes}>
+                <SplitPane
+                    split="vertical"
+                    sizes={sizes}
+                    onChange={setSizes}
+                    sashRender={() => {
+                        return <div></div>;
+                    }}
+                >
                     <Pane>
                         <QuestionContent />
                     </Pane>

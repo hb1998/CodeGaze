@@ -35,8 +35,8 @@ export const candidateColumn = [
         title: 'Name',
         dataIndex: 'name',
         key: 'id',
-        sorter: (a, b) => a.name.length - b.name.length,
-        sortDirections: ['descend'],
+        sorter: (a, b) => a.name.localeCompare(b.name),
+        sortDirections: ['descend', 'ascend'],
     },
     {
         title: 'Email',

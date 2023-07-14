@@ -19,6 +19,7 @@ import Admin from './Modules/Account/Admin';
 import PersonalSettings from './Modules/Account/PersonalSettings';
 import Recover from './Modules/Auth/Recover';
 import Update from './Modules/Auth/Update';
+import CandidateAssessment from './Modules/CandidateAssessment/CandidateAssessment';
 const { Header, Content } = Layout;
 
 const getProtectedRoute = (component: React.ReactNode) => {
@@ -79,6 +80,7 @@ const Home = () => {
                         </Route>
                         <Route path="/challenges/:id" element={getProtectedRoute(<Editor />)} />
                         <Route path="/editor" element={<Editor />} />
+                        <Route path="/candidateAssessment" element={<CandidateAssessment />} />
                     </Routes>
                 </div>
             </Content>
