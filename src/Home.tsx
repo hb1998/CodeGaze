@@ -17,9 +17,9 @@ import Editor from './Modules/common/CodeEditor/Editor';
 import Auth from './Modules/Auth/Auth';
 import ProtectedRoute from './Routes/ProtectedRoute';
 import Account from './Modules/Account/Account';
-import { Dropdown } from 'antd';
-import Icon from '@ant-design/icons/lib/components/Icon';
 import NavItem from './Modules/Account/NavItem';
+import OpenAssessment from './Modules/Exam/Open/OpenAssessment';
+
 const { Header, Content } = Layout;
 
 const getProtectedRoute = (component: React.ReactNode) => {
@@ -61,7 +61,12 @@ const Home = () => {
                         <Route path="/" Component={Auth} />
                         <Route path="Login" Component={Login} />
                         <Route path="dashboard" element={getProtectedRoute(<Dashboard />)} />
-
+                        {/* <Route path="/assessments/:id/view" element={getProtectedRoute(<ChallengesAssessment />)} />
+                        <Route
+                            path="/assessments/:id/edit"
+                            element={getProtectedRoute(<ChallengesAssessment isEditMode={true} />)} */}
+                        {/* /> */}
+                        {/* <Route path='/assessments/:id/challengeSettings' element={getProtectedRoute(<SettingsAssessments  />)}/> */}
                         <Route path="assessments" element={getProtectedRoute(<Exam />)}>
                             <Route index path="open" element={getProtectedRoute(<Open />)} />
                             <Route path="analytics" element={getProtectedRoute(<Analytics />)} />
@@ -71,6 +76,10 @@ const Home = () => {
                         <Route path="/candidates" element={getProtectedRoute(<Candidates />)} />
                         <Route path="/account" element={getProtectedRoute(<Account />)} />
                         <Route path="/challenges/:id" element={getProtectedRoute(<Editor />)} />
+                        <Route
+                            path="/assessments/open/openAssessment"
+                            element={getProtectedRoute(<OpenAssessment />)}
+                        ></Route>
                     </Routes>
                 </div>
             </Content>
