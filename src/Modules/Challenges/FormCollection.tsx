@@ -5,12 +5,12 @@ import Validation from './Validation';
 
 const { Option } = Select;
 
+
 interface IValues {
     title: string;
     description: string;
     modifier: string;
 }
-
 interface ICollectionCreateFormProps {
     open: boolean;
     onCreate: (values: IValues) => void;
@@ -44,26 +44,27 @@ export const CollectionCreateForm: React.FC<ICollectionCreateFormProps> = ({ ope
                 <Form
                     form={form}
                     autoComplete="off"
-                    layout="vertical"
                     name="form_in_modal"
+                    
                     initialValues={{ modifier: 'public' }}
+                    layout="vertical"
                 >
                     <Form.Item name="Format Date">
-                        <Input placeholder="Format Date" style={{ width: 825 }} />
+                        <Input placeholder="Format Date" />
                     </Form.Item>
                     <Form.Item name="difficulty" label="Difficult Level">
-                        <Select placeholder="Easy" allowClear style={{ width: 825 }}>
+                        <Select placeholder="Easy" allowClear >
                             <Option value="easy">Easy</Option>
                             <Option value="medium">Medium</Option>
                             <Option value="hard">Hard</Option>
                         </Select>
                     </Form.Item>
+    
                     <Form.Item name="Short description" label="Short description">
-                        <Input style={{ width: 825 }} />
+                        <Input  />
                     </Form.Item>
                     <Form.Item name="editor" initialValue={value}>
                         <MDEditor
-                            style={{ width: 825 }}
                             value={value}
                             onChange={(val) => {
                                 setValue(val!);
