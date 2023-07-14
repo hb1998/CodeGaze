@@ -3,7 +3,9 @@ export const validateInputBasedOnOption = (param: any) => (_: any, value: any, c
         callback('Please enter a valid integer');
     } else if (param === 'string' && (!value || typeof value !== 'string')) {
         callback('Please enter a valid string');
-    } else if (param === 'array of integers') {
+    } else if (param === 'boolean' && (value !== true && value !== false)) {
+        callback('Please enter a valid boolean value');
+    }else if (param === 'array of integers') {
         try {
             const parsedValue = JSON.parse(value);
 
