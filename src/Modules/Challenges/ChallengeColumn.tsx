@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Difficulty,difficultyMap } from '../../types/Models';
 import { DeleteOutlined, EditFilled, SelectOutlined } from '@ant-design/icons';
+import Edit from './UpdateChallenge';
+import { Space } from 'antd';
 
 interface Item {
   id: string;
@@ -49,43 +51,43 @@ export const challengeColumn = [
         },
       ],
     },
-
-    
-    {
-      title: 'Difficulty',
-      dataIndex: ['challenge', 0, 'difficulty'],
-      key: 'id',
-      render: (difficulty: Difficulty) => difficultyMap[difficulty],
-      filters: [
-          {
-              text: 'Easy',
-              value: Difficulty.easy.toString(),
-          },
-          {
-              text: 'Medium',
-              value: Difficulty.medium.toString(),
-          },
-          {
-            text: 'Hard',
-            value: Difficulty.hard.toString(),
+  {
+    title: 'Difficulty',
+    dataIndex: ['challenge', 0, 'difficulty'],
+    key: 'id',
+    render: (difficulty: Difficulty) => difficultyMap[difficulty],
+    filters: [
+        {
+            text: 'Easy',
+            value: Difficulty.easy.toString(),
         },
-      ],
-      // onFilter: (value, record) => {
-      //     const filteredChallenges = record.challenge.filter((challenge) => {
-      //         return challenge.status.toString() === value;
-      //     });
-      //     return filteredChallenges.length > 0;
-      // },
-  },
+        {
+            text: 'Medium',
+            value: Difficulty.medium.toString(),
+        },
+        {
+          text: 'Hard',
+          value: Difficulty.hard.toString(),
+      },
+    ],
+    onFilter: (value, record) => {
+        const filteredAssessments = record.challenge.filter((assessment) => {
+            return assessment.status.toString() === value;
+        });
+        return filteredAssessments.length > 0;
+    },
+},
     {
       title: 'Actions',
       dataIndex: 'actions',
       render: (_: any, record: Item) => {
         return (
           <>
+            <Space align='baseline'>
             <Link to={`/challenges/${record.id}`} ><SelectOutlined style={{color:"blue",marginRight:12}}/></Link>
-            <Link to={`/challenges/edit/${record.id}`}><EditFilled /></Link>
+            <Edit param={record.id}/>
             <DeleteOutlined style={{color:"red",marginLeft:12}} />
+            </Space>
           </>
         );
       },
