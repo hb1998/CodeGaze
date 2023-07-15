@@ -1,26 +1,27 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { IRootModel } from '../store/IModels';
 import { useState } from 'react';
 import { Spin } from 'antd';
+import { IRootState } from '../store';
 export interface IWrapperprops {
     children: React.ReactNode;
 }
 const ProtectedRoute: React.FC<IWrapperprops> = ({ children }) => {
-    const authState: boolean = useSelector((state: IRootModel) => state.session.isLoggedIn);
+    const session = useSelector((state: IRootState) => state.session);
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
 
+
     useEffect(() => {
-        if (!authState) {
+        if (!session) {
             navigate('/');
         } else {
             setIsLoading(false);
         }
-    }, [authState, isLoading]);
+    }, [session, isLoading, navigate]);
 
-    if (isLoading) {
+    if (session.loading) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                 <Spin size="large" />

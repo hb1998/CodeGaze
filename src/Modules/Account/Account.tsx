@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
-import { Button, Col, Layout, Row } from 'antd';
+import { Button, Col, Layout, Row, Tabs } from 'antd';
 import { Content, Header } from 'antd/es/layout/layout';
 import { useDispatch } from 'react-redux';
 import { IDispatch } from '../../store';
+
+import { Outlet, useNavigate } from 'react-router';
+import Admin from './Admin';
+import PersonalSettings from './PersonalSettings';
+const { TabPane } = Tabs;
 
 export default function Account() {
     const dispatch = useDispatch<IDispatch>();
@@ -12,25 +17,27 @@ export default function Account() {
         dispatch.session.update({ isLoggedIn: false, session: {} });
         setLoading(false);
     };
-    return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '90vh' }}>
-            <Layout>
-                <Content>
-                    <Row justify="center">
-                        <Col span={8}>
-                            <div style={{ textAlign: 'center' }}>
-                                <h2>User Name</h2>
-                                <p>Access Status</p>
-                                <Button type="primary" loading={isloading} onClick={logoutHandler}>
-                                    Logout
-                                </Button>
-                            </div>
-                        </Col>
-                    </Row>
+    const navigate = useNavigate();
 
-                    {/* Your content goes here */}
-                </Content>
+    return (
+        <>
+            <Layout>
+                <header>
+                    <div style={{ padding: '5px' }}>
+                        <Tabs defaultActiveKey="admin" onTabClick={(key) => navigate(key)}>
+                            <TabPane tab="Admin" tabKey="admin" key="admin"></TabPane>
+                            <TabPane
+                                tab="Personal settings"
+                                tabKey="personal settings"
+                                key="personal_settings"
+                            ></TabPane>
+                        </Tabs>
+                        <Content>
+                            <Outlet />
+                        </Content>
+                    </div>
+                </header>
             </Layout>
-        </div>
+        </>
     );
 }

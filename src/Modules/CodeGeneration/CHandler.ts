@@ -1,32 +1,39 @@
-import { IInputType } from "./CodeGenerator";
-import { LanguageHandler } from "./Handler.types";
+import { IParamType } from './CodeGenerator';
+import { LanguageHandler } from './Handler.types';
 
 export class CHandler implements LanguageHandler {
-    inputTypes: IInputType[];
-    outputTypes: string[];
+    inputTypes: IParamType[];
+    outputType: IParamType;
 
-    constructor(inputTypes: IInputType[], outputTypes: string[]) {
+    constructor(inputTypes: IParamType[], outputType: IParamType) {
         this.inputTypes = inputTypes;
-        this.outputTypes = outputTypes;
+        this.outputType = outputType;
     }
 
     generate(): string {
-        let functionTemplate = `def functionName(${this.generateParameterList()}):
-    # TODO: Implement the function logic here
+        let functionTemplate = `#include <stdio.h>
 
-    # Return the output
-    return output`;
+${this.generateParameterList()} {
+// TODO: Implement the function logic here
+// Return the output
+}
 
-        // Create an array of output variable names based on output types
-        const outputVariables = this.outputTypes.map((type, index) => `output${index + 1}`);
 
-        // Replace the placeholders in the function template with the input parameters and output variables
-        functionTemplate = functionTemplate.replace('functionName', 'your_function_name').replace('output', outputVariables.join(', '));
+int main() {
+// Call the solve function with sample input and print the output
+printf("%d", solve(0, 0));
+return 0;
 
+}`;
+
+        // Replace the placeholders in the function template with the input parameters and output variable
+        functionTemplate = functionTemplate.replace(/#output/g, this.outputType.name);
         return functionTemplate;
     }
 
     private generateParameterList(): string {
-        return this.inputTypes.map((input) => `${input.type}${input.objectStructure ? ` ${input.objectStructure}` : ''} ${input.name}`).join(', ');
+        return this.inputTypes
+            .map((input) => `${input.type}${input.objectStructure ? ` ${input.objectStructure}` : ''} ${input.name}`)
+            .join(', ');
     }
 }

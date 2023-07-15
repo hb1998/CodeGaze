@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import Axios from 'axios';
+import  { useEffect } from 'react';
 import Home from './Home';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { supabase } from './Modules/API/supabase';
@@ -7,18 +6,36 @@ import { connect } from 'react-redux';
 import { IDispatch, IRootState } from './store';
 
 type IAppProps = TMapState & TMapDispatch;
-const AppComponent = (props: IAppProps) => {
+const AppComponent = ({
+    updateSession
+}: IAppProps) => {
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            updateSession(session)
+        })
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+            updateSession(session)
+        })
+
+        return () => subscription.unsubscribe()
+    }, [updateSession])
+
     return (
         <Router>
             <Home />
         </Router>
     );
 };
-const mapDispatch = (dispatch: IDispatch) => ({
-    updateSession: dispatch.session.update,
-});
+
 const mapState = (state: IRootState) => ({
     getSession: state.session,
+});
+
+const mapDispatch = (dispatch: IDispatch) => ({
+    updateSession: dispatch.session.update,
 });
 
 type TMapState = ReturnType<typeof mapState>;

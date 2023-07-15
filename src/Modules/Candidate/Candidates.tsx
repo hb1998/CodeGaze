@@ -1,13 +1,11 @@
 import { useState, useEffect, ChangeEvent } from 'react';
-import { CandidateAPIService } from './services/Candidate.API';
 import Search from 'antd/es/input/Search';
 import { Typography } from 'antd';
-import { candidateColumn } from './CandidateColumn';
 import { Table } from 'antd';
-import { Status } from '../../types/Models';
 
-// Code Editor Main File
-import Editor from '../common/CodeEditor/Editor';
+import { CandidateAPIService } from './services/Candidate.API';
+import { candidateColumn } from './CandidateColumn';
+import { Status } from '../../types/Models';
 
 const { Title } = Typography;
 
@@ -63,7 +61,6 @@ const Candidates = () => {
                 loading={loading}
                 style={{ overflowX: 'auto' }}
             />
-            <Editor />
         </div>
     );
 };

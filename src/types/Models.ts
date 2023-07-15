@@ -31,12 +31,9 @@ export enum Difficulty{
 }
 
 export const  difficultyMap =  {
-
-  [Difficulty.easy]: 'easy',
-
-  [Difficulty.medium]: 'medium',
-
-  [Difficulty.hard]: 'hard'
+  [Difficulty.easy]: 'Easy',
+  [Difficulty.medium]: 'Medium',
+  [Difficulty.hard]: 'Hard'
 
 }
 

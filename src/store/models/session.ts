@@ -1,26 +1,18 @@
-export interface IToken {
-  access_token: string;
-  expires_at: number;
-  expires_in: number;
-  refresh_token: string;
-  token_type: string;
-}
+import { Session } from "@supabase/supabase-js";
 
-export interface ISession{
-  isLoggedIn:boolean
-  session:IToken
-}
 
+interface SessionWithExtras extends Session {
+  loading: boolean;
+}
 
 const userSession = {
-  state: <ISession>{
-      isLoggedIn: false,
-      session:{}
+  state: <SessionWithExtras>{
+    loading: true,
   },
   reducers: {
-      update(state: ISession, payload: Partial<ISession>): ISession {
-          return { ...state, ...payload };
-      }
+    update(state: SessionWithExtras, payload: Partial<SessionWithExtras>): SessionWithExtras {
+      return { ...state, ...payload, loading: false };
+    }
   },
 };
 

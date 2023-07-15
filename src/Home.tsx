@@ -1,23 +1,26 @@
-import { Layout, Menu } from 'antd';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Layout, Menu, Popover } from 'antd';
+import { Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import Exam from './Modules/Exam/Exam';
 import Challenges from './Modules/Challenges/Challenges';
 import Dashboard from './Modules/Dashboard/Dashboard';
 import Candidates from './Modules/Candidate/Candidates';
 import { UserOutlined } from '@ant-design/icons';
 import Login from './Modules/Auth/Login';
-import Register from './Modules/Auth/Register';
 import Open from './Modules/Exam/Open/Open';
 import Analytics from './Modules/Exam/Analytics/Analytics';
 import './App.css';
 import { useSelector } from 'react-redux';
 import { IRootState } from './store';
 import Editor from './Modules/common/CodeEditor/Editor';
-// import Edit from './Modules/Challenges/Edit';
-import Auth from './Modules/Auth/Auth';
 import ProtectedRoute from './Routes/ProtectedRoute';
 import Account from './Modules/Account/Account';
-
+import NavItem from './Modules/Account/NavItem';
+import OpenAssessment from './Modules/Exam/Open/OpenAssessment';
+import Admin from './Modules/Account/Admin';
+import PersonalSettings from './Modules/Account/PersonalSettings';
+import Recover from './Modules/Auth/Recover';
+import Update from './Modules/Auth/Update';
+import CandidateAssessment from './Modules/CandidateAssessment/CandidateAssessment';
 const { Header, Content } = Layout;
 
 const getProtectedRoute = (component: React.ReactNode) => {
@@ -25,11 +28,13 @@ const getProtectedRoute = (component: React.ReactNode) => {
 };
 
 const Home = () => {
-    const { isLoggedIn } = useSelector((state: IRootState) => state.session);
-
+    const session = useSelector((state: IRootState) => state.session);
+    const location = useLocation();
+    const route = location.pathname.split('/')[1];
+    const showHeader = route !== 'Login' && session
     return (
         <Layout className="main-layout">
-            {isLoggedIn && (
+            {showHeader && (
                 <Header>
                     <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['dashboard']}>
                         <Menu.Item key="dashboard">
@@ -45,10 +50,10 @@ const Home = () => {
                             <Link to={'/candidates'}>Candidates</Link>
                         </Menu.Item>
                         <Menu.Item key="account" style={{ marginLeft: 'auto' }}>
-                            <Link to={'/account'}>
+                            <Popover content={<NavItem />} title="Account Details" trigger="click">
                                 Lumel &nbsp;
                                 <UserOutlined />
-                            </Link>
+                            </Popover>
                         </Menu.Item>
                     </Menu>
                 </Header>
@@ -56,11 +61,18 @@ const Home = () => {
             <Content style={{ padding: '0 50px' }}>
                 <div className="site-layout-content">
                     <Routes>
-                        <Route path="/" Component={Auth} />
+                        <Route path="/" element={<Navigate to="/Login" />} />
                         <Route path="Login" Component={Login} />
-                        <Route path="Register" Component={Register} />
-                        <Route path="dashboard" element={getProtectedRoute(<Dashboard />)} />
+                        <Route path="/RecoverUser" Component={Recover} />
+                        <Route path="/updateUser" Component={Update} />
 
+                        <Route path="dashboard" element={getProtectedRoute(<Dashboard />)} />
+                        {/* <Route path="/assessments/:id/view" element={getProtectedRoute(<ChallengesAssessment />)} />
+                        <Route
+                            path="/assessments/:id/edit"
+                            element={getProtectedRoute(<ChallengesAssessment isEditMode={true} />)} */}
+                        {/* /> */}
+                        {/* <Route path='/assessments/:id/challengeSettings' element={getProtectedRoute(<SettingsAssessments  />)}/> */}
                         <Route path="assessments" element={getProtectedRoute(<Exam />)}>
                             <Route index path="open" element={getProtectedRoute(<Open />)} />
                             <Route path="analytics" element={getProtectedRoute(<Analytics />)} />
@@ -68,8 +80,17 @@ const Home = () => {
 
                         <Route path="/challenges" element={getProtectedRoute(<Challenges />)} />
                         <Route path="/candidates" element={getProtectedRoute(<Candidates />)} />
-                        <Route path="/account" element={getProtectedRoute(<Account />)} />
-                        <Route path="/challenges/:id" element={getProtectedRoute(<Editor />)}/>
+                        <Route path="/account" element={getProtectedRoute(<Account />)}>
+                            <Route index path="admin" element={getProtectedRoute(<Admin />)} />
+                            <Route path="personal_settings" element={getProtectedRoute(<PersonalSettings />)} />
+                        </Route>
+                        <Route path="/challenges/:id" element={getProtectedRoute(<Editor />)} />
+                        <Route
+                            path="/assessments/open/openAssessment"
+                            element={getProtectedRoute(<OpenAssessment />)}
+                        ></Route>
+                        <Route path="/editor" element={<Editor />} />
+                        <Route path="/candidateAssessment" element={<CandidateAssessment />} />
                     </Routes>
                 </div>
             </Content>
