@@ -7,11 +7,14 @@ import { Outlet } from 'react-router';
 import { Link } from 'react-router-dom';
 import Title from 'antd/es/typography/Title';
 import { ExamAPIService } from '../services/Exam.api';
+import { useSelector } from 'react-redux';
+import { IRootState } from '../../../store';
 
 type ExamQueryResult = Awaited<ReturnType<typeof ExamAPIService.getAll>>;
 
 const Open = () => {
 
+    const session = useSelector((state: IRootState) => state.session);
     const [exams, setExams] = useState<ExamQueryResult>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [newExamLoading, setNewExamLoading] = useState<boolean>(false);
@@ -19,7 +22,6 @@ const Open = () => {
     const fetchExams = async () => {
         try {
             const data = await ExamAPIService.getAll();
-            console.log(data)
             setExams(data);
             setLoading(false);
         } catch (error) {
@@ -37,6 +39,7 @@ const Open = () => {
         try {
             await ExamAPIService.create({
                 name: `Technical Assessment ${exams.length + 1}`,
+                created_by: session?.user?.email || '',
             });
             await fetchExams();
         } catch (error) {
