@@ -5,6 +5,15 @@ import { supabase } from '../../API/supabase';
 
 export class CandidateAssessmenmtAPIService {
 
+
+    static async getAll() {
+        const { data, error } = await supabase.from('assessment').select('*, candidate(*), exam(*)');
+        if (error) {
+            throw error;
+        }
+        return data || [];
+    }
+
     static async create(payload: Pick<CandidateInsertDto, 'emailId' | 'name'> & { exam_id: number }) {
         const response = await supabase.from('candidate').insert({
             emailId: payload.emailId,
@@ -74,5 +83,6 @@ export class CandidateAssessmenmtAPIService {
         }
         return data?.[0];
     }
+
 
 }
