@@ -10,7 +10,7 @@ export class ChallengeAPIService {
         return data || [];
     }
 
-    static async getById(id: number) {
+    static async getById(id: string) {
         const { data, error } = await supabase.from('challenge').select('*').eq('id', id).single();
         if (error) {
             throw error;

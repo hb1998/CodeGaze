@@ -85,6 +85,7 @@ const Home = () => {
                             <Route path="personal_settings" element={getProtectedRoute(<PersonalSettings />)} />
                         </Route>
                         <Route path="/challenges/:id" element={getProtectedRoute(<Editor />)} />
+                        
                         <Route
                             path="/assessments/open/openAssessment"
                             element={getProtectedRoute(<OpenAssessment />)}
