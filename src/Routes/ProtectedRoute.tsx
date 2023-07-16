@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import { useState } from 'react';
 import { Spin } from 'antd';
 import { IRootState } from '../store';
+import CommonUtils from '../Modules/common/utils/Common.utils';
 export interface IWrapperprops {
     children: React.ReactNode;
 }
@@ -14,7 +15,7 @@ const ProtectedRoute: React.FC<IWrapperprops> = ({ children }) => {
 
 
     useEffect(() => {
-        if (!session) {
+        if (!CommonUtils.isLoggedIn(session)) {
             navigate('/');
         } else {
             setIsLoading(false);

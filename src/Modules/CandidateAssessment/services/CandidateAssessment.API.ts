@@ -2,8 +2,18 @@ import Axios from 'axios';
 import { AssessmentUpdateDto, CandidateInsertDto, InputOutput, Status, } from '../../../types/Models';
 import { DatabaseCode } from '../../../types/Util.types';
 import { supabase } from '../../API/supabase';
+import { CodeOutput } from '../../../types/Evaluator.types';
 
 export class CandidateAssessmenmtAPIService {
+
+
+    static async getAll() {
+        const { data, error } = await supabase.from('assessment').select('*, candidate(*), exam(*)');
+        if (error) {
+            throw error;
+        }
+        return data || [];
+    }
 
     static async create(payload: Pick<CandidateInsertDto, 'emailId' | 'name'> & { exam_id: number }) {
         const response = await supabase.from('candidate').insert({
@@ -37,31 +47,12 @@ export class CandidateAssessmenmtAPIService {
         }
     }
 
-    static async runCode(code: string, language_id: string,) {
+    static async runCode(code: string, language_id: string,): Promise<CodeOutput> {
         const response = await Axios.post(import.meta.env.VITE_COMPILER_ENDPOINT || '', {
             source_code: code,
             language_id,
         });
         return response.data;
-    }
-
-    static async runTestCases(code: string, language_id: string, assessment_id: number, challenge_id: number) {
-        const { data: assessmentData, error: assessmentError } = await supabase
-            .from('assessment')
-            .select(`*,
-            challenge(*)`).eq('id', assessment_id).eq('challenge_id', challenge_id);
-        if (assessmentError) {
-            throw assessmentError;
-        }
-        const assessment = assessmentData?.[0];
-        const input_output = assessment?.challenge[0]?.input_output as unknown as InputOutput;
-
-        input_output.inputOutput.forEach(async ({ input, output }) => {
-            const response = await Axios.post(import.meta.env.VITE_COMPILER_ENDPOINT || '', {
-                source_code: code,
-                language_id,
-            });
-        });
     }
 
     static async submit(payload: Pick<AssessmentUpdateDto, 'code' | 'language' | 'id'>) {
@@ -74,5 +65,6 @@ export class CandidateAssessmenmtAPIService {
         }
         return data?.[0];
     }
+
 
 }

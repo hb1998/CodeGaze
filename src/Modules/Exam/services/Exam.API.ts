@@ -3,7 +3,7 @@ import { supabase } from '../../API/supabase';
 
 export class ExamAPIService {
     static async getAll() {
-        const { data, error } = await supabase.from('exam').select('*');
+        const { data, error } = await supabase.from('exam').select('*,challenge(count)');
         if (error) {
             throw error;
         }

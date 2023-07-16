@@ -1,54 +1,51 @@
+import { useEffect, useState } from 'react';
 import { CopyOutlined, EditFilled, EyeOutlined, PlusCircleFilled } from '@ant-design/icons';
-import { Button, Card, Col, Divider, Input, Layout, Modal, Row, Select, Statistic, Switch, Timeline } from 'antd';
-import { Content, Footer, Header } from 'antd/es/layout/layout';
-import React, { useEffect, useState } from 'react';
+import * as dayjs from 'dayjs'
+import { Button, Card, Col, Divider, Input, Row, Skeleton, Statistic, Tag } from 'antd';
+import { Content } from 'antd/es/layout/layout';
 import { Outlet } from 'react-router';
 import { Link } from 'react-router-dom';
-import { ExamAPIService } from '../services/Exam.API';
-interface CardInterface {
-    id: number;
-}
+import Title from 'antd/es/typography/Title';
+import { ExamAPIService } from '../services/Exam.api';
 
-export interface IAssessments {
-    name: string | null;
-    candidate_id: number | null;
-    code: string | null;
-    created_at: string | null;
-    created_by: string | null;
-    exam_id: number | null;
-    id: number;
-    joined: string | null;
-    status: number | null;
-    language: number | null;
-}
+type ExamQueryResult = Awaited<ReturnType<typeof ExamAPIService.getAll>>;
+
 const Open = () => {
-    const handleCardClick = () => {
-        const newCard: CardInterface = {
-            id: Date.now(), // Generate a unique identifier for each card
-            // Other card data
-        };
 
-        setCards((prevCards) => [...prevCards, newCard]);
-    };
-    const username = 'John Doe';
-    const date = 'July 15, 2023';
-    const [cards, setCards] = useState<CardInterface[]>([]);
+    const [exams, setExams] = useState<ExamQueryResult>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [newExamLoading, setNewExamLoading] = useState<boolean>(false);
 
-    const [assessments, setAssessments] = useState<IAssessments[]>([]);
-    // Fetch assessments when the component mounts
-    const fetchAssessments = async () => {
+    const fetchExams = async () => {
         try {
             const data = await ExamAPIService.getAll();
-            setAssessments(data);
-            console.log(data, 'api');
+            console.log(data)
+            setExams(data);
+            setLoading(false);
         } catch (error) {
+            setLoading(false);
             console.error('Error fetching assessments:', error);
         }
     };
 
     useEffect(() => {
-        fetchAssessments();
+        fetchExams();
     }, []);
+
+    const addExam = async () => {
+        setNewExamLoading(true);
+        try {
+            await ExamAPIService.create({
+                name: `Technical Assessment ${exams.length + 1}`,
+            });
+            await fetchExams();
+        } catch (error) {
+            setNewExamLoading(false);
+            console.error('Error fetching assessments:', error);
+
+        }
+        setNewExamLoading(false);
+    };
 
     return (
         <div>
@@ -57,15 +54,18 @@ const Open = () => {
                 type="primary"
                 icon={<PlusCircleFilled />}
                 style={{ float: 'right', padding: '5px' }}
-                onClick={handleCardClick}
+                loading={newExamLoading}
+                onClick={addExam}
             >
-                New Assessment
+                New Exam
             </Button>
             <div>
-                <Row gutter={[16, 16]} style={{ marginTop: '16px' }}>
-                    {cards.map((card) => (
-                        <Col span={12} key={card.id}>
-                            {assessments.map((assessments) => (
+                {loading ? <Skeleton /> :
+                    <Row gutter={[16, 16]} style={{ marginTop: '1rem' }}>
+                        {exams.map((exam) => (
+                            <Col
+                                key={exam.id}
+                            >
                                 <Card
                                     title={
                                         <div
@@ -78,10 +78,10 @@ const Open = () => {
                                         >
                                             {/* <Link to={`/assessments/${card.id}/view`}> */}
                                             <Link to={`/assessments/open/openAssessment`}>
-                                                <h4>{assessments.name}</h4>
+                                                <Title level={4}>{exam.name}</Title>
                                             </Link>
-                                            <Link to={`/assessments/${card.id}/edit`}>
-                                                <Button style={{ marginLeft: 200 }} icon={<EditFilled />}></Button>
+                                            <Link to={`/assessments/${exam.id}/edit`}>
+                                                <Button icon={<EditFilled />}></Button>
                                             </Link>
                                         </div>
                                     }
@@ -93,66 +93,47 @@ const Open = () => {
                                     }}
                                 >
                                     <div style={{ display: 'flex' }}></div>
-                                    <Row>
-                                        <Content style={{ height: '100%', display: 'flex', flexDirection: 'row' }}>
+                                    <Row gutter={10}>
+                                        <Col span={6}>
                                             <Statistic
-                                                style={{ width: '30%', padding: '15px', fontSize: '3.5vw' }}
                                                 title="Qualifying"
                                                 value={70}
                                                 suffix="%"
                                             />
-                                            <div
-                                                style={{
-                                                    width: '50%',
-
-                                                    // fontSize: '3.5vw',
-                                                    display: 'flex',
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'space-between',
-                                                }}
-                                            >
-                                                <div style={{ width: '25%' }}>
-                                                    <Statistic title="challenges" value={0} />
-                                                    <Statistic title="projects" value={0} />
-                                                </div>
-                                                <div>
-                                                    <Statistic title="Multiple choice" value={0} />
-                                                    <Statistic title="Open ended" value={0} />
-                                                </div>
-                                            </div>
-                                            <Timeline style={{ width: '20%', padding: '8px' }}>
-                                                <Timeline.Item>Invited</Timeline.Item>
-                                                <Timeline.Item>Assessed</Timeline.Item>
-                                                <Timeline.Item>Qualified</Timeline.Item>
-                                            </Timeline>
-                                        </Content>
+                                        </Col>
+                                        <Col span={6}>
+                                            <Statistic
+                                                title="Challenges" value={exam.challenge[0]?.count} />
+                                        </Col>
+                                        {/* <Col span={12}>
+                                    <Timeline>
+                                        <Timeline.Item>Invited</Timeline.Item>
+                                        <Timeline.Item>Assessed</Timeline.Item>
+                                        <Timeline.Item>Qualified</Timeline.Item>
+                                    </Timeline>
+                                </Col> */}
                                     </Row>
                                     <Divider></Divider>
                                     <div style={{ display: 'flex' }}>
-                                        <Row
-                                            style={{
-                                                width: '100%',
-                                                alignItems: 'center',
-                                                justifyContent: 'space-between',
-                                            }}
-                                        >
-                                            <Button type="link">Copy Invite Link</Button>
-                                            <Button type="link" icon={<EyeOutlined />}>
-                                                Preview
-                                            </Button>
-                                            <Button type="link" icon={<CopyOutlined />}>
-                                                Duplicate
-                                            </Button>
-                                            <div>
-                                                {username} | {date}
-                                            </div>
+                                        <Row>
+                                            <Col className='actions-container'  >
+                                                <Button type="dashed">Copy Invite Link</Button>
+                                                <Button type="link" icon={<EyeOutlined />}>
+                                                    Preview
+                                                </Button>
+                                                <Button type="link" icon={<CopyOutlined />}>
+                                                    Duplicate
+                                                </Button>
+                                            </Col>
+                                            <Col style={{ display: 'flex', alignItems: 'center' }} >
+                                                <Tag>{exam.created_by}</Tag> | {dayjs(exam.created_at).format('MMM DD YYYY')}
+                                            </Col>
                                         </Row>
                                     </div>
                                 </Card>
-                            ))}
-                        </Col>
-                    ))}
-                </Row>
+                            </Col>
+                        ))}
+                    </Row>}
             </div>
             <Content>
                 <Outlet />

@@ -1,4 +1,5 @@
-import { FUNCTION_NAME, IParamType } from './CodeGenerator';
+import { IParamType } from '../../types/Evaluator.types';
+import { FUNCTION_NAME } from './CodeGenerator';
 import { LanguageHandler } from './Handler.types';
 
 export class JavascriptHandler implements LanguageHandler {

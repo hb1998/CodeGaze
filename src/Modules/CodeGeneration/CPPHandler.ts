@@ -1,4 +1,5 @@
-import { FUNCTION_NAME, IParamType } from './CodeGenerator';
+import { FUNCTION_NAME } from './CodeGenerator';
+import { IParamType } from '../../types/Evaluator.types';
 import { LanguageHandler } from './Handler.types';
 
 export class CPPHandler implements LanguageHandler {
