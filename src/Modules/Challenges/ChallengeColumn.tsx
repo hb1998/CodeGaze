@@ -3,6 +3,7 @@ import { Difficulty, difficultyMap } from '../../types/Models';
 import { DeleteOutlined, SelectOutlined } from '@ant-design/icons';
 import Edit from './UpdateChallenge';
 import { Space, Tag } from 'antd';
+import CommonUtils from '../common/utils/Common.utils';
 
 interface Item {
   id: string;
@@ -57,7 +58,7 @@ export const challengeColumn = [
     title: 'Difficulty',
     dataIndex: 'difficulty',
     key: 'id',
-    render: (difficulty: Difficulty) => <Tag>{difficultyMap[difficulty]}</Tag>,
+    render: (difficulty: Difficulty) => <Tag color={CommonUtils.getColor(difficulty)}>{difficultyMap[difficulty]}</Tag>,
     filters: [
       {
         text: 'Easy',

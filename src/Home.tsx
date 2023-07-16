@@ -1,10 +1,9 @@
-import { Layout, Menu, Popover } from 'antd';
-import { Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
+import { Layout } from 'antd';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Exam from './Modules/Exam/Exam';
 import Challenges from './Modules/Challenges/Challenges';
 import Dashboard from './Modules/Dashboard/Dashboard';
 import Candidates from './Modules/Candidate/Candidates';
-import { UserOutlined } from '@ant-design/icons';
 import Login from './Modules/Auth/Login';
 import Open from './Modules/Exam/Open/Open';
 import Analytics from './Modules/Exam/Analytics/Analytics';
@@ -14,14 +13,15 @@ import { IRootState } from './store';
 import Editor from './Modules/common/CodeEditor/Editor';
 import ProtectedRoute from './Routes/ProtectedRoute';
 import Account from './Modules/Account/Account';
-import NavItem from './Modules/Account/NavItem';
 import OpenAssessment from './Modules/Exam/Open/OpenAssessment';
 import Admin from './Modules/Account/Admin';
 import PersonalSettings from './Modules/Account/PersonalSettings';
 import Recover from './Modules/Auth/Recover';
 import Update from './Modules/Auth/Update';
 import CandidateAssessment from './Modules/CandidateAssessment/CandidateAssessment';
-const { Header, Content } = Layout;
+import HeaderComponent from './Modules/common/Header';
+import CommonUtils from './Modules/common/utils/Common.utils';
+const { Content } = Layout;
 
 const getProtectedRoute = (component: React.ReactNode) => {
     return <ProtectedRoute>{component}</ProtectedRoute>;
@@ -31,33 +31,10 @@ const Home = () => {
     const session = useSelector((state: IRootState) => state.session);
     const location = useLocation();
     const route = location.pathname.split('/')[1];
-    const showHeader = route !== 'Login' && session
+    const showHeader = route !== 'Login' && CommonUtils.isLoggedIn(session)
     return (
         <Layout className="main-layout">
-            {showHeader && (
-                <Header>
-                    <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['dashboard']}>
-                        <Menu.Item key="dashboard">
-                            <Link to={'/dashboard'}>Dashboard</Link>
-                        </Menu.Item>
-                        <Menu.Item key="assessments">
-                            <Link to={'/assessments/open'}>Assessments</Link>
-                        </Menu.Item>
-                        <Menu.Item key="challenges">
-                            <Link to={'/challenges'}>Challenges</Link>
-                        </Menu.Item>
-                        <Menu.Item key="candidates">
-                            <Link to={'/candidates'}>Candidates</Link>
-                        </Menu.Item>
-                        <Menu.Item key="account" style={{ marginLeft: 'auto' }}>
-                            <Popover content={<NavItem />} title="Account Details" trigger="click">
-                                Lumel &nbsp;
-                                <UserOutlined />
-                            </Popover>
-                        </Menu.Item>
-                    </Menu>
-                </Header>
-            )}
+            {showHeader && (<HeaderComponent />)}
             <Content style={{ padding: '0 50px' }}>
                 <div className="site-layout-content">
                     <Routes>
@@ -85,7 +62,7 @@ const Home = () => {
                             <Route path="personal_settings" element={getProtectedRoute(<PersonalSettings />)} />
                         </Route>
                         <Route path="/challenges/:id" element={getProtectedRoute(<Editor />)} />
-                        
+
                         <Route
                             path="/assessments/open/openAssessment"
                             element={getProtectedRoute(<OpenAssessment />)}
