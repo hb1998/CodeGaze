@@ -1,29 +1,12 @@
+import { useEffect, useState } from 'react';
 import { CopyOutlined, EditFilled, EyeOutlined, PlusCircleFilled } from '@ant-design/icons';
-import { Button, Card, Col, Divider, Input, Layout, Modal, Row, Select, Skeleton, Statistic, Switch, Tag, Timeline } from 'antd';
-import { Content, Footer, Header } from 'antd/es/layout/layout';
-import React, { useEffect, useState } from 'react';
+import * as dayjs from 'dayjs'
+import { Button, Card, Col, Divider, Input, Row, Skeleton, Statistic, Tag } from 'antd';
+import { Content } from 'antd/es/layout/layout';
 import { Outlet } from 'react-router';
 import { Link } from 'react-router-dom';
-import { ExamAPIService } from '../services/Exam.API';
-import * as dayjs from 'dayjs'
-import { Exam } from '../../../types/Models';
 import Title from 'antd/es/typography/Title';
-interface CardInterface {
-    id: number;
-}
-
-export interface IAssessments {
-    name: string | null;
-    candidate_id: number | null;
-    code: string | null;
-    created_at: string | null;
-    created_by: string | null;
-    exam_id: number | null;
-    id: number;
-    joined: string | null;
-    status: number | null;
-    language: number | null;
-}
+import { ExamAPIService } from '../services/Exam.api';
 
 type ExamQueryResult = Awaited<ReturnType<typeof ExamAPIService.getAll>>;
 
@@ -31,6 +14,7 @@ const Open = () => {
 
     const [exams, setExams] = useState<ExamQueryResult>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [newExamLoading, setNewExamLoading] = useState<boolean>(false);
 
     const fetchExams = async () => {
         try {
@@ -48,8 +32,19 @@ const Open = () => {
         fetchExams();
     }, []);
 
-    const addExam = () => {
-        console.log('click');
+    const addExam = async () => {
+        setNewExamLoading(true);
+        try {
+            await ExamAPIService.create({
+                name: `Technical Assessment ${exams.length + 1}`,
+            });
+            await fetchExams();
+        } catch (error) {
+            setNewExamLoading(false);
+            console.error('Error fetching assessments:', error);
+
+        }
+        setNewExamLoading(false);
     };
 
     return (
@@ -59,6 +54,7 @@ const Open = () => {
                 type="primary"
                 icon={<PlusCircleFilled />}
                 style={{ float: 'right', padding: '5px' }}
+                loading={newExamLoading}
                 onClick={addExam}
             >
                 New Exam
@@ -67,9 +63,10 @@ const Open = () => {
                 {loading ? <Skeleton /> :
                     <Row gutter={[16, 16]} style={{ marginTop: '1rem' }}>
                         {exams.map((exam) => (
-                            <Col>
+                            <Col
+                                key={exam.id}
+                            >
                                 <Card
-                                    key={exam.id}
                                     title={
                                         <div
                                             style={{

@@ -106,7 +106,7 @@ const Dashboard = () => {
                 <div>
 
                     <Search
-                        placeholder="Search Assessment"
+                        placeholder="Search Candidate"
                         style={{ width: 200, marginBottom: '10px' }}
                         onChange={handleSearch}
                     />

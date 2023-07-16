@@ -16,6 +16,7 @@ import { useLocation, useParams } from 'react-router';
 import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
 import { Table, Tag } from 'antd';
 import Title from 'antd/es/typography/Title';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
 export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
 export type languageNameType = languageObjectType['name'];
@@ -66,8 +67,9 @@ const colDef = [
         dataIndex: 'result',
         key: 'result',
         render: (value: string) => {
-            const color = value === 'Passed' ? 'green' : 'red'
-            return <Tag color={color}>{value}</Tag>
+            const isPass = value === 'Passed'
+            const color = isPass ? 'green' : 'red'
+            return <Tag icon={isPass ? <CheckCircleOutlined /> : <CloseCircleOutlined />} color={color}>{value}</Tag>
         }
 
     }

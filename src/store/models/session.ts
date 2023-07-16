@@ -10,8 +10,8 @@ const userSession = {
     loading: true,
   },
   reducers: {
-    update(state: SessionWithExtras, payload: Partial<SessionWithExtras>): SessionWithExtras {
-      return { ...state, ...payload, loading: false };
+    update(_state: SessionWithExtras, payload: Session): SessionWithExtras {
+      return { ...payload, loading: false };
     }
   },
 };

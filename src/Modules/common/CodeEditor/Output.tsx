@@ -23,7 +23,7 @@ const Output = (props: OutputProps) => {
             </div>
             <div
                 style={{
-                    minHeight: '10rem',
+                    minHeight: '25rem',
                     border: '1px solid #d9d9d9',
                     padding: 8,
                     backgroundColor: '#1e293b',

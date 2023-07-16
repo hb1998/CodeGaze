@@ -8,6 +8,7 @@ import LoginForm from './LoginForm';
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import './styles/Auth.css'
+import CommonUtils from '../common/utils/Common.utils';
 
 
 const Login = () => {
@@ -18,7 +19,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (session) {
+        if (CommonUtils.isLoggedIn(session)) {
             navigate('/dashboard', { replace: true });
         }
     }, [navigate, session])

@@ -1,0 +1,62 @@
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
+import { Dropdown, Menu, MenuProps } from 'antd'
+import { Header } from 'antd/es/layout/layout'
+import { Link, useNavigate } from 'react-router-dom'
+import { supabase } from '../API/supabase'
+
+const HeaderComponent = () => {
+
+    const navigate = useNavigate();
+    const items: MenuProps['items'] = [
+        {
+            key: '1',
+            label: (
+                <Link to={'/account'}>
+                    My account
+                </Link>
+            ),
+            icon: <UserOutlined />,
+        },
+        {
+            key: '2',
+            label: (
+                <div>Logout</div>
+            ),
+            icon: <LogoutOutlined />,
+        }
+    ];
+
+    const handleLogout = async () => {
+        const { error } = await supabase.auth.signOut();
+        console.log(error)
+        navigate('/login');
+    }
+    return (
+        <Header>
+            <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['dashboard']}>
+                <Menu.Item key="dashboard">
+                    <Link to={'/dashboard'}>Dashboard</Link>
+                </Menu.Item>
+                <Menu.Item key="assessments">
+                    <Link to={'/assessments/open'}>Assessments</Link>
+                </Menu.Item>
+                <Menu.Item key="challenges">
+                    <Link to={'/challenges'}>Challenges</Link>
+                </Menu.Item>
+                <Menu.Item key="candidates">
+                    <Link to={'/candidates'}>Candidates</Link>
+                </Menu.Item>
+                <Menu.Item key="account" style={{ marginLeft: 'auto' }}>
+                    <Dropdown menu={{ items, onClick: handleLogout }} placement="top" arrow={{ pointAtCenter: true }}>
+                        <div>
+                            Lumel &nbsp;
+                            <UserOutlined />
+                        </div>
+                    </Dropdown>
+                </Menu.Item>
+            </Menu>
+        </Header>
+    )
+}
+
+export default HeaderComponent
