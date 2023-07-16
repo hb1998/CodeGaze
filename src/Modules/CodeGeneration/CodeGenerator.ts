@@ -4,6 +4,7 @@ import { JavaHandler } from './JavaHandler';
 import { JavascriptHandler } from './JavascriptHandler';
 import { PythonHandler } from './PythonHandler';
 import { languageNameType } from '../common/CodeEditor/Editor';
+import { IParamType } from '../../types/Evaluator.types';
 
 // export enum Language {
 //     JavaScript = 'javascript',
@@ -14,12 +15,6 @@ import { languageNameType } from '../common/CodeEditor/Editor';
 // }
 
 export const FUNCTION_NAME = 'solve';
-
-export interface IParamType {
-    type: 'string' | 'number' | 'arrayOfString' | 'arrayOfNumber' | 'object' | 'arrayOfObject' | 'boolean';
-    name: string;
-    objectStructure?: string;
-}
 
 export class CodeGenerator {
     language: languageNameType;
@@ -55,6 +50,3 @@ export class CodeGenerator {
         return this.generator?.generate();
     }
 }
-
-console.log('test');
-// Example inputs

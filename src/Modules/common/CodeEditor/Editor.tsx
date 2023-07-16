@@ -9,18 +9,100 @@ import CodeEditor from './CodeEditor';
 import { ProgrammingLanguages } from './ProgrammingLanguages';
 import Output from './Output';
 import classes from './Editor.module.css';
-import { CodeGenerator, IParamType } from '../../CodeGeneration/CodeGenerator';
+import { CodeGenerator } from '../../CodeGeneration/CodeGenerator';
+import { IInputOutput, IParamType } from '../../../types/Evaluator.types';
+import { CodeEvaluator } from '../../CodeEvaluator/CodeEvaluator';
+import { useLocation, useParams } from 'react-router';
+import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
+import { Table, Tag } from 'antd';
+import Title from 'antd/es/typography/Title';
 
 export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
 export type languageNameType = languageObjectType['name'];
 
+const sampleInput = {
+    "inputType": [
+        {
+            "name": "numberParam",
+            "type": "number"
+        },
+        {
+            "name": "numberArrayParam",
+            "type": "arrayOfNumber"
+        }
+    ] as IParamType[],
+    "outputType": {
+        "name": "output",
+        "type": "number"
+    } as IParamType,
+    "inputOutput": [
+        {
+            "input": [
+                "4",
+                `[1,2,3]`
+            ],
+            "output": "4"
+        },
+        {
+            "input": ['3', '[1, 2, 3]'],
+            "output": '3'
+        }
+    ] as IInputOutput[]
+}
+
+const colDef = [
+    {
+        title: 'Input',
+        dataIndex: 'input',
+        key: 'input',
+    },
+    {
+        title: 'Expected',
+        dataIndex: 'expected',
+        key: 'expected',
+    },
+    {
+        title: 'Result',
+        dataIndex: 'result',
+        key: 'result',
+        render: (value: string) => {
+            const color = value === 'Passed' ? 'green' : 'red'
+            return <Tag color={color}>{value}</Tag>
+        }
+
+    }
+]
+
 const Editor = () => {
-    const [sizes, setSizes] = useState([300, '100%', '25%']);
+    const [sizes, setSizes] = useState([500, '100%', '25%']);
     const [selectEditorLanguage, setSelectEditorLanguage] = useState<languageObjectType>(
         ProgrammingLanguages.javaScript,
     );
     const [code, setCode] = useState<string>('');
     const [output, setOutput] = useState<string>('');
+    const [result, setResult] = useState<boolean[]>([]);
+    const [challenge, setchallenge] = useState(null)
+
+    const { pathname, state } = useLocation()
+    const rootPath = pathname.split('/')[1];
+    const isChallenge = rootPath === 'challenges';
+
+    const { id } = useParams<{ id: string }>();
+    useEffect(() => {
+        if (isChallenge) {
+            if (state) {
+                setchallenge(state)
+            } else {
+                ChallengeAPIService.getById(id).then((response) => {
+                    setchallenge(response)
+                }).catch((error) => {
+                    console.log(error)
+                })
+
+            }
+        }
+    }, [id, isChallenge, state])
+
 
     const handleLanguageChange = (selectedLanguage: languageNameType) => {
         switch (selectedLanguage) {
@@ -59,8 +141,7 @@ const Editor = () => {
                 setOutput(response.data.stdout);
                 if (response.data.stdout === null) {
                     setOutput(
-                        `${response.data.status.description !== 'Accepted' ? response.data.status.description : ''}\n${
-                            response.data.stderr
+                        `${response.data.status.description !== 'Accepted' ? response.data.status.description : ''}\n${response.data.stderr
                         }\n${response.data.compile_output !== null ? response.data.compile_output : ''}`,
                     );
                 }
@@ -94,10 +175,24 @@ const Editor = () => {
         setOutput('');
     };
 
-    const handleSubmit = () => {
-        console.log('Submitted code:', code);
-        console.log('Selected language:', selectEditorLanguage.name);
+    const handleSubmit = async () => {
+        const evaluator = new CodeEvaluator(selectEditorLanguage.name, sampleInput.inputType, sampleInput.outputType);
+        try {
+            const result = await evaluator.evaluate(code, sampleInput.inputOutput);
+            setResult(result);
+        } catch (error) {
+            console.error('Error evaluating code:', error);
+        }
     };
+
+    const testCaseResult = sampleInput.inputOutput.map((inputOutput, index) => {
+        return {
+            key: index,
+            input: inputOutput.input,
+            expected: inputOutput.output,
+            result: result[index] ? 'Passed' : 'Failed',
+        };
+    });
 
     return (
         <div>
@@ -111,7 +206,7 @@ const Editor = () => {
                     }}
                 >
                     <Pane>
-                        <QuestionContent />
+                        <QuestionContent challenge={challenge} />
                     </Pane>
                     <Pane minSize="50%" maxSize="80%" style={{ margin: '2px' }}>
                         <CodeEditor
@@ -124,7 +219,13 @@ const Editor = () => {
                         />
                     </Pane>
                     <Pane>
-                        <Output output={output} handleRun={handleRun} handleSubmit={handleSubmit} />
+                        <div>
+                            <Output output={output} handleRun={handleRun} handleSubmit={handleSubmit} />
+                            <div>
+                                <Title level={4}>Test Cases</Title>
+                                <Table dataSource={testCaseResult} columns={colDef} pagination={false} />
+                            </div>
+                        </div>
                     </Pane>
                 </SplitPane>
             </div>

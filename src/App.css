@@ -1,3 +1,7 @@
 .main-layout{
     height: 100vh;
 }
+
+.wmde-markdown{
+    font-size: 14px !important;
+}

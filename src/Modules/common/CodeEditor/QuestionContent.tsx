@@ -1,12 +1,11 @@
-import { Typography } from "antd";
+import MDEditor from '@uiw/react-md-editor';
+import classes from './Editor.module.css';
+import { Challenge } from '../../../types/Models';
 
-import classes from "./Editor.module.css";
-const { Text } = Typography;
-
-const QuestionContent = () => {
+const QuestionContent = ({ challenge }: { challenge: Challenge }) => {
   return (
     <div className={`${classes.content} ${classes.pane1}`}>
-      <Text>Write a program that prints "Hello, World!" to the console.</Text>
+      <MDEditor value={challenge?.description} hideToolbar={true} preview={'preview'} height={'100%'} />
     </div>
   );
 };

@@ -18,34 +18,41 @@ export const challengeColumn = [
     key: 'id',
     editable: true,
   },
-  // {
-  //   title: 'Language',
-  //   dataIndex: ['assessment', 0, 'language'],
-  //   key: 'id',
-  //   editable: true,
-  //   filters: [
-  //     {
-  //       text: 'JavaScript',
-  //       value: 'javascript',
-  //     },
-  //     {
-  //       text: 'Python',
-  //       value: 'python',
-  //     },
-  //     {
-  //       text: 'Java',
-  //       value: 'java',
-  //     },
-  //     {
-  //       text: 'C++',
-  //       value: 'c++',
-  //     },
-  //     {
-  //       text: 'C',
-  //       value: 'c',
-  //     },
-  //   ],
-  // },
+  {
+    title: 'Description',
+    dataIndex: 'short_description',
+    key: 'id',
+    editable: true,
+  },
+  {
+    title: 'Language',
+    dataIndex: ['assessment', 0, 'language'],
+    key: 'id',
+    editable: true,
+    render: (text, record) => <div>5 Language</div>,
+    filters: [
+      {
+        text: 'JavaScript',
+        value: 'javascript',
+      },
+      {
+        text: 'Python',
+        value: 'python',
+      },
+      {
+        text: 'Java',
+        value: 'java',
+      },
+      {
+        text: 'C++',
+        value: 'c++',
+      },
+      {
+        text: 'C',
+        value: 'c',
+      },
+    ],
+  },
   {
     title: 'Difficulty',
     dataIndex: 'difficulty',
@@ -74,7 +81,7 @@ export const challengeColumn = [
       return (
         <>
           <Space align='baseline'>
-            <Link to={`/challenges/${record.id}`} ><SelectOutlined style={{ color: "blue", marginRight: 12 }} /></Link>
+            <Link to={`/challenges/${record.id}`} state={record} ><SelectOutlined style={{ color: "blue", marginRight: 12 }} /></Link>
             <Edit param={record.id} />
             <DeleteOutlined style={{ color: "red", marginLeft: 12 }} />
           </Space>
