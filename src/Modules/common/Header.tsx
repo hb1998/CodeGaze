@@ -11,7 +11,7 @@ const HeaderComponent = () => {
         {
             key: '1',
             label: (
-                <Link to={'/account'}>
+                <Link to={'/account/admin'}>
                     My account
                 </Link>
             ),
@@ -26,7 +26,8 @@ const HeaderComponent = () => {
         }
     ];
 
-    const handleLogout = async () => {
+    const handleLogout = async ({ key }) => {
+        if (key === '1') return;
         const { error } = await supabase.auth.signOut();
         console.log(error)
         navigate('/login');

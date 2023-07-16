@@ -1,12 +1,29 @@
+import { useEffect, useState } from 'react';
 import { Button, Form, Input, Modal, Table } from 'antd';
-import React, { useState } from 'react';
 import { supabase } from '../API/supabase';
+import dayjs from 'dayjs';
 interface IEmailProps {
     Email: string;
 }
+
+const adminTableDef = [
+    {
+        title: 'Email',
+        dataIndex: 'email',
+        key: 'email',
+    },
+    {
+        title: 'Last Signed In',
+        dataIndex: 'last_sign_in_at',
+        render: (date: string) => date ? dayjs(date).format('hh:mm A, MMM YY') : 'Never',
+    },
+
+]
 function Admin() {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
+    const [users, setUsers] = useState([]);
+    const [usersLoading, setUserLoading] = useState(true);
     const [form] = Form.useForm();
     const emailValidator = (rule: any, value: any, callback: any) => {
         if (value && !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
@@ -15,6 +32,22 @@ function Admin() {
             callback();
         }
     };
+
+    const fetchUsers = async () => {
+        try {
+            const { data, error } = await supabase.auth.admin.listUsers();
+            setUsers(data.users);
+            setUserLoading(false);
+        } catch (error) {
+            setUserLoading(false);
+            console.error('Error fetching users:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUsers();
+    }, [])
+
 
     const handleSubmit = async (details: IEmailProps) => {
         setModalLoading(true);
@@ -80,7 +113,7 @@ function Admin() {
                         </Form.Item>
                     </Form>
                 </Modal>
-                <Table />
+                <Table dataSource={users} columns={adminTableDef} loading={usersLoading} />
             </div>
         </div>
     );

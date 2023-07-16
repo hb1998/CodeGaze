@@ -39,7 +39,13 @@ const AssessmentColumnDef = [
         dataIndex: ['exam', 'name'],
         key: 'exam',
         render: (text) => <a>{text}</a>,
-    }
+    },
+    {
+        title: 'Challenge',
+        dataIndex: ['challenge', 'name'],
+        key: 'challenge',
+        render: (text) => <a>{text}</a>,
+    },
 ]
 
 type AssessmentQueryResult = Awaited<ReturnType<typeof CandidateAssessmenmtAPIService.getAll>>;

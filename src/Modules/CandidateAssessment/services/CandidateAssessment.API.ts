@@ -8,7 +8,7 @@ export class CandidateAssessmenmtAPIService {
 
 
     static async getAll() {
-        const { data, error } = await supabase.from('assessment').select('*, candidate(*), exam(*)');
+        const { data, error } = await supabase.from('assessment').select('*, candidate(*), exam(*), challenge(*)');
         if (error) {
             throw error;
         }
