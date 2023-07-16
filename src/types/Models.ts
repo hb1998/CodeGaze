@@ -22,15 +22,15 @@ export type ExamUpdateDto = UpdateDto<'exam'>;
 
 export enum Status {
   JOINED = 1,
-  SUBMITTED = 2,  
+  SUBMITTED = 2,
 }
-export enum Difficulty{
-  easy=1,
-  medium=2,
-  hard=3,
+export enum Difficulty {
+  easy = 1,
+  medium = 2,
+  hard = 3,
 }
 
-export const  difficultyMap =  {
+export const difficultyMap = {
   [Difficulty.easy]: 'Easy',
   [Difficulty.medium]: 'Medium',
   [Difficulty.hard]: 'Hard'

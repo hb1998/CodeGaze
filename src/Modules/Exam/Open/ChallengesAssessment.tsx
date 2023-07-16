@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, Layout, Select, theme, Card, Tabs, Divider } from 'antd';
+import { useEffect, useState } from 'react';
+import { Button, Layout, Card, Divider } from 'antd';
 import { Typography } from 'antd';
-import { ExamAPIService } from '../services/Exam.API';
 import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
 import { DeleteFilled, EyeOutlined, PlusSquareFilled } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
@@ -23,21 +22,6 @@ export interface IAssessments {
 }
 
 const ChallengesAssessment = ({ isEditMode = false }) => {
-    // const {
-    //     token: { colorBgContainer },
-    // } = theme.useToken();
-
-    //     const [form] = Form.useForm();
-    //     const [showForm, setShowForm] = useState(false);
-
-    //     const handleSubmit = (values) => {
-    //         console.log(values); // Handle form submission logic here
-    //     };
-
-    //     const handleButtonClick = () => {
-    //     setShowForm(true);
-    //   };
-
     interface IChallenges {
         id: string;
         name: string;
@@ -62,7 +46,6 @@ const ChallengesAssessment = ({ isEditMode = false }) => {
         fetchChallenges();
     }, []);
 
-    const [assessments, setAssessments] = useState<IAssessments[]>([]);
     const [selectedChallenges, setSelectedChallenges] = useState<IChallenges[]>([]);
 
     const handleAddChallenge = (selectedChallenge: IChallenges) => {
@@ -73,20 +56,6 @@ const ChallengesAssessment = ({ isEditMode = false }) => {
         setSelectedChallenges((prevChallenges) => prevChallenges.filter((challenge) => challenge.id !== challengeId));
     };
 
-    // Fetch assessments when the component mounts
-    const fetchAssessments = async () => {
-        try {
-            const data = await ExamAPIService.getAll();
-            setAssessments(data);
-            console.log(data, 'api');
-        } catch (error) {
-            console.error('Error fetching assessments:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchAssessments();
-    }, []);
 
     return (
         <div style={{ width: '100%' }}>
