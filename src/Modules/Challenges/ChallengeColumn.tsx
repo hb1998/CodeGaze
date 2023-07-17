@@ -1,9 +1,10 @@
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Difficulty, difficultyMap } from '../../types/Models';
-import { DeleteOutlined, SelectOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditFilled, SelectOutlined } from '@ant-design/icons';
 import Edit from './UpdateChallenge';
-import { Space, Tag } from 'antd';
+import { Popconfirm, Space, Tag } from 'antd';
 import CommonUtils from '../common/utils/Common.utils';
+import { ChallengeAPIService } from './services/Challenge.API';
 
 interface Item {
   id: string;
@@ -79,13 +80,31 @@ export const challengeColumn = [
     title: 'Actions',
     dataIndex: 'actions',
     render: (_: any, record: Item) => {
+      const handleDelete = async () => {
+        try {
+          await ChallengeAPIService.delete(Number(record.id));
+          window.location.href = '/challenges'; 
+        } catch (error) {
+          console.error('Error deleting record:', error);
+        }
+      };
       return (
         <>
           <Space align='baseline'>
             <Link to={`/challenges/${record.id}`} state={record} ><SelectOutlined style={{ color: "blue", marginRight: 12 }} /></Link>
-            <Edit param={record.id} />
-            <DeleteOutlined style={{ color: "red", marginLeft: 12 }} />
+            {/* <Edit param={record.id} /> */}
+            <EditFilled />
+            
+            <Popconfirm
+              title="Are you sure you want to delete this challenge?"
+              onConfirm={handleDelete}
+              okText="Yes"
+              cancelText="No"
+            >
+              <DeleteOutlined style={{ color: 'red', marginLeft: 12 }} />
+            </Popconfirm>
           </Space>
+          
         </>
       );
     },

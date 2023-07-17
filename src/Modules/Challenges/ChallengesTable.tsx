@@ -19,7 +19,7 @@ const ChallengeTable = ({
         try {
             const data = await ChallengeAPIService.getAll();
             setChallenges(data);
-            console.log(data)
+            
         } catch (error) {
             console.error('Error fetching candidates:', error);
         } finally {
@@ -30,7 +30,7 @@ const ChallengeTable = ({
     useEffect(() => {
         fetchChallenges();
     }, []);
-
+    
     const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setsearch(value);
@@ -38,7 +38,7 @@ const ChallengeTable = ({
 
     const filteredChallenges = useMemo(() => {
         return challenges.filter((challenge) => {
-            return challenge.name.toLowerCase().includes(search.toLowerCase());
+            return challenge.name?.toLowerCase().includes(search.toLowerCase());
         }
         );
     }, [challenges, search]);
