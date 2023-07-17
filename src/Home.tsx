@@ -36,7 +36,7 @@ const Home = () => {
     return (
         <Layout className="main-layout">
             {showHeader && <HeaderComponent />}
-            <Content style={{ padding: '0 50px' }}>
+            <Content>
                 <div className="site-layout-content">
                     <Routes>
                         <Route path="/" element={<Navigate to="/Login" />} />

@@ -46,7 +46,7 @@ const Candidates = () => {
     };
 
     return (
-        <div style={{ padding: '10px' }}>
+        <div className="container">
             <Title>Candidates</Title>
             <Search
                 placeholder="Search Candidate"

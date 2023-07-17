@@ -1,7 +1,12 @@
 .main-layout{
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .wmde-markdown{
     font-size: 14px !important;
+}
+
+.container {
+    height: 100%;
+    padding: 0 50px;
 }

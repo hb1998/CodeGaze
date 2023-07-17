@@ -22,34 +22,31 @@ export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof Prog
 export type languageNameType = languageObjectType['name'];
 
 const sampleInput = {
-    "inputType": [
+    inputType: [
         {
-            "name": "numberParam",
-            "type": "number"
+            name: 'numberParam',
+            type: 'number',
         },
         {
-            "name": "numberArrayParam",
-            "type": "arrayOfNumber"
-        }
+            name: 'numberArrayParam',
+            type: 'arrayOfNumber',
+        },
     ] as IParamType[],
-    "outputType": {
-        "name": "output",
-        "type": "number"
+    outputType: {
+        name: 'output',
+        type: 'number',
     } as IParamType,
-    "inputOutput": [
+    inputOutput: [
         {
-            "input": [
-                "4",
-                `[1,2,3]`
-            ],
-            "output": "4"
+            input: ['4', `[1,2,3]`],
+            output: '4',
         },
         {
-            "input": ['3', '[1, 2, 3]'],
-            "output": '3'
-        }
-    ] as IInputOutput[]
-}
+            input: ['3', '[1, 2, 3]'],
+            output: '3',
+        },
+    ] as IInputOutput[],
+};
 
 const colDef = [
     {
@@ -67,25 +64,31 @@ const colDef = [
         dataIndex: 'result',
         key: 'result',
         render: (value: string) => {
-            const isPass = value === 'Passed'
-            const color = isPass ? 'green' : 'red'
-            return <Tag icon={isPass ? <CheckCircleOutlined /> : <CloseCircleOutlined />} color={color}>{value}</Tag>
-        }
-
-    }
-]
+            if (value === '') {
+                return null;
+            }
+            const isPass = value === 'Passed';
+            const color = isPass ? 'green' : 'red';
+            return (
+                <Tag icon={isPass ? <CheckCircleOutlined /> : <CloseCircleOutlined />} color={color}>
+                    {value}
+                </Tag>
+            );
+        },
+    },
+];
 
 const Editor = () => {
-    const [sizes, setSizes] = useState([500, '100%', '25%']);
+    const [sizes, setSizes] = useState([500, '100%', '35%']);
     const [selectEditorLanguage, setSelectEditorLanguage] = useState<languageObjectType>(
         ProgrammingLanguages.javaScript,
     );
     const [code, setCode] = useState<string>('');
     const [output, setOutput] = useState<string>('');
     const [result, setResult] = useState<boolean[]>([]);
-    const [challenge, setchallenge] = useState(null)
+    const [challenge, setChallenge] = useState(null);
 
-    const { pathname, state } = useLocation()
+    const { pathname, state } = useLocation();
     const rootPath = pathname.split('/')[1];
     const isChallenge = rootPath === 'challenges';
 
@@ -93,18 +96,18 @@ const Editor = () => {
     useEffect(() => {
         if (isChallenge) {
             if (state) {
-                setchallenge(state)
+                setChallenge(state);
             } else {
-                ChallengeAPIService.getById(id).then((response) => {
-                    setchallenge(response)
-                }).catch((error) => {
-                    console.log(error)
-                })
-
+                ChallengeAPIService.getById(id)
+                    .then((response) => {
+                        setChallenge(response);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
             }
         }
-    }, [id, isChallenge, state])
-
+    }, [id, isChallenge, state]);
 
     const handleLanguageChange = (selectedLanguage: languageNameType) => {
         switch (selectedLanguage) {
@@ -143,7 +146,8 @@ const Editor = () => {
                 setOutput(response.data.stdout);
                 if (response.data.stdout === null) {
                     setOutput(
-                        `${response.data.status.description !== 'Accepted' ? response.data.status.description : ''}\n${response.data.stderr
+                        `${response.data.status.description !== 'Accepted' ? response.data.status.description : ''}\n${
+                            response.data.stderr
                         }\n${response.data.compile_output !== null ? response.data.compile_output : ''}`,
                     );
                 }
@@ -198,7 +202,7 @@ const Editor = () => {
 
     return (
         <div>
-            <div className={classes.main}>
+            <div className={classes.main} style={{ padding: '1rem' }}>
                 <SplitPane
                     split="vertical"
                     sizes={sizes}
@@ -210,7 +214,7 @@ const Editor = () => {
                     <Pane>
                         <QuestionContent challenge={challenge} />
                     </Pane>
-                    <Pane minSize="50%" maxSize="80%" style={{ margin: '2px' }}>
+                    <Pane className={classes.Resizer} minSize="50%" maxSize="80%" style={{ margin: '2px' }}>
                         <CodeEditor
                             languageName={selectEditorLanguage.name}
                             handleLanguageChange={handleLanguageChange}
@@ -221,9 +225,9 @@ const Editor = () => {
                         />
                     </Pane>
                     <Pane>
-                        <div>
+                        <div style={{ padding: '1rem' }}>
                             <Output output={output} handleRun={handleRun} handleSubmit={handleSubmit} />
-                            <div>
+                            <div style={{ height: '30%' }}>
                                 <Title level={4}>Test Cases</Title>
                                 <Table dataSource={testCaseResult} columns={colDef} pagination={false} />
                             </div>

@@ -13,10 +13,6 @@
   height: 100%;
 }
 
-.buttonContainer {
-  display: flex;
-  gap: 1rem;
-}
 
 .editorHeader {
   display: flex;
@@ -38,8 +34,17 @@
 }
 
 .pane3 {
-  padding: 0.5rem;
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: small;
   font-weight: 500;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 1rem;
+}
+
+.Resizer {
+  border-left: gray solid 1px;
+  border-right: gray solid 1px;
 }
