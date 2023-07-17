@@ -60,7 +60,7 @@ const Home = () => {
                         <Route path="/candidates" element={getProtectedRoute(<Candidates />)} />
                         <Route path="/account" element={getProtectedRoute(<Account />)}>
                             <Route index path="admin" element={getProtectedRoute(<Admin />)} />
-                            <Route path="personal_settings" element={getProtectedRoute(<PersonalSettings />)} />
+                            <Route path="personal-settings" element={getProtectedRoute(<PersonalSettings />)} />
                         </Route>
                         <Route path="/challenges/:id" element={getProtectedRoute(<Editor />)} />
 

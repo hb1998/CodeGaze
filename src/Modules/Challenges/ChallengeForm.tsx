@@ -1,44 +1,56 @@
 import React from 'react';
 import { Button, Col, Form, Input, Modal, Row, Select, Space, Typography } from 'antd';
 import MDEditor from '@uiw/react-md-editor';
-import { Difficulty } from '../../types/Models';
+import { ChallengeInsertDto, Difficulty } from '../../types/Models';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { validateInputBasedOnOption } from './ValidateInput';
+import { IInputOutput, IParamType } from '../../types/Evaluator.types';
 
 const { Option } = Select;
 const { Text } = Typography;
 
-interface IValues {
-    title: string;
-    description: string;
-    modifier: string;
+interface IChallengeCreateForm extends Pick<ChallengeInsertDto, 'name' | 'difficulty' | 'short_description' | 'description'> {
+    inputType: IParamType[];
+    outputType: IParamType;
+    inputOutput: IInputOutput[];
 }
 interface ICollectionCreateFormProps {
     open: boolean;
-    onCreate: (values: IValues) => void;
+    onCreate: (values: IChallengeCreateForm) => void;
+    values: IChallengeCreateForm;
     onCancel: () => void;
 }
 
-export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, onCreate, onCancel }) => {
+const inputOutputTypes: IParamType['type'][] = [
+    'number',
+    'string',
+    'boolean',
+    'arrayOfNumber',
+    'arrayOfString',
+];
+
+export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, values, onCreate, onCancel }) => {
     const [form] = Form.useForm();
     const [value, setValue] = React.useState('**Hello world!!!**');
+    const isEditMode = !!values;
     return (
         <div style={{ width: '1200px' }}>
             <Modal
                 bodyStyle={{ overflowY: 'auto', maxHeight: 'calc(100vh - 200px)' }}
                 open={open}
-                title="Edit Challenge"
+                title={isEditMode ? "Edit Challenge" : "Create Challenge"}
                 okText="Update custom challenges"
                 cancelText="Cancel"
                 onCancel={onCancel}
                 width={900}
                 onOk={() => {
                     form.validateFields()
-                        .then((values: IValues) => {
+                        .then((values) => {
+                            console.log(values)
                             form.resetFields();
-                            onCreate(values);
+                            // onCreate(values);
                         })
-                        .catch((info: any) => {
+                        .catch((info) => {
                             console.log('Validate Failed:', info);
                         });
                 }}
@@ -47,23 +59,34 @@ export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, onCr
                     form={form}
                     autoComplete="off"
                     name="form_in_modal"
-                    initialValues={{ modifier: 'public' }}
+                    initialValues={values ? values : {
+                        inputType: [
+                            {
+                                type: "number",
+                                name: "input1"
+                            }
+                        ],
+                        output: {
+                            type: "number",
+                            name: "output1"
+                        }
+                    }}
                     layout="vertical"
                 >
-                    <Form.Item name="name">
+                    <Form.Item label='Name' name="name">
                         <Input placeholder="Name" />
                     </Form.Item>
-                    <Form.Item name="difficulty" label="Difficult Level">
-                        <Select placeholder="Easy" allowClear>
+                    <Form.Item name="difficulty" label="Difficulty">
+                        <Select placeholder="Easy">
                             <Option value={Difficulty.easy}>Easy</Option>
                             <Option value={Difficulty.medium}>Medium</Option>
                             <Option value={Difficulty.hard}>Hard</Option>
                         </Select>
                     </Form.Item>
-                    <Form.Item name="short_description" label="Description">
+                    <Form.Item name="short_description" label="Short Description">
                         <Input />
                     </Form.Item>
-                    <Form.Item name="description" initialValue={value}>
+                    <Form.Item name="description" label="Description" initialValue={value}>
                         <MDEditor
                             value={value}
                             onChange={(val) => {
@@ -75,48 +98,40 @@ export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, onCr
                     {/* Input type */}
                     <Row>
                         <Col span={12}>
-                            <Row>
-                                <Text code>Input type</Text>
+                            <Row style={{ marginBottom: '1rem' }} >
+                                <Text>Input Format</Text>
                             </Row>
                             <Row>
                                 <Form.List name="inputType">
                                     {(fields, { add, remove }) => (
                                         <>
-                                            {fields.map((field) => (
-                                                <Space key={field.key} align="baseline">
-                                                    <Form.Item
-                                                        noStyle
-                                                        shouldUpdate={(prevValues, curValues) =>
-                                                            prevValues.name !== curValues.name ||
-                                                            prevValues.type !== curValues.type
-                                                        }
-                                                    >
-                                                        {() => (
-                                                            <Form.Item {...field} name={[field.name, 'type']}>
-                                                                <Select placeholder="Array Of Integers" allowClear>
-                                                                    <Option value="integer">Integer</Option>
-                                                                    <Option value="string">String</Option>
-                                                                    <Option value="boolean">Boolean</Option>
-                                                                    <Option value="array of integers">
-                                                                        Array Of Integer
-                                                                    </Option>
-                                                                    <Option value="array of strings">
-                                                                        Array Of Strings
-                                                                    </Option>
-                                                                </Select>
-                                                            </Form.Item>
-                                                        )}
-                                                    </Form.Item>
-                                                    <Form.Item
-                                                        {...field}
-                                                        name={[field.name, 'name']}
-                                                        rules={[{ required: true, message: 'Missing InputParam' }]}
-                                                    >
-                                                        <Input placeholder="Input Param" />
-                                                    </Form.Item>
+                                            {fields.map((field, index) => (
+                                                <Row gutter={16} style={{ width: '100%' }} >
+                                                    <Col span={11} >
+                                                        <Form.Item {...field} name={[field.name, 'type']}>
+                                                            <Select placeholder="Array Of Integers" >
+                                                                {inputOutputTypes.map((type) => (
+                                                                    <Option value={type}>{type}</Option>
+                                                                ))
+                                                                }
+                                                            </Select>
+                                                        </Form.Item>
 
-                                                    <MinusCircleOutlined onClick={() => remove(field.name)} />
-                                                </Space>
+                                                    </Col>
+                                                    <Col span={11}>
+                                                        <Form.Item
+                                                            {...field}
+                                                            name={[field.name, 'name']}
+                                                            rules={[{ required: true, message: 'Missing InputParam' }]}
+                                                        >
+                                                            <Input placeholder="Input Param" />
+                                                        </Form.Item>
+                                                    </Col>
+                                                    <Col span={2}  >
+                                                        {index > 0 && <MinusCircleOutlined onClick={() => remove(field.name)} />}
+                                                    </Col>
+                                                </Row>
+
                                             ))}
 
                                             <Form.Item>
@@ -136,35 +151,34 @@ export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, onCr
                         </Col>
                         {/* Output Type */}
                         <Col span={12}>
-                            <Row>
-                                <Text code>Output type</Text>
+                            <Row style={{ marginBottom: '1rem' }} >
+                                <Text>Output Format</Text>
                             </Row>
-                            <Row>
-                                <Form.Item>
-                                    <Space.Compact>
-                                        <Form.Item
-                                            name={['outputType', 'type']}
-                                            noStyle
-                                            rules={[{ required: true, message: 'Output is required' }]}
-                                        >
-                                            <Select placeholder="Array Of Integer" allowClear>
-                                                <Option value="integer">Integer</Option>
-                                                <Option value="string">String</Option>
-                                                <Option value="boolean">Boolean</Option>
-                                                <Option value="array of integers">Array Of Integer</Option>
-                                                <Option value="array of strings">Array Of Strings</Option>
-                                            </Select>
-                                        </Form.Item>
-                                        <Form.Item
-                                            name={['outputType', 'name']}
-                                            noStyle
-                                            rules={[{ required: true, message: 'type is required' }]}
-                                        >
-                                            <Input placeholder="Output Param" />
-                                        </Form.Item>
-                                    </Space.Compact>
-                                </Form.Item>
+
+                            <Row gutter={16} style={{ width: '100%' }}>
+                                <Col span={12}>
+                                    <Form.Item
+                                        name={['outputType', 'type']}
+                                        rules={[{ required: true, message: 'Output is required' }]}
+                                    >
+                                        <Select placeholder="Array Of Integer" >
+                                            {inputOutputTypes.map((type) => (
+                                                <Option value={type}>{type}</Option>
+                                            ))}
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                    <Form.Item
+                                        name={['outputType', 'name']}
+                                        noStyle
+                                        rules={[{ required: true, message: 'type is required' }]}
+                                    >
+                                        <Input placeholder="Output Param" />
+                                    </Form.Item>
+                                </Col>
                             </Row>
+
                         </Col>
                     </Row>
                     {/* Test Cases */}
@@ -173,40 +187,43 @@ export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, onCr
                     <Form.List name="inputOutput">
                         {(fields, { add, remove }) => (
                             <>
-                                {fields.map((field) => (
-                                    <Space key={field.key} align="baseline">
-                                        <Form.Item shouldUpdate={(prevValues, curValues) => prevValues.inputType !== curValues.inputType}>
-                                            <Space.Compact>
-                                                <Form.List
-                                                    name={[field.name, 'input']}
-                                                    initialValue={Array.from(
-                                                        { length: form.getFieldValue('inputType')?.length || 0 },
-                                                        () => ({}),
-                                                    )}
+                                <Row style={{ width: '100%' }} >
+                                    {fields.map((field) => (
+                                        <Row gutter={16} style={{ width: '100%' }} key={field.key}>
+                                            <Col span={11}>
+                                                <Form.Item shouldUpdate={(prevValues, curValues) => prevValues.inputType !== curValues.inputType}>
+                                                    <Form.List
+                                                        name={[field.name, 'input']}
+                                                        initialValue={getInitialValue(form.getFieldValue('inputType'))}
+                                                    >
+                                                        {(fields) => (
+                                                            <div>
+                                                                {fields.map((field) => (
+                                                                    <Form.Item {...field} rules={[{ validator: validateInputBasedOnOption(form.getFieldValue('inputType')[field.key]?.type) }]}>
+                                                                        <Input placeholder='1 or [1,2,3] ' />
+                                                                    </Form.Item>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </Form.List>
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={11}>
+                                                <Form.Item
+                                                    {...field}
+                                                    name={[field.name, 'output']}
+                                                    noStyle
+                                                    rules={[{ validator: validateInputBasedOnOption(form.getFieldValue("")) }]}
                                                 >
-                                                    {(fields) => (
-                                                        <div>
-                                                            {fields.map((field) => (
-                                                                <Form.Item {...field} rules={[ {validator: validateInputBasedOnOption(form.getFieldValue('inputType')[field.key].type)}]}>
-                                                                    <Input />
-                                                                </Form.Item>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </Form.List>
-                                            </Space.Compact>
-                                        </Form.Item>
-                                        <Form.Item
-                                            {...field}
-                                            name={[field.name, 'output']}
-                                            noStyle
-                                            rules={[{validator:validateInputBasedOnOption(form.getFieldValue(""))}]}
-                                        >
-                                            <Input placeholder="Output" />
-                                        </Form.Item>
-                                        <MinusCircleOutlined onClick={() => remove(field.name)} />
-                                    </Space>
-                                ))}
+                                                    <Input placeholder="Output" />
+                                                </Form.Item>
+                                            </Col>
+                                            <Col span={2}>
+                                                <MinusCircleOutlined onClick={() => remove(field.name)} />
+                                            </Col>
+                                        </Row>
+                                    ))}
+                                </Row>
 
                                 <Form.Item>
                                     <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
@@ -219,6 +236,25 @@ export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, onCr
                     </Form.List>
                 </Form>
             </Modal>
-        </div>
+        </div >
     );
 };
+
+const getInitialValue = (inputType: IParamType[]) => {
+    return inputType.map(({ type }) => {
+        switch (type) {
+            case 'number':
+                return '1';
+            case 'string':
+                return 'hello';
+            case 'boolean':
+                return 'true';
+            case 'arrayOfNumber':
+                return '[1,2,3]';
+            case 'arrayOfString':
+                return '["hello","world"]';
+            default:
+                return '1';
+        }
+    });
+}
