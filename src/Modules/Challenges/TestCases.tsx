@@ -60,7 +60,7 @@ const TestCases: React.FC = () => {
                       {...field}
                       name={[field.name, 'output']}
                       noStyle
-                      rules={[{ validator: validateInputBasedOnOption(form.getFieldValue('inputType')[field.key]?.type)}]}
+                      rules={[{ validator: validateInputBasedOnOption(form.getFieldValue('outputType')?.type)}]}
                     >
                       <Input placeholder="Output" />
                     </Form.Item>
