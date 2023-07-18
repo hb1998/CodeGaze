@@ -10,73 +10,14 @@ import { ProgrammingLanguages } from './ProgrammingLanguages';
 import Output from './Output';
 import classes from './Editor.module.css';
 import { CodeGenerator } from '../../CodeGeneration/CodeGenerator';
-import { IInputOutput, IParamType } from '../../../types/Evaluator.types';
+import { IParamType } from '../../../types/Evaluator.types';
 import { CodeEvaluator } from '../../CodeEvaluator/CodeEvaluator';
 import { useLocation, useParams } from 'react-router';
 import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
-import { Table, Tag } from 'antd';
-import Title from 'antd/es/typography/Title';
-import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import TestCaseTable from './TestCaseTable';
 
 export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
 export type languageNameType = languageObjectType['name'];
-
-const sampleInput = {
-    inputType: [
-        {
-            name: 'numberParam',
-            type: 'number',
-        },
-        {
-            name: 'numberArrayParam',
-            type: 'arrayOfNumber',
-        },
-    ] as IParamType[],
-    outputType: {
-        name: 'output',
-        type: 'number',
-    } as IParamType,
-    inputOutput: [
-        {
-            input: ['4', `[1,2,3]`],
-            output: '4',
-        },
-        {
-            input: ['3', '[1, 2, 3]'],
-            output: '3',
-        },
-    ] as IInputOutput[],
-};
-
-const colDef = [
-    {
-        title: 'Input',
-        dataIndex: 'input',
-        key: 'input',
-    },
-    {
-        title: 'Expected',
-        dataIndex: 'expected',
-        key: 'expected',
-    },
-    {
-        title: 'Result',
-        dataIndex: 'result',
-        key: 'result',
-        render: (value: string) => {
-            if (value === '') {
-                return null;
-            }
-            const isPass = value === 'Passed';
-            const color = isPass ? 'green' : 'red';
-            return (
-                <Tag icon={isPass ? <CheckCircleOutlined /> : <CloseCircleOutlined />} color={color}>
-                    {value}
-                </Tag>
-            );
-        },
-    },
-];
 
 const Editor = () => {
     const [sizes, setSizes] = useState([500, '100%', '35%']);
@@ -191,15 +132,6 @@ const Editor = () => {
         }
     };
 
-    const testCaseResult = sampleInput.inputOutput.map((inputOutput, index) => {
-        return {
-            key: index,
-            input: inputOutput.input,
-            expected: inputOutput.output,
-            result: result[index] ? 'Passed' : 'Failed',
-        };
-    });
-
     return (
         <div>
             <div className={classes.main} style={{ padding: '1rem' }}>
@@ -227,10 +159,7 @@ const Editor = () => {
                     <Pane>
                         <div style={{ padding: '1rem' }}>
                             <Output output={output} handleRun={handleRun} handleSubmit={handleSubmit} />
-                            <div style={{ height: '30%' }}>
-                                <Title level={4}>Test Cases</Title>
-                                <Table dataSource={testCaseResult} columns={colDef} pagination={false} />
-                            </div>
+                            <TestCaseTable output={output} result={result} />
                         </div>
                     </Pane>
                 </SplitPane>
