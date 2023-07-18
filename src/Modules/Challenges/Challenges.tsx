@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Button } from 'antd';
 import { AppstoreAddOutlined, ControlOutlined, ReadFilled } from '@ant-design/icons';
 import ChallengesTable from './ChallengesTable';
-import { ChallengeForm } from './ChallengeForm';
 import { Card, Col, Row, Typography, List } from 'antd';
 import { Challenge } from '../../types/Models';
+import { ChallengeForm } from './ChallengeForm';
 const { Title } = Typography;
 
 const Challenges: React.FC = () => {

@@ -88,8 +88,7 @@ export const challengeColumn = (openForm) => [
         <>
           <Space align='baseline'>
             <Link to={`/challenges/${record.id}`} state={record} ><SelectOutlined style={{ color: "blue", marginRight: 12 }} /></Link>
-            {/* <Edit param={record.id} /> */}
-            <EditFilled onClick={handleEdit} />
+            <EditFilled style={{ color: 'blue', marginLeft: 4}} onClick={handleEdit} />
 
             <Popconfirm
               title="Are you sure you want to delete this challenge?"
@@ -106,12 +105,3 @@ export const challengeColumn = (openForm) => [
     },
   },
 ];
-
-
-
-
-
-
-
-
-
