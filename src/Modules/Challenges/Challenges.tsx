@@ -2,16 +2,22 @@ import React, { useState } from 'react';
 import { Button } from 'antd';
 import { AppstoreAddOutlined, ControlOutlined, ReadFilled } from '@ant-design/icons';
 import ChallengesTable from './ChallengesTable';
-import { ChallengeForm } from './ChallengeForm';
 import { Card, Col, Row, Typography, List } from 'antd';
+import { Challenge } from '../../types/Models';
+import ChallengeForm from './ChallengeForm';
 const { Title } = Typography;
 
 const Challenges: React.FC = () => {
-  const [open, setOpen] = useState(false);
 
-  const onCreate = (values: any) => {
-    console.log('Received values of form: ', values);
-    setOpen(false);
+  const [modalState, setModalState] = useState({
+    open: false,
+    values: null
+  })
+  const onCreate = () => {
+    setModalState({
+      open: true,
+      values: null
+    });
   };
   return (
     <>
@@ -51,14 +57,21 @@ const Challenges: React.FC = () => {
       </div>
       <div>
         <ChallengeForm
-          open={open}
+          open={modalState.open}
           onCreate={onCreate}
           onCancel={() => {
-            setOpen(false);
-          } } values={undefined}        />
+            setModalState({
+              open: false,
+              values: null
+            })
+          }}
+          values={modalState.values} />
       </div>
-      <ChallengesTable openForm={() => {
-        setOpen(true);
+      <ChallengesTable openForm={(values: Challenge) => {
+        setModalState({
+          open: true,
+          values
+        })
       }} />
     </>
   );
