@@ -3,7 +3,7 @@ import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/C
 import { ProgrammingLanguages } from '../common/CodeEditor/ProgrammingLanguages';
 
 const separator = '##---##';
-export class JavascriptEvaluator {
+export class JavaEvaluator {
     inputTypes: IParamType[];
     outputType: IParamType;
 
@@ -16,7 +16,7 @@ export class JavascriptEvaluator {
         try {
             const output = await CandidateAssessmentAPIService.runCode(
                 evaluateTemplate,
-                ProgrammingLanguages.javaScript.id.toString(),
+                ProgrammingLanguages.java.id.toString(),
             );
             if (output.status.id === CompilationStatus.ACCEPTED) {
                 const outputArray = output.stdout
@@ -39,7 +39,7 @@ export class JavascriptEvaluator {
         try {
             const output = await CandidateAssessmentAPIService.runCode(
                 evaluateTemplate,
-                ProgrammingLanguages.javaScript.id.toString(),
+                ProgrammingLanguages.java.id.toString(),
             );
             return output;
         } catch (error) {
@@ -49,18 +49,24 @@ export class JavascriptEvaluator {
 
     private getEvaluateTemplate(code: string, testCases: IInputOutput[]) {
         return `
-            ${code}
-            function evaluate() {
-                ${testCases
-                    .map((testCase) => {
-                        return `
-                   console.log(${FUNCTION_NAME}(${testCase.input.join(', ')}));
-                   console.log('${separator}');
-                   `;
-                    })
-                    .join('\n')}
-            }
+        ${code}
+
+      public class Main {
+        public static void main(String[] args) {
             evaluate();
-        `;
+        }
+    
+        public static void evaluate() {
+            ${testCases
+                .map((testCase) => {
+                    return `
+                System.out.println(${FUNCTION_NAME}(${testCase.input.join(', ')}));
+                System.out.println("${separator}");
+                `;
+                })
+                .join('\n')}
+        }
+    }
+      `;
     }
 }

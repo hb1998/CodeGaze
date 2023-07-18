@@ -1,13 +1,14 @@
 import { IInputOutput, IParamType } from '../../types/Evaluator.types';
 import { languageNameType } from '../common/CodeEditor/Editor';
-import { JavascriptEvalutor } from './JavascriptEvaluator';
-
+import { JavaEvaluator } from './JavaEvaluator';
+import { JavascriptEvaluator } from './JavascriptEvaluator';
+import { PythonEvaluator } from './PythonEvaluator';
 
 export class CodeEvaluator {
     language: languageNameType;
     inputTypes: IParamType[];
     outputType: IParamType;
-    evaluator: JavascriptEvalutor;
+    evaluator: JavascriptEvaluator | JavaEvaluator | PythonEvaluator;
 
     constructor(language: languageNameType, inputTypes: IParamType[], outputType: IParamType) {
         this.language = language;
@@ -16,10 +17,14 @@ export class CodeEvaluator {
         this.evaluator = this.getEvaluator();
     }
 
-    private getEvaluator() {
+    private getEvaluator(): JavascriptEvaluator | JavaEvaluator | PythonEvaluator {
         switch (this.language) {
             case 'Javascript':
-                return new JavascriptEvalutor(this.inputTypes, this.outputType);
+                return new JavascriptEvaluator(this.inputTypes, this.outputType);
+            case 'Java':
+                return new JavaEvaluator(this.inputTypes, this.outputType);
+            case 'Python':
+                return new PythonEvaluator(this.inputTypes, this.outputType);
         }
     }
 
