@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, Input, Modal, Row, Select, Space, Typography } from 'antd';
 import MDEditor from '@uiw/react-md-editor';
 import { ChallengeInsertDto, Difficulty } from '../../types/Models';
@@ -34,7 +34,7 @@ const inputOutputTypes: IParamType['type'][] = [
 export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, values, onCreate, onCancel }) => {
     const [form] = Form.useForm();
     const [value, setValue] = React.useState('**Hello world!!!**');
-    const [reload, setReload] = useState(false); 
+    const [reload, setReload] = useState(false);
     const isEditMode = !!values;
     const saveFormData = async (values: IChallengeCreateForm) => {
         try {
@@ -45,33 +45,37 @@ export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, valu
                 difficulty: values.difficulty,
                 short_description: values.short_description,
                 input_output: JSON.stringify({
-                  inputType: inputType,
-                  outputType: outputType,
-                  inputOutput: inputOutput,
+                    inputType: inputType,
+                    outputType: outputType,
+                    inputOutput: inputOutput,
                 }),
-              };
-      
-              const response = await ChallengeAPIService.create(dataToSave);
-              if (response && response.error) {
+            };
+
+            const response = await ChallengeAPIService.create(dataToSave);
+            if (response && response.error) {
                 console.error('Error saving form data:', response.error);
                 return;
-              }
-          
-              console.log('Form data saved:', response.data);
-              onCreate(values);
-              window.location.href = '/challenges'; 
-            } catch (error) {
-              console.error('Error saving form data:', error);
             }
-      };
 
-      React.useEffect(() => {
-        if (reload) {
-          window.location.reload();
+            console.log('Form data saved:', response.data);
+            onCreate(values);
+            window.location.href = '/challenges';
+        } catch (error) {
+            console.error('Error saving form data:', error);
         }
-      }, [reload]);
-    
-      
+    };
+
+    React.useEffect(() => {
+        if (reload) {
+            window.location.reload();
+        }
+    }, [reload]);
+
+    useEffect(() => {
+        form.setFieldsValue(values);
+    }, [form, values])
+
+
     return (
         <div style={{ width: '1200px' }}>
             <Modal
@@ -89,7 +93,7 @@ export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, valu
                             form.resetFields();
                             onCreate(values);
                             saveFormData(values);
-                           
+
                         })
                         .catch((info) => {
                             console.log('Validate Failed:', info);
@@ -100,7 +104,7 @@ export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, valu
                     form={form}
                     autoComplete="off"
                     name="form_in_modal"
-                    initialValues={values ? values : {
+                    initialValues={{
                         inputType: [
                             {
                                 type: "number",
