@@ -1,11 +1,10 @@
 import { useState, useEffect, ChangeEvent, useMemo } from 'react';
-import { Table } from 'antd';
+import { Button, Table } from 'antd';
 import { ChallengeAPIService } from './services/Challenge.API';
 import { challengeColumn } from './ChallengeColumn';
 import { Challenge } from '../../types/Models';
 import Title from 'antd/es/typography/Title';
 import Search from 'antd/es/input/Search';
-import { Button } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
 const ChallengeTable = ({ openForm }) => {
@@ -38,6 +37,7 @@ const ChallengeTable = ({ openForm }) => {
         });
     }, [challenges, search]);
 
+    const columnDef = challengeColumn(openForm);
     return (
         <div className="container">
             <Title level={2}>Challenges</Title>
@@ -62,13 +62,7 @@ const ChallengeTable = ({ openForm }) => {
                     Create Challenge
                 </Button>
             </div>
-            <Table
-                rowKey="id"
-                dataSource={filteredChallenges}
-                columns={challengeColumn}
-                size="small"
-                loading={loading}
-            />
+            <Table rowKey="id" dataSource={filteredChallenges} columns={columnDef} size="small" loading={loading} />
         </div>
     );
 };
