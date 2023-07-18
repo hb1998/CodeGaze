@@ -16,7 +16,7 @@ export class PythonEvaluator {
         try {
             const output = await CandidateAssessmentAPIService.runCode(
                 evaluateTemplate,
-                ProgrammingLanguages.java.id.toString(),
+                ProgrammingLanguages.python.id.toString(),
             );
             if (output.status.id === CompilationStatus.ACCEPTED) {
                 const outputArray = output.stdout
@@ -35,11 +35,11 @@ export class PythonEvaluator {
     }
 
     async evaluateAndReturnOutput(code: string, testCases: IInputOutput[]): Promise<CodeOutput> {
-        const evaluateTemplate = this.getEvaluateTemplate(code, testCases);
+        const evaluateTemplate = this.getEvaluateTemplate(code, [testCases[0]]);
         try {
             const output = await CandidateAssessmentAPIService.runCode(
                 evaluateTemplate,
-                ProgrammingLanguages.java.id.toString(),
+                ProgrammingLanguages.python.id.toString(),
             );
             return output;
         } catch (error) {

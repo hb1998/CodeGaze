@@ -3,7 +3,6 @@ import { Table, Tag } from 'antd';
 import Title from 'antd/es/typography/Title';
 import { sampleInput } from '../../../types/Models';
 interface ITestCaseProps {
-    output: string;
     result: boolean[];
 }
 
@@ -36,7 +35,7 @@ const TestCaseTable = (props: ITestCaseProps) => {
                 if (value === '') {
                     return null;
                 }
-                if (props.output === '') {
+                if (props.result.length === 0) {
                     return '';
                 }
                 const isPass = value === 'Passed';

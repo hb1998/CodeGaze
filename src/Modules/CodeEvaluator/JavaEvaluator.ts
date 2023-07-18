@@ -35,7 +35,8 @@ export class JavaEvaluator {
     }
 
     async evaluateAndReturnOutput(code: string, testCases: IInputOutput[]): Promise<CodeOutput> {
-        const evaluateTemplate = this.getEvaluateTemplate(code, testCases);
+        const evaluateTemplate = this.getEvaluateTemplate(code, [testCases[0]]);
+
         try {
             const output = await CandidateAssessmentAPIService.runCode(
                 evaluateTemplate,
@@ -49,19 +50,16 @@ export class JavaEvaluator {
 
     private getEvaluateTemplate(code: string, testCases: IInputOutput[]) {
         return `
-        ${code}
 
       public class Main {
+
+        ${code}
+
         public static void main(String[] args) {
-            evaluate();
-        }
-    
-        public static void evaluate() {
             ${testCases
                 .map((testCase) => {
                     return `
                 System.out.println(${FUNCTION_NAME}(${testCase.input.join(', ')}));
-                System.out.println("${separator}");
                 `;
                 })
                 .join('\n')}

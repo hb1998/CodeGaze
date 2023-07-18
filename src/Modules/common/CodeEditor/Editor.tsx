@@ -156,7 +156,7 @@ const Editor = () => {
                     <Pane>
                         <div style={{ padding: '1rem' }}>
                             <Output output={output} handleRun={handleRun} handleSubmit={handleSubmit} />
-                            <TestCaseTable output={output} result={result} />
+                            <TestCaseTable result={result} />
                         </div>
                     </Pane>
                 </SplitPane>

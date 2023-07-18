@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { AssessmentUpdateDto, CandidateInsertDto, InputOutput, Status } from '../../../types/Models';
+import { AssessmentUpdateDto, CandidateInsertDto, Status } from '../../../types/Models';
 import { DatabaseCode } from '../../../types/Util.types';
 import { supabase } from '../../API/supabase';
 import { CodeOutput } from '../../../types/Evaluator.types';

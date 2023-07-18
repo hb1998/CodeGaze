@@ -34,8 +34,8 @@ export class JavascriptEvaluator {
         return [true];
     }
 
-    async evaluateAndReturnOutput(code: string, testCases: IInputOutput[]): Promise<CodeOutput> {
-        const evaluateTemplate = this.getEvaluateTemplate(code, testCases);
+    async evaluateAndReturnOutput(code: string, testCases: IInputOutput): Promise<CodeOutput> {
+        const evaluateTemplate = this.getEvaluateTemplate(code, [testCases[1]]);
         try {
             const output = await CandidateAssessmentAPIService.runCode(
                 evaluateTemplate,
@@ -55,7 +55,6 @@ export class JavascriptEvaluator {
                     .map((testCase) => {
                         return `
                    console.log(${FUNCTION_NAME}(${testCase.input.join(', ')}));
-                   console.log('${separator}');
                    `;
                     })
                     .join('\n')}
