@@ -55,8 +55,7 @@ const Challenges: React.FC = () => {
           onCreate={onCreate}
           onCancel={() => {
             setOpen(false);
-          }}
-        />
+          } } values={undefined}        />
       </div>
       <ChallengesTable openForm={() => {
         setOpen(true);

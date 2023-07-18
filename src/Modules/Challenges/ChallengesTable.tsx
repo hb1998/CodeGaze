@@ -16,7 +16,6 @@ const ChallengeTable = ({ openForm }) => {
         try {
             const data = await ChallengeAPIService.getAll();
             setChallenges(data);
-            console.log(data);
         } catch (error) {
             console.error('Error fetching candidates:', error);
         } finally {
