@@ -50,12 +50,17 @@ export class PythonEvaluator {
     private getEvaluateTemplate(code: string, testCases: IInputOutput[]) {
         return `
         ${code}
-        def evaluate():
-            ${testCases}
-            for test_case in test_cases:
-                print(${FUNCTION_NAME}(${', '.join(test_case['input'])}))
-                print('${separator}')
-        
-        evaluate()`;
+            def evaluate():
+        ${testCases
+            .map((testCase) => {
+                return `
+        print(${FUNCTION_NAME}(${testCase.input.join(', ')}))
+        print('${separator}')
+        `;
+            })
+            .join('\n')}
+    
+    evaluate()
+    `;
     }
 }

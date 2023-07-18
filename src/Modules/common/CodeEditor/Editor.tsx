@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router';
-import Axios from 'axios';
 // SplitPane imports
 import SplitPane, { Pane } from 'split-pane-react';
 import 'split-pane-react/esm/themes/default.css';
@@ -29,12 +28,14 @@ const Editor = () => {
     const [output, setOutput] = useState<string>('');
     const [result, setResult] = useState<boolean[]>([]);
     const [challenge, setChallenge] = useState(null);
+    const evaluator = new CodeEvaluator(selectEditorLanguage.name, sampleInput.inputType, sampleInput.outputType);
 
     const { pathname, state } = useLocation();
     const rootPath = pathname.split('/')[1];
     const isChallenge = rootPath === 'challenges';
 
     const { id } = useParams<{ id: string }>();
+
     useEffect(() => {
         if (isChallenge) {
             if (state) {
@@ -79,29 +80,25 @@ const Editor = () => {
         setCode(value);
     };
 
-    const handleRun = () => {
-        Axios.post(import.meta.env.VITE_COMPILER_ENDPOINT || '', {
-            source_code: code,
-            language_id: selectEditorLanguage.id,
-        })
-            .then((response) => {
-                setOutput(response.data.stdout);
-                if (response.data.stdout === null) {
-                    setOutput(
-                        `${response.data.status.description !== 'Accepted' ? response.data.status.description : ''}\n${
-                            response.data.stderr
-                        }\n${response.data.compile_output !== null ? response.data.compile_output : ''}`,
-                    );
-                }
-            })
-            .catch((error) => {
-                if (error.response && error.response.data) {
-                    setOutput(`Compiler Error: ${error.response.data.error}`);
-                } else {
-                    setOutput('An error occurred while compiling the code.');
-                }
-                console.error('Error running code:', error);
-            });
+    const handleRun = async () => {
+        try {
+            const result = await evaluator.runAndEvaluateCode(code, sampleInput.inputOutput);
+            setOutput(result.stdout);
+            if (result.stdout === null) {
+                setOutput(
+                    `${result.status.description !== 'Accepted' ? result.status.description : ''}\n${result.stderr}\n${
+                        result.compile_output !== null ? result.compile_output : ''
+                    }`,
+                );
+            }
+        } catch (error) {
+            if (error.response && error.response.data) {
+                setOutput(`Compiler Error: ${error.response.data.error}`);
+            } else {
+                setOutput('An error occurred while compiling the code.');
+            }
+            console.error('Error running code:', error);
+        }
     };
 
     const updateBoilerCode = (languageSelected: languageNameType) => {
@@ -124,7 +121,6 @@ const Editor = () => {
     };
 
     const handleSubmit = async () => {
-        const evaluator = new CodeEvaluator(selectEditorLanguage.name, sampleInput.inputType, sampleInput.outputType);
         try {
             const result = await evaluator.evaluate(code, sampleInput.inputOutput);
             setResult(result);

@@ -1,4 +1,4 @@
-import { IInputOutput, IParamType } from '../../types/Evaluator.types';
+import { CodeOutput, IInputOutput, IParamType } from '../../types/Evaluator.types';
 import { languageNameType } from '../common/CodeEditor/Editor';
 import { JavaEvaluator } from './JavaEvaluator';
 import { JavascriptEvaluator } from './JavascriptEvaluator';
@@ -30,5 +30,9 @@ export class CodeEvaluator {
 
     evaluate(code: string, testCases: IInputOutput[]): Promise<boolean[]> {
         return this.evaluator?.evaluate(code, testCases);
+    }
+
+    runAndEvaluateCode(code: string, testCases: IInputOutput[]): Promise<CodeOutput> {
+        return this.evaluator?.evaluateAndReturnOutput(code, testCases);
     }
 }
