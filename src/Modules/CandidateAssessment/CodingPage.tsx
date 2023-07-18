@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Editor from '../common/CodeEditor/Editor';
-import { CandidateAssessmenmtAPIService } from './services/CandidateAssessment.API';
+import { CandidateAssessmentAPIService } from './services/CandidateAssessment.API';
 
 interface AssessmentData {
     question: string;
@@ -14,7 +14,7 @@ function CodingPage() {
     const fetchAssessmentData = async (assessmentID: string) => {
         try {
             // const response = await fetch(`endpoint/${assessmentID}`);
-            const response = await CandidateAssessmenmtAPIService.getByExam(+assessmentID);
+            const response = await CandidateAssessmentAPIService.getByExam(+assessmentID);
             // const data = await response.json();
             return response;
         } catch (error) {

@@ -4,7 +4,7 @@ import { DatabaseCode } from '../../../types/Util.types';
 import { supabase } from '../../API/supabase';
 import { CodeOutput } from '../../../types/Evaluator.types';
 
-export class CandidateAssessmenmtAPIService {
+export class CandidateAssessmentAPIService {
     static async getAll() {
         const { data, error } = await supabase.from('assessment').select('*, candidate(*), exam(*), challenge(*)');
         if (error) {

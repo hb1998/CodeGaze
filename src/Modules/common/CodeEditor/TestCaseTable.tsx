@@ -1,35 +1,7 @@
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Table, Tag } from 'antd';
 import Title from 'antd/es/typography/Title';
-import { IInputOutput, IParamType } from '../../../types/Evaluator.types';
-
-const sampleInput = {
-    inputType: [
-        {
-            name: 'numberParam',
-            type: 'number',
-        },
-        {
-            name: 'numberArrayParam',
-            type: 'arrayOfNumber',
-        },
-    ] as IParamType[],
-    outputType: {
-        name: 'output',
-        type: 'number',
-    } as IParamType,
-    inputOutput: [
-        {
-            input: ['4', `[1,2,3]`],
-            output: '4',
-        },
-        {
-            input: ['3', '[1, 2, 3]'],
-            output: '3',
-        },
-    ] as IInputOutput[],
-};
-
+import { sampleInput } from '../../../types/Models';
 interface ITestCaseProps {
     output: string;
     result: boolean[];

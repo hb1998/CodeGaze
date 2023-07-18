@@ -2,7 +2,7 @@ import { useState, useEffect, ChangeEvent, useMemo } from 'react';
 import { Card, Col, Row, Space, Statistic, Table } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Search from 'antd/es/input/Search';
-import { CandidateAssessmenmtAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
+import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
 import { Status } from '../../types/Models';
 import dayjs from 'dayjs';
 
@@ -48,7 +48,7 @@ const AssessmentColumnDef = [
     },
 ];
 
-type AssessmentQueryResult = Awaited<ReturnType<typeof CandidateAssessmenmtAPIService.getAll>>;
+type AssessmentQueryResult = Awaited<ReturnType<typeof CandidateAssessmentAPIService.getAll>>;
 
 const Dashboard = () => {
     const [assessments, setAssessments] = useState<AssessmentQueryResult>([]);
@@ -56,7 +56,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const fetchAssessments = async () => {
         try {
-            const data = await CandidateAssessmenmtAPIService.getAll();
+            const data = await CandidateAssessmentAPIService.getAll();
             setAssessments(data);
             console.log(data);
         } catch (error) {

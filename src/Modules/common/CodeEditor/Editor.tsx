@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation, useParams } from 'react-router';
 import Axios from 'axios';
 // SplitPane imports
 import SplitPane, { Pane } from 'split-pane-react';
@@ -6,15 +7,15 @@ import 'split-pane-react/esm/themes/default.css';
 // Components Import
 import QuestionContent from './QuestionContent';
 import CodeEditor from './CodeEditor';
-import { ProgrammingLanguages } from './ProgrammingLanguages';
 import Output from './Output';
-import classes from './Editor.module.css';
+import TestCaseTable from './TestCaseTable';
+import { ProgrammingLanguages } from './ProgrammingLanguages';
 import { CodeGenerator } from '../../CodeGeneration/CodeGenerator';
 import { IParamType } from '../../../types/Evaluator.types';
 import { CodeEvaluator } from '../../CodeEvaluator/CodeEvaluator';
-import { useLocation, useParams } from 'react-router';
 import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
-import TestCaseTable from './TestCaseTable';
+import { sampleInput } from '../../../types/Models';
+import classes from './Editor.module.css';
 
 export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
 export type languageNameType = languageObjectType['name'];

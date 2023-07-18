@@ -1,6 +1,6 @@
 import { Form, Input, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { CandidateAssessmenmtAPIService } from './services/CandidateAssessment.API';
+import { CandidateAssessmentAPIService } from './services/CandidateAssessment.API';
 import Logo from '../../assets/Lumel_Logo.png';
 
 interface FormValues {
@@ -34,7 +34,7 @@ const CandidateAssessment = ({ examId }: CandidateAssessmentProps) => {
 
     const createUser = async (userData: object) => {
         try {
-            const assessmentData = await CandidateAssessmenmtAPIService.create(userData);
+            const assessmentData = await CandidateAssessmentAPIService.create(userData);
             console.log('User created:', assessmentData);
             return assessmentData;
         } catch (error) {
