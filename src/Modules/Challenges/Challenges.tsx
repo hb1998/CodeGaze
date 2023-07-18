@@ -4,8 +4,8 @@ import { AppstoreAddOutlined, ControlOutlined, ReadFilled } from '@ant-design/ic
 import ChallengesTable from './ChallengesTable';
 import { Card, Col, Row, Typography, List } from 'antd';
 import { Challenge } from '../../types/Models';
-import ChallengeForm from './ChallengeForm';
-
+import { ChallengeForm } from './ChallengeForm';
+const { Title } = Typography;
 
 const Challenges: React.FC = () => {
 
