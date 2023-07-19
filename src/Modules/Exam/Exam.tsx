@@ -1,7 +1,7 @@
 import { Layout, Tabs } from 'antd';
 import Title from 'antd/es/typography/Title';
 import { Outlet, useNavigate } from 'react-router-dom';
-import './styles/Exam.css'
+import './styles/Exam.css';
 
 const { TabPane } = Tabs;
 const { Content } = Layout;
@@ -10,10 +10,10 @@ const Exam = () => {
     const navigate = useNavigate();
 
     return (
-        <Layout>
+        <Layout className="container">
             <header>
                 <Title>Exam</Title>
-                <div style={{ padding: '5px' }}>
+                <div>
                     <Tabs defaultActiveKey="open" onTabClick={(key) => navigate(key)}>
                         <TabPane tab="Open" tabKey="open" key="open"></TabPane>
                         <TabPane tab="Analytics" tabKey="analytics" key="analytics"></TabPane>

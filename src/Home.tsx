@@ -21,6 +21,7 @@ import Update from './Modules/Auth/Update';
 import CandidateAssessment from './Modules/CandidateAssessment/CandidateAssessment';
 import HeaderComponent from './Modules/common/Header';
 import CommonUtils from './Modules/common/utils/Common.utils';
+import QuestionsComponent from './Modules/CandidateAssessment/QuestionsPage';
 const { Content } = Layout;
 
 const getProtectedRoute = (component: React.ReactNode) => {
@@ -31,11 +32,11 @@ const Home = () => {
     const session = useSelector((state: IRootState) => state.session);
     const location = useLocation();
     const route = location.pathname.split('/')[1];
-    const showHeader = route !== 'Login' && CommonUtils.isLoggedIn(session)
+    const showHeader = route !== 'Login' && CommonUtils.isLoggedIn(session);
     return (
         <Layout className="main-layout">
-            {showHeader && (<HeaderComponent />)}
-            <Content style={{ padding: '0 50px' }}>
+            {showHeader && <HeaderComponent />}
+            <Content>
                 <div className="site-layout-content">
                     <Routes>
                         <Route path="/" element={<Navigate to="/Login" />} />
@@ -68,7 +69,8 @@ const Home = () => {
                             element={getProtectedRoute(<OpenAssessment />)}
                         ></Route>
                         <Route path="/editor" element={<Editor />} />
-                        <Route path="/candidateAssessment" element={<CandidateAssessment />} />
+                        <Route path="/candidate_assessment" element={<CandidateAssessment examId={1} />} />
+                        <Route path="exam_id/:examId/candidate_id/:candidateId" element={<QuestionsComponent />} />
                     </Routes>
                 </div>
             </Content>

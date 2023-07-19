@@ -7,10 +7,7 @@ import Title from 'antd/es/typography/Title';
 import Search from 'antd/es/input/Search';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
-
-const ChallengeTable = ({
-    openForm
-}) => {
+const ChallengeTable = ({ openForm }) => {
     const [challenges, setChallenges] = useState<Challenge[]>([]);
     const [search, setsearch] = useState('');
     const [loading, setLoading] = useState<boolean>(true);
@@ -18,7 +15,6 @@ const ChallengeTable = ({
         try {
             const data = await ChallengeAPIService.getAll();
             setChallenges(data);
-
         } catch (error) {
             console.error('Error fetching candidates:', error);
         } finally {
@@ -38,29 +34,37 @@ const ChallengeTable = ({
     const filteredChallenges = useMemo(() => {
         return challenges.filter((challenge) => {
             return challenge.name?.toLowerCase().includes(search.toLowerCase());
-        }
-        );
+        });
     }, [challenges, search]);
 
-    const columnDef = challengeColumn(openForm)
+    const columnDef = challengeColumn(openForm);
     return (
-        <div style={{ padding: '10px' }}>
+        <div className="container">
             <Title level={2}>Challenges</Title>
-            <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-            }}>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                }}
+            >
                 <Search
                     placeholder="Search Challenge"
                     style={{ width: 200, marginBottom: '10px' }}
                     onChange={handleSearch}
                 />
-                <Button type="primary" icon={<AppstoreAddOutlined />} onClick={() => { openForm(); }}>Create Challenge</Button>
+                <Button
+                    type="primary"
+                    icon={<AppstoreAddOutlined />}
+                    onClick={() => {
+                        openForm();
+                    }}
+                >
+                    Create Challenge
+                </Button>
             </div>
             <Table rowKey="id" dataSource={filteredChallenges} columns={columnDef} size="small" loading={loading} />
         </div>
     );
-
 };
 
 export default ChallengeTable;
