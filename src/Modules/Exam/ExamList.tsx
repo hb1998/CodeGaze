@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react';
-import { CopyOutlined, EditFilled, EyeOutlined, PlusCircleFilled } from '@ant-design/icons';
+import { CopyOutlined, PlusCircleFilled } from '@ant-design/icons';
 import * as dayjs from 'dayjs';
 import { Button, Card, Col, Divider, Input, Modal, Row, Skeleton, Statistic, Tag } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import { Outlet, useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import Title from 'antd/es/typography/Title';
-import { ExamAPIService } from '../services/Exam.api';
 import { useSelector } from 'react-redux';
-import { IRootState } from '../../../store';
-import { Challenge, Difficulty, difficultyMap } from '../../../types/Models';
-import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
+import { IRootState } from '../../store';
+import { Challenge } from '../../types/Models';
+import { ChallengeAPIService } from '../Challenges/services/Challenge.API';
+import { ExamAPIService } from './services/Exam.api';
+import { toast } from 'react-toastify';
+import { ROUTES } from '../../constants/Route.constants';
+
 
 type ExamQueryResult = Awaited<ReturnType<typeof ExamAPIService.getAll>>;
 
-const Open = () => {
+const ExamList = () => {
     const session = useSelector((state: IRootState) => state.session);
     const [exams, setExams] = useState<ExamQueryResult>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -82,7 +85,6 @@ const Open = () => {
             setNewExamLoading(true);
             try {
                 const newExam = {
-                    // id: exams.length + 1,
                     name: existingExam.name,
                     created_by: session.user.email,
                 };
@@ -106,10 +108,12 @@ const Open = () => {
         setSearchQuery('');
     };
 
-    // const handleEdit = (examId) => {
-    //     navigate(`/assessments/${examId}/edit`);
-    // };
-
+    const copyInviteLink = (examId) => {
+        const domain = window.location.origin;
+        navigator.clipboard.writeText(`${domain}${ROUTES.CANDIDATE_ASSESSMENT}/${examId}`);
+        toast.success('Link copied to clipboard');
+    };
+    
     const handleOpenCard = (examId) => {
         navigate(`/assessments/open/openAssessment/${examId}`);
     };
@@ -153,7 +157,7 @@ const Open = () => {
                             .map((exam, index) => (
                                 <Col key={`${exam.id}-${index}`}>
                                     <Card
-                                        bodyStyle={{ width: '700px', alignItems: 'center' }}
+                                        bodyStyle={{ alignItems: 'center' }}
                                         title={
                                             <div
                                                 style={{
@@ -163,7 +167,7 @@ const Open = () => {
                                                     alignItems: 'center',
                                                 }}
                                             >
-                                                <Link to={`/assessments/open/openAssessment/ ${exam.id}`}>
+                                                <Link to={`/assessments/open/openAssessment/${exam.id}`}>
                                                     <Title onClick={handleOpenCard} level={4}>
                                                         {exam.name}
                                                     </Title>
@@ -200,29 +204,26 @@ const Open = () => {
                                 </Col> */}
                                         </Row>
                                         <Divider></Divider>
-                                        <div className="actions-container" style={{ display: 'flex' }}>
-                                            <Row>
-                                                <Col>
-                                                    <Button type="dashed">Copy Invite Link</Button>
-                                                    {/* <Link to={`/open/${exam.id}`} state={exam}>
+                                        <Row className='actions-container' >
+                                            <Col>
+                                                <Button onClick={() => copyInviteLink(exam.id)} type="dashed">Copy Invite Link</Button>
+                                                {/* <Link to={`/open/${exam.id}`} state={exam}>
                                                         <Button type="link" icon={<EyeOutlined />}>
                                                             Preview
                                                         </Button>
                                                     </Link> */}
-                                                    <Button
-                                                        onClick={() => handleDuplicate(exam.id)}
-                                                        type="link"
-                                                        icon={<CopyOutlined />}
-                                                    >
-                                                        Duplicate
-                                                    </Button>
-                                                </Col>
-                                                <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                    <Tag>{exam.created_by}</Tag> |{''}
-                                                    {dayjs(exam.created_at).format('MMM DD YYYY')}
-                                                </Col>
-                                            </Row>
-                                        </div>
+                                                <Button
+                                                    onClick={() => handleDuplicate(exam.id)}
+                                                    type="link"
+                                                    icon={<CopyOutlined />}
+                                                >
+                                                    Duplicate
+                                                </Button>
+                                            </Col>
+                                            <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                <Tag>{exam.created_by}</Tag> | {dayjs(exam.created_at).format('MMM DD YYYY')}
+                                            </Col>
+                                        </Row>
                                     </Card>
                                 </Col>
                             ))}
@@ -236,4 +237,4 @@ const Open = () => {
     );
 };
 
-export default Open;
+export default ExamList;

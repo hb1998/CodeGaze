@@ -1,6 +1,6 @@
 .actions-container{
-    width: 700px;
-    
+    justify-content: space-between;
+    width: 520px;
 }
 .actions-container button{
     padding: 4px 8px;

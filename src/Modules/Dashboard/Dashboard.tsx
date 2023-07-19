@@ -77,7 +77,7 @@ const Dashboard = () => {
 
     const filteredChallenges = useMemo(() => {
         return assessments.filter((challenge) => {
-            return challenge.candidate.name.toLowerCase().includes(search.toLowerCase());
+            return challenge.candidate?.name?.toLowerCase?.().includes(search.toLowerCase());
         });
     }, [assessments, search]);
 

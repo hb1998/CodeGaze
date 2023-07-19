@@ -5,14 +5,12 @@ import Challenges from './Modules/Challenges/Challenges';
 import Dashboard from './Modules/Dashboard/Dashboard';
 import Candidates from './Modules/Candidate/Candidates';
 import Login from './Modules/Auth/Login';
-import Open from './Modules/Exam/Open/Open';
 import './App.css';
 import { useSelector } from 'react-redux';
 import { IRootState } from './store';
 import Editor from './Modules/common/CodeEditor/Editor';
 import ProtectedRoute from './Routes/ProtectedRoute';
 import Account from './Modules/Account/Account';
-import OpenAssessment from './Modules/Exam/Open/OpenAssessment';
 import Admin from './Modules/Account/Admin';
 import PersonalSettings from './Modules/Account/PersonalSettings';
 import Recover from './Modules/Auth/Recover';
@@ -21,6 +19,9 @@ import CandidateAssessment from './Modules/CandidateAssessment/CandidateAssessme
 import HeaderComponent from './Modules/common/Header';
 import CommonUtils from './Modules/common/utils/Common.utils';
 import QuestionsComponent from './Modules/CandidateAssessment/QuestionsPage';
+import { ROUTES } from './constants/Route.constants';
+import ExamDetail from './Modules/Exam/ExamDetail';
+import ExamList from './Modules/Exam/ExamList';
 const { Content } = Layout;
 
 const getProtectedRoute = (component: React.ReactNode) => {
@@ -31,23 +32,24 @@ const Home = () => {
     const session = useSelector((state: IRootState) => state.session);
     const location = useLocation();
     const route = location.pathname.split('/')[1];
-    const showHeader = route !== 'Login' && CommonUtils.isLoggedIn(session);
+    const headerNotAllowedPaths = [ROUTES.LOGIN, ROUTES.CANDIDATE_ASSESSMENT];
+    const showHeader = !headerNotAllowedPaths.includes(`/${route}`) && CommonUtils.isLoggedIn(session);
     return (
         <Layout className="main-layout">
             {showHeader && (<HeaderComponent />)}
-            <Content style={{ padding: '0 50px' }}>
+            <Content className='main-container'>
                 <div className="site-layout-content">
                     <Routes>
-                        <Route path="/" element={<Navigate to="/Login" />} />
-                        <Route path="Login" Component={Login} />
+                        <Route path="/" element={<Navigate to={ROUTES.LOGIN} />} />
+                        <Route path={ROUTES.LOGIN} Component={Login} />
+                        <Route path="*" element={<Navigate to='/' />} />
                         <Route path="/RecoverUser" Component={Recover} />
                         <Route path="/updateUser" Component={Update} />
 
-                        <Route path="dashboard" element={getProtectedRoute(<Dashboard />)} />
-                
+                        <Route path={ROUTES.DASHBOARD} element={getProtectedRoute(<Dashboard />)} />
+
                         <Route path="assessments" element={getProtectedRoute(<Exam />)}>
-                            <Route index path="open" element={getProtectedRoute(<Open />)} />
-                            {/* <Route path="analytics" element={getProtectedRoute(<Analytics />)} /> */}
+                            <Route index path="open" element={getProtectedRoute(<ExamList />)} />
                         </Route>
 
                         <Route path="/challenges" element={getProtectedRoute(<Challenges />)} />
@@ -56,15 +58,16 @@ const Home = () => {
                             <Route index path="admin" element={getProtectedRoute(<Admin />)} />
                             <Route path="personal-settings" element={getProtectedRoute(<PersonalSettings />)} />
                         </Route>
-                        <Route path="/challenges/:id" element={getProtectedRoute(<Editor />)} />
+                        <Route path="/challenges/:challengeId" element={getProtectedRoute(<Editor />)} />
 
                         <Route
                             path="/assessments/open/openAssessment/:id"
-                            element={getProtectedRoute(<OpenAssessment />)}
+                            element={getProtectedRoute(<ExamDetail />)}
                         ></Route>
                         <Route path="/editor" element={<Editor />} />
-                        <Route path="/candidate_assessment" element={<CandidateAssessment examId={1} />} />
-                        <Route path="exam_id/:examId/candidate_id/:candidateId" element={<QuestionsComponent />} />
+                        <Route path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId`} element={<CandidateAssessment />} />
+                        <Route path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId/:candidateId`} element={<QuestionsComponent />} />
+                        <Route path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId/:candidateId/:challengeId`} element={<Editor />} />
                     </Routes>
                 </div>
             </Content>

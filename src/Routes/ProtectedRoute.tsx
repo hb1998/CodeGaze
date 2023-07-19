@@ -15,7 +15,7 @@ const ProtectedRoute: React.FC<IWrapperprops> = ({ children }) => {
 
 
     useEffect(() => {
-        if (!CommonUtils.isLoggedIn(session)) {
+        if (!CommonUtils.isLoggedIn(session) && !session.loading) {
             navigate('/');
         } else {
             setIsLoading(false);

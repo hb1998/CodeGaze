@@ -1,10 +1,11 @@
 import { CandidateInsertDto, CandidateUpdateDto } from '../../../types/Models';
+import { DatabaseCode } from '../../../types/Util.types';
 import { supabase } from '../../API/supabase';
 
 export class CandidateAPIService {
     static async getAll() {
         const { data, error } = await supabase.from('candidate').select('*, assessment(*)');
-        if (error) {    
+        if (error) {
             throw error;
         }
         return data || [];
@@ -19,11 +20,22 @@ export class CandidateAPIService {
     }
 
     static async create(candidate: CandidateInsertDto) {
-        const { data, error } = await supabase.from('candidate').insert(candidate);
-        if (error) {
+        const response = await supabase
+            .from('candidate')
+            .insert(candidate)
+            .select();
+        const { error } = response;
+        let candidateData = response.data;
+        if (error?.code === DatabaseCode.ALREADY_EXISTS) {
+            const { data, error } = await supabase.from('candidate').select().eq('emailId', candidate.emailId);
+            if (error) {
+                throw error;
+            }
+            candidateData = data;
+        } else if (error) {
             throw error;
         }
-        return data?.[0];
+        return candidateData?.[0];
     }
 
     static async update(candidate: CandidateUpdateDto) {
