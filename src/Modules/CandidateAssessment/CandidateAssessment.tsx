@@ -1,11 +1,11 @@
 import { Form, Input, Button, Checkbox } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CandidateAssessmentAPIService } from './services/CandidateAssessment.API';
 import Logo from '../../assets/Lumel_Logo.png';
 import { toast } from 'react-toastify';
 import { CandidateInsertDto } from '../../types/Models';
 import { CandidateAPIService } from '../Candidate/services/Candidate.API';
 import { ROUTES } from '../../constants/Route.constants';
+import { useState } from 'react';
 
 interface FormValues {
     name: string;
@@ -15,11 +15,13 @@ interface FormValues {
 
 const CandidateAssessment = () => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const params = useParams();
-    const examId = params.exam_id;
+    const examId = params.examId;
 
     const onSubmit = (values: FormValues) => {
+        setLoading(true);
         const userData = {
             emailId: values.email,
             name: values.name,
@@ -78,7 +80,7 @@ const CandidateAssessment = () => {
                         <Checkbox >I Agree all the terms and conditions</Checkbox>
                     </Form.Item>
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" style={{ display: 'flex', margin: '0 auto' }}>
+                        <Button loading={loading} type="primary" htmlType="submit" style={{ display: 'flex', margin: '0 auto' }}>
                             Next
                         </Button>
                     </Form.Item>

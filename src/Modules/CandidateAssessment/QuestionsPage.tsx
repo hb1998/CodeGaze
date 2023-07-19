@@ -1,15 +1,54 @@
-import { useParams } from 'react-router';
+import { Button, Divider, List, Skeleton, Typography } from 'antd';
+import { Content } from 'antd/es/layout/layout';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
+import { ExamAPIService } from '../Exam/services/Exam.api';
+import { Challenge } from '../../types/Models';
+import { ROUTES } from '../../constants/Route.constants';
+const { Title } = Typography
 
-const QuestionsComponent = () => {
+const ChallengesListComponent = () => {
     const { examId, candidateId } = useParams();
+    const { state } = useLocation();
+    const [loading, setLoading] = useState(true)
+    const [challenges, setchallenges] = useState<Challenge[]>([])
+
+    useEffect(() => {
+        ExamAPIService.getById(examId).then((exam) => {
+            const challenges = exam.challenge;
+            setLoading(false);
+            setchallenges(challenges);
+        });
+    }, [examId])
+
 
     return (
-        <div>
-            <h1>Questions</h1>
-            <p>Exam ID: {examId}</p>
-            <p>Candidate ID: {candidateId}</p>
-        </div>
+        <Content style={{ padding: '2rem' }}>
+            <Title level={2}>Welcome to the Assessment</Title>
+            <Title level={4}>Instructions</Title>
+            <p>
+                Welcome to the coding test for your interview! Please select a challenge from the list below to begin. You will have a
+                limited amount of time to complete the challenge, and your progress will be tracked. Please do not refresh the page or
+                navigate away from the challenge while you are working on it.
+            </p>
+            <Divider dashed />
+            <Title level={4}>Exams</Title>
+            {loading ? <Skeleton /> : <List
+                itemLayout="horizontal"
+                dataSource={challenges}
+                renderItem={(challenge) => (
+                    <List.Item>
+                        <List.Item.Meta title={challenge.name} description={challenge.short_description} />
+                        <Link to={`${ROUTES.CANDIDATE_ASSESSMENT}/${examId}/${candidateId}/${challenge.id}`}>
+                            <Button style={{
+                                backgroundColor:'#f76919'
+                            }} type="primary">Begin Exam</Button>
+                        </Link>
+                    </List.Item>
+                )}
+            />}
+        </Content>
     );
 };
 
-export default QuestionsComponent;
+export default ChallengesListComponent;
