@@ -6,7 +6,6 @@ import Dashboard from './Modules/Dashboard/Dashboard';
 import Candidates from './Modules/Candidate/Candidates';
 import Login from './Modules/Auth/Login';
 import Open from './Modules/Exam/Open/Open';
-import Analytics from './Modules/Exam/Analytics/Analytics';
 import './App.css';
 import { useSelector } from 'react-redux';
 import { IRootState } from './store';
@@ -35,8 +34,8 @@ const Home = () => {
     const showHeader = route !== 'Login' && CommonUtils.isLoggedIn(session);
     return (
         <Layout className="main-layout">
-            {showHeader && <HeaderComponent />}
-            <Content>
+            {showHeader && (<HeaderComponent />)}
+            <Content style={{ padding: '0 50px' }}>
                 <div className="site-layout-content">
                     <Routes>
                         <Route path="/" element={<Navigate to="/Login" />} />
@@ -45,15 +44,10 @@ const Home = () => {
                         <Route path="/updateUser" Component={Update} />
 
                         <Route path="dashboard" element={getProtectedRoute(<Dashboard />)} />
-                        {/* <Route path="/assessments/:id/view" element={getProtectedRoute(<ChallengesAssessment />)} />
-                        <Route
-                            path="/assessments/:id/edit"
-                            element={getProtectedRoute(<ChallengesAssessment isEditMode={true} />)} */}
-                        {/* /> */}
-                        {/* <Route path='/assessments/:id/challengeSettings' element={getProtectedRoute(<SettingsAssessments  />)}/> */}
+                
                         <Route path="assessments" element={getProtectedRoute(<Exam />)}>
                             <Route index path="open" element={getProtectedRoute(<Open />)} />
-                            <Route path="analytics" element={getProtectedRoute(<Analytics />)} />
+                            {/* <Route path="analytics" element={getProtectedRoute(<Analytics />)} /> */}
                         </Route>
 
                         <Route path="/challenges" element={getProtectedRoute(<Challenges />)} />
@@ -65,7 +59,7 @@ const Home = () => {
                         <Route path="/challenges/:id" element={getProtectedRoute(<Editor />)} />
 
                         <Route
-                            path="/assessments/open/openAssessment"
+                            path="/assessments/open/openAssessment/:id"
                             element={getProtectedRoute(<OpenAssessment />)}
                         ></Route>
                         <Route path="/editor" element={<Editor />} />
