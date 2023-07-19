@@ -38,7 +38,7 @@ const CodeEditor = (props: ICodeEditorProps) => {
             </div>
             <CodeMirror
                 value={props.code}
-                height="70vh"
+                height="calc(100vh - 12rem)"
                 theme="dark"
                 extensions={[props.codeEditorLang]}
                 onChange={props.handleCodeChange}

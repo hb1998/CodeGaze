@@ -16,12 +16,11 @@ const SettingsAssessments = () => {
                     <Form>
                         <header> Time limit</header>
                         <Select
-                            title="No minute limit"
                             placeholder="No hour limit"
                             style={{ width: 180 }}
                             onChange={handleTimeLimitChange}
                         >
-                            <Option value="1">0 hr</Option>
+                            <Option value="0">0 hr</Option>
                             <Option value="1">1 hr</Option>
                             <Option value="2">2 hr</Option>
                             <Option value="3">3 hr</Option>
