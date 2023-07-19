@@ -3,6 +3,7 @@ import { Dropdown, Menu, MenuProps } from 'antd'
 import { Header } from 'antd/es/layout/layout'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../API/supabase'
+import { ROUTES } from '../../constants/Route.constants'
 
 const HeaderComponent = () => {
 
@@ -30,7 +31,7 @@ const HeaderComponent = () => {
         if (key === '1') return;
         const { error } = await supabase.auth.signOut();
         console.log(error)
-        navigate('/login');
+        navigate(ROUTES.LOGIN);
     }
     return (
         <Header>

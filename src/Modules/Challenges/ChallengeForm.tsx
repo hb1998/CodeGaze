@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Form, Input, Modal, Row, Select, Space, Typography } from 'antd';
+import { Col, Form, Input, Modal, Row, Select } from 'antd';
 import MDEditor from '@uiw/react-md-editor';
 import { ChallengeInsertDto, Difficulty } from '../../types/Models';
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { validateInputBasedOnOption } from './ValidateInput';
 import { IInputOutput, IParamType } from '../../types/Evaluator.types';
 import { ChallengeAPIService } from './services/Challenge.API';
 import InputType from './InputType';
@@ -11,7 +9,6 @@ import OutputType from './OutputType';
 import TestCases from './TestCases';
 
 const { Option } = Select;
-const { Text } = Typography;
 
 
 export interface IChallengeCreateForm extends Pick<ChallengeInsertDto, 'name' | 'difficulty' | 'short_description' | 'description'> {
@@ -37,7 +34,6 @@ export const inputOutputTypes: IParamType['type'][] = [
 export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, values, onCreate, onCancel }) => {
     const [form] = Form.useForm();
     const [value, setValue] = React.useState('**Hello world!!!**');
-    const [reload, setReload] = useState(false);
     const isEditMode = !!values;
     const saveFormData = async (values: IChallengeCreateForm) => {
         try {
@@ -67,12 +63,6 @@ export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, valu
             console.error('Error saving form data:', error);
         }
     };
-
-    React.useEffect(() => {
-        if (reload) {
-            window.location.reload();
-        }
-    }, [reload]);
 
     useEffect(() => {
         form.setFieldsValue(values);

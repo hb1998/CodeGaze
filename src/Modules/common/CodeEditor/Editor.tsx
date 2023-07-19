@@ -86,8 +86,7 @@ const Editor = () => {
             setOutput(result.stdout);
             if (result.stdout === null) {
                 setOutput(
-                    `${result.status.description !== 'Accepted' ? result.status.description : ''}\n${result.stderr}\n${
-                        result.compile_output !== null ? result.compile_output : ''
+                    `${result.status.description !== 'Accepted' ? result.status.description : ''}\n${result.stderr}\n${result.compile_output !== null ? result.compile_output : ''
                     }`,
                 );
             }
@@ -133,6 +132,7 @@ const Editor = () => {
         <div>
             <div className={classes.main} style={{ padding: '1rem' }}>
                 <SplitPane
+                
                     split="vertical"
                     sizes={sizes}
                     onChange={setSizes}
@@ -161,7 +161,7 @@ const Editor = () => {
                     </Pane>
                 </SplitPane>
             </div>
-        </div>
+        </div >
     );
 };
 

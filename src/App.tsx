@@ -5,6 +5,7 @@ import { supabase } from './Modules/API/supabase';
 import { connect } from 'react-redux';
 import { IDispatch, IRootState } from './store';
 import { ConfigProvider, theme } from 'antd';
+import 'react-toastify/dist/ReactToastify.css';
 
 type IAppProps = TMapState & TMapDispatch;
 const AppComponent = ({

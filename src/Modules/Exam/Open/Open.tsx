@@ -82,7 +82,6 @@ const Open = () => {
             setNewExamLoading(true);
             try {
                 const newExam = {
-                    // id: exams.length + 1,
                     name: existingExam.name,
                     created_by: session.user.email,
                 };
@@ -153,7 +152,7 @@ const Open = () => {
                             .map((exam, index) => (
                                 <Col key={`${exam.id}-${index}`}>
                                     <Card
-                                        bodyStyle={{ width: '700px', alignItems: 'center' }}
+                                        bodyStyle={{alignItems: 'center' }}
                                         title={
                                             <div
                                                 style={{
@@ -163,7 +162,7 @@ const Open = () => {
                                                     alignItems: 'center',
                                                 }}
                                             >
-                                                <Link to={`/assessments/open/openAssessment/ ${exam.id}`}>
+                                                <Link to={`/assessments/open/openAssessment/${exam.id}`}>
                                                     <Title onClick={handleOpenCard} level={4}>
                                                         {exam.name}
                                                     </Title>
@@ -200,29 +199,26 @@ const Open = () => {
                                 </Col> */}
                                         </Row>
                                         <Divider></Divider>
-                                        <div className="actions-container" style={{ display: 'flex' }}>
-                                            <Row>
-                                                <Col>
-                                                    <Button type="dashed">Copy Invite Link</Button>
-                                                    {/* <Link to={`/open/${exam.id}`} state={exam}>
+                                        <Row className='actions-container' >
+                                            <Col>
+                                                <Button type="dashed">Copy Invite Link</Button>
+                                                {/* <Link to={`/open/${exam.id}`} state={exam}>
                                                         <Button type="link" icon={<EyeOutlined />}>
                                                             Preview
                                                         </Button>
                                                     </Link> */}
-                                                    <Button
-                                                        onClick={() => handleDuplicate(exam.id)}
-                                                        type="link"
-                                                        icon={<CopyOutlined />}
-                                                    >
-                                                        Duplicate
-                                                    </Button>
-                                                </Col>
-                                                <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                    <Tag>{exam.created_by}</Tag> |{''}
-                                                    {dayjs(exam.created_at).format('MMM DD YYYY')}
-                                                </Col>
-                                            </Row>
-                                        </div>
+                                                <Button
+                                                    onClick={() => handleDuplicate(exam.id)}
+                                                    type="link"
+                                                    icon={<CopyOutlined />}
+                                                >
+                                                    Duplicate
+                                                </Button>
+                                            </Col>
+                                            <Col style={{ display: 'flex', alignItems: 'center' }}>
+                                                <Tag>{exam.created_by}</Tag> | {dayjs(exam.created_at).format('MMM DD YYYY')}
+                                            </Col>
+                                        </Row>
                                     </Card>
                                 </Col>
                             ))}

@@ -21,6 +21,7 @@ import CandidateAssessment from './Modules/CandidateAssessment/CandidateAssessme
 import HeaderComponent from './Modules/common/Header';
 import CommonUtils from './Modules/common/utils/Common.utils';
 import QuestionsComponent from './Modules/CandidateAssessment/QuestionsPage';
+import { ROUTES } from './constants/Route.constants';
 const { Content } = Layout;
 
 const getProtectedRoute = (component: React.ReactNode) => {
@@ -31,23 +32,23 @@ const Home = () => {
     const session = useSelector((state: IRootState) => state.session);
     const location = useLocation();
     const route = location.pathname.split('/')[1];
-    const showHeader = route !== 'Login' && CommonUtils.isLoggedIn(session);
+    const headerNotAllowedPaths = [ROUTES.LOGIN, ROUTES.CANDIDATE_ASSESSMENT];
+    const showHeader = !headerNotAllowedPaths.includes(`/${route}`) && CommonUtils.isLoggedIn(session);
     return (
         <Layout className="main-layout">
             {showHeader && (<HeaderComponent />)}
-            <Content style={{ padding: '0 50px' }}>
+            <Content className='main-container'>
                 <div className="site-layout-content">
                     <Routes>
-                        <Route path="/" element={<Navigate to="/Login" />} />
-                        <Route path="Login" Component={Login} />
+                        <Route path="/" element={<Navigate to={ROUTES.LOGIN} />} />
+                        <Route path={ROUTES.LOGIN} Component={Login} />
                         <Route path="/RecoverUser" Component={Recover} />
                         <Route path="/updateUser" Component={Update} />
 
-                        <Route path="dashboard" element={getProtectedRoute(<Dashboard />)} />
-                
+                        <Route path={ROUTES.DASHBOARD} element={getProtectedRoute(<Dashboard />)} />
+
                         <Route path="assessments" element={getProtectedRoute(<Exam />)}>
                             <Route index path="open" element={getProtectedRoute(<Open />)} />
-                            {/* <Route path="analytics" element={getProtectedRoute(<Analytics />)} /> */}
                         </Route>
 
                         <Route path="/challenges" element={getProtectedRoute(<Challenges />)} />
@@ -63,8 +64,8 @@ const Home = () => {
                             element={getProtectedRoute(<OpenAssessment />)}
                         ></Route>
                         <Route path="/editor" element={<Editor />} />
-                        <Route path="/candidate_assessment" element={<CandidateAssessment examId={1} />} />
-                        <Route path="exam_id/:examId/candidate_id/:candidateId" element={<QuestionsComponent />} />
+                        <Route path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId`} element={<CandidateAssessment />} />
+                        <Route path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId/:candidateId`} element={<QuestionsComponent />} />
                     </Routes>
                 </div>
             </Content>

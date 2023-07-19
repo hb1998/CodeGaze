@@ -3,7 +3,6 @@ import { ILoginData } from './LoginForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { IDispatch, IRootState } from '../../store';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import LoginForm from './LoginForm';
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';

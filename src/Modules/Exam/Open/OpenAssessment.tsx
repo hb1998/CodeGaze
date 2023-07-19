@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import ChallengesAssessment from './ChallengesAssessment';
 import SettingsAssessments from './SettingsAssessment';
 import { useState } from 'react';
+import Title from 'antd/es/typography/Title';
 
 
 const OpenAssessment = () => {
@@ -24,10 +25,8 @@ const OpenAssessment = () => {
         console.log('Saving changes:', challengesChanges, settingsChanges);
     };
     return (
-        <div style={{ padding: '0px 0px' }} >
+        <div style={{ padding: '2rem' }} >
            <Link to="/assessments/open"> <Button  type="link" icon={<ArrowLeftOutlined />} ></Button>  back to candidate results</Link>
-            
-                
 
             <div style={{ float: 'right', display: 'flex', padding: '10px' }}>
                 <Button type="link" icon={<CopyOutlined />}>
@@ -38,9 +37,9 @@ const OpenAssessment = () => {
                 </Button>
                 <Button type="primary"  onClick={handleSave}>save</Button>
             </div>
-            <div  style={{ padding: '18px' }}> <h1>Technical assessment</h1></div>
+            <Title level={3}>{'Technical Assessment'}</Title>
             <div>
-                <Tabs style={{ padding: '18px' }}>
+                <Tabs>
                     <TabPane tab="Challenges" key="1">
                         <ChallengesAssessment onChange={handleChallengesChange}/>
                     </TabPane>
