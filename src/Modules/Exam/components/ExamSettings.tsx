@@ -1,4 +1,4 @@
-import { Button, Form, Layout, Select } from 'antd';
+import { Form, Layout, Select, Space } from 'antd';
 
 const { Option } = Select;
 
@@ -7,14 +7,14 @@ const handleTimeLimitChange = (value) => {
     console.log(value);
 };
 
-const SettingsAssessments = () => {
+const ExamSettings = ({
+    onChange
+}) => {
     return (
-        <div>
-            <h1 style={{ padding: '18px' }}>Assessment settings</h1>
-            <div>
-                <Layout style={{ padding: '24px' }}>
-                    <Form>
-                        <header> Time limit</header>
+        <Layout style={{ padding: '24px' }}>
+            <Form>
+                <Form.Item label="Time limit">
+                    <Space direction='horizontal'  >
                         <Select
                             placeholder="No hour limit"
                             style={{ width: 180 }}
@@ -33,11 +33,11 @@ const SettingsAssessments = () => {
                             <Option value="45">45</Option>
                             {/* Add more options as needed */}
                         </Select>
-                    </Form>
-                </Layout>
-            </div>
-        </div>
+                    </Space>
+                </Form.Item>
+            </Form>
+        </Layout>
     );
 };
 
-export default SettingsAssessments;
+export default ExamSettings;

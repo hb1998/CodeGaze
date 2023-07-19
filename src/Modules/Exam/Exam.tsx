@@ -1,13 +1,11 @@
-import { Layout, Tabs } from 'antd';
+import { Layout } from 'antd';
 import Title from 'antd/es/typography/Title';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import './styles/Exam.css';
 
-// const { TabPane } = Tabs;
 const { Content } = Layout;
 
 const Exam = () => {
-    // const navigate = useNavigate();
 
     return (
         <Layout className="container">

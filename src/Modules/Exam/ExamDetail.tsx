@@ -2,13 +2,13 @@ import { ArrowLeftOutlined, CopyOutlined,  SelectOutlined } from '@ant-design/ic
 import { Button, Tabs } from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import { Link } from 'react-router-dom';
-import ChallengesAssessment from './ChallengesAssessment';
-import SettingsAssessments from './SettingsAssessment';
+import ChallengesAssessment from './components/ChallengesAssessment';
+import ExamSettings from './components/ExamSettings';
 import { useState } from 'react';
 import Title from 'antd/es/typography/Title';
 
 
-const OpenAssessment = () => {
+const ExamDetail = () => {
     const [challengesChanges, setChallengesChanges] = useState(null);
     const [settingsChanges, setSettingsChanges] = useState(null);
 
@@ -45,11 +45,11 @@ const OpenAssessment = () => {
                     </TabPane>
                  
                     <TabPane tab="Settings" key="2">
-                        <SettingsAssessments onChange={handleSettingsChange}/>
+                        <ExamSettings onChange={handleSettingsChange}/>
                     </TabPane>
                 </Tabs>
             </div>
         </div>
     );
 };
-export default OpenAssessment;
+export default ExamDetail;

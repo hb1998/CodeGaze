@@ -34,14 +34,14 @@ const Editor = () => {
     const rootPath = pathname.split('/')[1];
     const isChallenge = rootPath === 'challenges';
 
-    const { id } = useParams<{ id: string }>();
+    const {  challengeId } = useParams<{ challengeId: string }>();
 
     useEffect(() => {
         if (isChallenge) {
             if (state) {
                 setChallenge(state);
             } else {
-                ChallengeAPIService.getById(id)
+                ChallengeAPIService.getById(challengeId)
                     .then((response) => {
                         setChallenge(response);
                     })
@@ -50,7 +50,7 @@ const Editor = () => {
                     });
             }
         }
-    }, [id, isChallenge, state]);
+    }, [challengeId, isChallenge, state]);
 
     const handleLanguageChange = (selectedLanguage: languageNameType) => {
         switch (selectedLanguage) {

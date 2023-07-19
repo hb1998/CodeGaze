@@ -10,7 +10,7 @@ export class ExamAPIService {
         return data || [];
     }
 
-    static async getById(id: number) {
+    static async getById(id: string) {
         const { data, error } = await supabase.from('exam').select('*, challenge(*)').eq('id', id).single();
         if (error) {
             throw error;
