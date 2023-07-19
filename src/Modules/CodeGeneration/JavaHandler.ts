@@ -13,16 +13,12 @@ export class JavaHandler implements LanguageHandler {
 
     generate() {
         let functionTemplate = `
-public class Main {
-    public static ${this.generateOutputList()} ${FUNCTION_NAME}(${this.generateInputList()}) {
-        // TODO: Implement the function logic here
-        // Return the output
-        return output;
-    }
-    public static void main(String[] args) {
-        // Call the solve function with sample input and print the output
-    }
-}`;
+public static ${this.generateOutputList()} ${FUNCTION_NAME}(${this.generateInputList()}) {
+    // TODO: Implement the function logic here
+    // Return the output
+    return output;
+}
+`;
 
         // Replace the placeholders in the function template with the input parameters
         functionTemplate = functionTemplate.replace(/#output/g, this.outputType.name);

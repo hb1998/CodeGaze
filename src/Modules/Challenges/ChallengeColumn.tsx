@@ -1,18 +1,11 @@
 import { Link } from 'react-router-dom';
-import { Difficulty, difficultyMap } from '../../types/Models';
-import { DeleteOutlined, SelectOutlined } from '@ant-design/icons';
-import Edit from './UpdateChallenge';
-import { Space, Tag } from 'antd';
+import { Challenge, Difficulty, difficultyMap } from '../../types/Models';
+import { DeleteOutlined, EditFilled, SelectOutlined } from '@ant-design/icons';
+import { Popconfirm, Space, Tag } from 'antd';
 import CommonUtils from '../common/utils/Common.utils';
+import { ChallengeAPIService } from './services/Challenge.API';
 
-interface Item {
-  id: string;
-  name: string;
-  language: string;
-  difficulty: string;
-}
-
-export const challengeColumn = [
+export const challengeColumn = (openForm) => [
   {
     title: 'Name',
     dataIndex: 'name',
@@ -78,25 +71,37 @@ export const challengeColumn = [
   {
     title: 'Actions',
     dataIndex: 'actions',
-    render: (_: any, record: Item) => {
+    render: (_: any, record: Challenge) => {
+      const handleDelete = async () => {
+        try {
+          await ChallengeAPIService.delete(Number(record.id));
+          window.location.href = '/challenges';
+        } catch (error) {
+          console.error('Error deleting record:', error);
+        }
+      };
+
+      const handleEdit = async () => {
+        openForm(record);
+      };
       return (
         <>
           <Space align='baseline'>
             <Link to={`/challenges/${record.id}`} state={record} ><SelectOutlined style={{ color: "blue", marginRight: 12 }} /></Link>
-            <Edit param={record.id} />
-            <DeleteOutlined style={{ color: "red", marginLeft: 12 }} />
+            <EditFilled style={{ color: 'blue', marginLeft: 4}} onClick={handleEdit} />
+
+            <Popconfirm
+              title="Are you sure you want to delete this challenge?"
+              onConfirm={handleDelete}
+              okText="Yes"
+              cancelText="No"
+            >
+              <DeleteOutlined style={{ color: 'red', marginLeft: 12 }} />
+            </Popconfirm>
           </Space>
+
         </>
       );
     },
   },
 ];
-
-
-
-
-
-
-
-
-

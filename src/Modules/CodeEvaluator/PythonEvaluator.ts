@@ -3,7 +3,7 @@ import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/C
 import { ProgrammingLanguages } from '../common/CodeEditor/ProgrammingLanguages';
 
 const separator = '##---##';
-export class JavascriptEvaluator {
+export class PythonEvaluator {
     inputTypes: IParamType[];
     outputType: IParamType;
 
@@ -16,7 +16,7 @@ export class JavascriptEvaluator {
         try {
             const output = await CandidateAssessmentAPIService.runCode(
                 evaluateTemplate,
-                ProgrammingLanguages.javaScript.id.toString(),
+                ProgrammingLanguages.python.id.toString(),
             );
             if (output.status.id === CompilationStatus.ACCEPTED) {
                 const outputArray = output.stdout
@@ -34,12 +34,12 @@ export class JavascriptEvaluator {
         return [true];
     }
 
-    async evaluateAndReturnOutput(code: string, testCases: IInputOutput): Promise<CodeOutput> {
-        const evaluateTemplate = this.getEvaluateTemplate(code, [testCases[1]]);
+    async evaluateAndReturnOutput(code: string, testCases: IInputOutput[]): Promise<CodeOutput> {
+        const evaluateTemplate = this.getEvaluateTemplate(code, [testCases[0]]);
         try {
             const output = await CandidateAssessmentAPIService.runCode(
                 evaluateTemplate,
-                ProgrammingLanguages.javaScript.id.toString(),
+                ProgrammingLanguages.python.id.toString(),
             );
             return output;
         } catch (error) {
@@ -49,17 +49,18 @@ export class JavascriptEvaluator {
 
     private getEvaluateTemplate(code: string, testCases: IInputOutput[]) {
         return `
-            ${code}
-            function evaluate() {
-                ${testCases
-                    .map((testCase) => {
-                        return `
-                   console.log(${FUNCTION_NAME}(${testCase.input.join(', ')}));
-                   `;
-                    })
-                    .join('\n')}
-            }
-            evaluate();
+        ${code}
+            def evaluate():
+        ${testCases
+            .map((testCase) => {
+                return `
+        print(${FUNCTION_NAME}(${testCase.input.join(', ')}))
+        print('${separator}')
         `;
+            })
+            .join('\n')}
+    
+    evaluate()
+    `;
     }
 }

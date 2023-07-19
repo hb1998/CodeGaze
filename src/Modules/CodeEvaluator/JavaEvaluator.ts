@@ -3,7 +3,7 @@ import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/C
 import { ProgrammingLanguages } from '../common/CodeEditor/ProgrammingLanguages';
 
 const separator = '##---##';
-export class JavascriptEvaluator {
+export class JavaEvaluator {
     inputTypes: IParamType[];
     outputType: IParamType;
 
@@ -16,7 +16,7 @@ export class JavascriptEvaluator {
         try {
             const output = await CandidateAssessmentAPIService.runCode(
                 evaluateTemplate,
-                ProgrammingLanguages.javaScript.id.toString(),
+                ProgrammingLanguages.java.id.toString(),
             );
             if (output.status.id === CompilationStatus.ACCEPTED) {
                 const outputArray = output.stdout
@@ -34,12 +34,13 @@ export class JavascriptEvaluator {
         return [true];
     }
 
-    async evaluateAndReturnOutput(code: string, testCases: IInputOutput): Promise<CodeOutput> {
-        const evaluateTemplate = this.getEvaluateTemplate(code, [testCases[1]]);
+    async evaluateAndReturnOutput(code: string, testCases: IInputOutput[]): Promise<CodeOutput> {
+        const evaluateTemplate = this.getEvaluateTemplate(code, [testCases[0]]);
+
         try {
             const output = await CandidateAssessmentAPIService.runCode(
                 evaluateTemplate,
-                ProgrammingLanguages.javaScript.id.toString(),
+                ProgrammingLanguages.java.id.toString(),
             );
             return output;
         } catch (error) {
@@ -49,17 +50,21 @@ export class JavascriptEvaluator {
 
     private getEvaluateTemplate(code: string, testCases: IInputOutput[]) {
         return `
-            ${code}
-            function evaluate() {
-                ${testCases
-                    .map((testCase) => {
-                        return `
-                   console.log(${FUNCTION_NAME}(${testCase.input.join(', ')}));
-                   `;
-                    })
-                    .join('\n')}
-            }
-            evaluate();
-        `;
+
+      public class Main {
+
+        ${code}
+
+        public static void main(String[] args) {
+            ${testCases
+                .map((testCase) => {
+                    return `
+                System.out.println(${FUNCTION_NAME}(${testCase.input.join(', ')}));
+                `;
+                })
+                .join('\n')}
+        }
+    }
+      `;
     }
 }

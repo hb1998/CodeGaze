@@ -2,7 +2,7 @@ import { useState, useEffect, ChangeEvent, useMemo } from 'react';
 import { Card, Col, Row, Space, Statistic, Table } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Search from 'antd/es/input/Search';
-import { CandidateAssessmenmtAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
+import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
 import { Status } from '../../types/Models';
 import dayjs from 'dayjs';
 
@@ -46,9 +46,9 @@ const AssessmentColumnDef = [
         key: 'challenge',
         render: (text) => <a>{text}</a>,
     },
-]
+];
 
-type AssessmentQueryResult = Awaited<ReturnType<typeof CandidateAssessmenmtAPIService.getAll>>;
+type AssessmentQueryResult = Awaited<ReturnType<typeof CandidateAssessmentAPIService.getAll>>;
 
 const Dashboard = () => {
     const [assessments, setAssessments] = useState<AssessmentQueryResult>([]);
@@ -56,9 +56,9 @@ const Dashboard = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const fetchAssessments = async () => {
         try {
-            const data = await CandidateAssessmenmtAPIService.getAll();
+            const data = await CandidateAssessmentAPIService.getAll();
             setAssessments(data);
-            console.log(data)
+            console.log(data);
         } catch (error) {
             console.error('Error fetching assessments:', error);
         } finally {
@@ -78,15 +78,14 @@ const Dashboard = () => {
     const filteredChallenges = useMemo(() => {
         return assessments.filter((challenge) => {
             return challenge.candidate.name.toLowerCase().includes(search.toLowerCase());
-        }
-        );
+        });
     }, [assessments, search]);
 
     return (
-        <div style={{ padding: '10px' }}>
+        <div className="container">
             <Title level={2}>Dashboard</Title>
             <Space size={24} direction="vertical" style={{ width: '100%' }}>
-                <Row gutter={16} >
+                <Row gutter={16}>
                     <Col span={6}>
                         <Card>
                             <Statistic title="Total Invited" value={assessments.length} />
@@ -107,16 +106,20 @@ const Dashboard = () => {
                             <Statistic title="Total Challenges" value={assessments.length} />
                         </Card>
                     </Col>
-
                 </Row>
                 <div>
-
                     <Search
                         placeholder="Search Candidate"
                         style={{ width: 200, marginBottom: '10px' }}
                         onChange={handleSearch}
                     />
-                    <Table rowKey="id" dataSource={filteredChallenges} columns={AssessmentColumnDef} size="small" loading={loading} />
+                    <Table
+                        rowKey="id"
+                        dataSource={filteredChallenges}
+                        columns={AssessmentColumnDef}
+                        size="small"
+                        loading={loading}
+                    />
                 </div>
             </Space>
         </div>

@@ -29,7 +29,7 @@ function LoginForm(props: IDataProps) {
     };
 
     return (
-        <Layout>
+        <Layout className="container">
             <div
                 style={{
                     display: 'grid',
@@ -48,7 +48,7 @@ function LoginForm(props: IDataProps) {
                     <img src={logo} alt="" style={{ width: '150px', height: '80px' }} />
                 </div>
                 <Row justify="center" align="middle">
-                    <Col className='login-form-container' span={12} >
+                    <Col className="login-form-container" span={12}>
                         <Form name="login-form" onFinish={onFinish}>
                             <Form.Item
                                 name="Email"
@@ -71,8 +71,8 @@ function LoginForm(props: IDataProps) {
                             >
                                 <Input.Password placeholder="Enter your password" />
                             </Form.Item>
-                            <div  >
-                                <Button size='large' type="primary" htmlType="submit" loading={props.loading}>
+                            <div>
+                                <Button size="large" type="primary" htmlType="submit" loading={props.loading}>
                                     {props.action}
                                 </Button>
 

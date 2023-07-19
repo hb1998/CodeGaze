@@ -9,7 +9,7 @@ interface OutputProps {
 
 const Output = (props: OutputProps) => {
     return (
-        <div className={`${classes.content} ${classes.pane3}`}>
+        <div className={`${classes.pane3}`}>
             <div className={classes.buttonContainer}>
                 <Button type="primary" style={{ margin: '1rem 0.5rem 1rem 0' }} onClick={props.handleRun}>
                     Run
@@ -23,12 +23,13 @@ const Output = (props: OutputProps) => {
             </div>
             <div
                 style={{
-                    minHeight: '25rem',
+                    height: '20rem',
                     border: '1px solid #d9d9d9',
                     padding: 8,
                     backgroundColor: '#1e293b',
                     color: 'lightgray',
                     whiteSpace: 'pre-wrap',
+                    overflow: 'auto',
                 }}
             >
                 {props.output}
