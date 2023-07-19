@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, Form, Input, Modal, Table } from 'antd';
 import { supabase } from '../API/supabase';
 import dayjs from 'dayjs';
+import axios from 'axios';
 interface IEmailProps {
     Email: string;
 }
@@ -15,10 +16,9 @@ const adminTableDef = [
     {
         title: 'Last Signed In',
         dataIndex: 'last_sign_in_at',
-        render: (date: string) => date ? dayjs(date).format('hh:mm A, MMM YY') : 'Never',
+        render: (date: string) => (date ? dayjs(date).format('hh:mm A, MMM YY') : 'Never'),
     },
-
-]
+];
 function Admin() {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
@@ -35,7 +35,29 @@ function Admin() {
 
     const fetchUsers = async () => {
         try {
-            const { data, error } = await supabase.auth.admin.listUsers();
+            // const { data, error } = await fetch('http://localhost:54321/functions/v1/getusers', {
+            //     headers: {
+            //         Authorization: 'Bearer your_token_value',
+            //     },
+            //     mode: 'no-cors',
+            // });
+            const url = 'http://localhost:54321/functions/v1/getusers';
+            const headers = {
+                Authorization: 'Bearer ANON_KEY',
+                'Content-Type': 'application/json',
+            };
+
+            axios
+                .get(url)
+                .then((response) => {
+                    console.log(response.data, 'jhjh');
+                })
+                .catch((error) => {
+                    console.error(error, 'uy');
+                });
+
+            // supabase.auth.admin.listUsers();
+            console.log(data, 'jh');
             setUsers(data.users);
             setUserLoading(false);
         } catch (error) {
@@ -46,8 +68,7 @@ function Admin() {
 
     useEffect(() => {
         fetchUsers();
-    }, [])
-
+    }, []);
 
     const handleSubmit = async (details: IEmailProps) => {
         setModalLoading(true);
@@ -117,8 +138,6 @@ function Admin() {
             </div>
         </div>
     );
-
-    return <div>Admin</div>;
 }
 
 export default Admin;

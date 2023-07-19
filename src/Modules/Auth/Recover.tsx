@@ -8,7 +8,7 @@ export default function Recover() {
             <div>
                 <button
                     onClick={async () => {
-                        let data = await supabase.auth.resetPasswordForEmail('keerthivasannataraj@gmail.com', {
+                        let data = await supabase.auth.resetPasswordForEmail('example@gmail.com', {
                             redirectTo: 'http://example.com/account/update-password',
                         });
                         console.log(data);
