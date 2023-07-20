@@ -5,6 +5,7 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import { ExamAPIService } from '../Exam/services/Exam.api';
 import { Challenge } from '../../types/Models';
 import { ROUTES } from '../../constants/Route.constants';
+import './styles/Assessment.css';
 const { Title } = Typography
 
 const ChallengesListComponent = () => {
@@ -39,10 +40,8 @@ const ChallengesListComponent = () => {
                 renderItem={(challenge) => (
                     <List.Item>
                         <List.Item.Meta title={challenge.name} description={challenge.short_description} />
-                        <Link to={`${ROUTES.CANDIDATE_ASSESSMENT}/${examId}/${candidateId}/${challenge.id}`}>
-                            <Button style={{
-                                backgroundColor:'#f76919'
-                            }} type="primary">Begin Exam</Button>
+                        <Link to={`${ROUTES.CANDIDATE_ASSESSMENT}/${examId}/${candidateId}/${challenge.id}`} state={challenge} >
+                            <Button className='begin-button' type="primary">Begin Exam</Button>
                         </Link>
                     </List.Item>
                 )}

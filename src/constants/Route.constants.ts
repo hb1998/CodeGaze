@@ -3,10 +3,9 @@ export const ROUTES = {
     LOGIN: '/login',
     REGISTER: '/register',
     DASHBOARD: '/dashboard',
-    EXAM: '/exam',
+    EXAM: '/assessments',
     EXAM_ID: '/exam/:id',
-    CHALLENGE: '/challenge',
-    CHALLENGE_ID: '/challenge/:id',
+    CHALLENGES: '/challenges',
     CANDIDATE: '/candidate',
     CANDIDATE_ASSESSMENT: '/candidate-assessment',
     

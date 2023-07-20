@@ -21,11 +21,23 @@ const TestCaseTable = (props: ITestCaseProps) => {
             title: 'Input',
             dataIndex: 'input',
             key: 'input',
+            render: (inputs: string[]) => (
+                <div>
+                    {inputs.map((input, index) => (
+                        <Tag key={index}>{input}</Tag>
+                    ))}
+                </div>
+            ),
         },
         {
             title: 'Expected',
             dataIndex: 'expected',
             key: 'expected',
+            render: (output: string) => (
+                <div>
+                    <Tag>{output}</Tag>
+                </div>
+            ),
         },
         {
             title: 'Result',

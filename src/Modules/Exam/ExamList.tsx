@@ -8,8 +8,6 @@ import { Link } from 'react-router-dom';
 import Title from 'antd/es/typography/Title';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../store';
-import { Challenge } from '../../types/Models';
-import { ChallengeAPIService } from '../Challenges/services/Challenge.API';
 import { ExamAPIService } from './services/Exam.api';
 import { toast } from 'react-toastify';
 import { ROUTES } from '../../constants/Route.constants';
@@ -25,7 +23,6 @@ const ExamList = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
     const navigate = useNavigate();
-    const [challenges, setChallenges] = useState<Challenge[]>([]);
 
     const handleOpenModal = () => {
         setModalVisible(true);
@@ -34,24 +31,10 @@ const ExamList = () => {
         setModalVisible(false);
     };
 
-    const fetchChallenges = async () => {
-        try {
-            const data = await ChallengeAPIService.getAll();
-            setChallenges(data);
-            console.log(data);
-        } catch (error) {
-            console.error('Error fetching candidates:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchChallenges();
-    }, []);
     const fetchExams = async () => {
         try {
             const data = await ExamAPIService.getAll();
-            console.log(setExams(data));
-            console.log(data);
+            setExams(data)
             setLoading(false);
         } catch (error) {
             setLoading(false);
@@ -113,7 +96,7 @@ const ExamList = () => {
         navigator.clipboard.writeText(`${domain}${ROUTES.CANDIDATE_ASSESSMENT}/${examId}`);
         toast.success('Link copied to clipboard');
     };
-    
+
     const handleOpenCard = (examId) => {
         navigate(`/assessments/open/openAssessment/${examId}`);
     };

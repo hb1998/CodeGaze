@@ -19,6 +19,14 @@ import classes from './Editor.module.css';
 export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
 export type languageNameType = languageObjectType['name'];
 
+const languagesNameMap = Object.keys(ProgrammingLanguages).reduce(
+    (acc, key) => {
+        acc[ProgrammingLanguages[key].name] = ProgrammingLanguages[key];
+        return acc;
+    },
+    {} as Record<languageNameType, languageObjectType>,
+);
+
 const Editor = () => {
     const [sizes, setSizes] = useState([500, '100%', '35%']);
     const [selectEditorLanguage, setSelectEditorLanguage] = useState<languageObjectType>(
@@ -28,48 +36,32 @@ const Editor = () => {
     const [output, setOutput] = useState<string>('');
     const [result, setResult] = useState<boolean[]>([]);
     const [challenge, setChallenge] = useState(null);
+    const [runLoading, setrunLoading] = useState(false);
+    const [submitLoading, setSubmitLoading] = useState(false);
+    const [testCaseLoading, setTestCaseLoading] = useState(false);
+
     const evaluator = new CodeEvaluator(selectEditorLanguage.name, sampleInput.inputType, sampleInput.outputType);
 
-    const { pathname, state } = useLocation();
-    const rootPath = pathname.split('/')[1];
-    const isChallenge = rootPath === 'challenges';
+    const { state } = useLocation();
 
-    const {  challengeId } = useParams<{ challengeId: string }>();
+    const { challengeId } = useParams<{ challengeId: string }>();
 
     useEffect(() => {
-        if (isChallenge) {
-            if (state) {
-                setChallenge(state);
-            } else {
-                ChallengeAPIService.getById(challengeId)
-                    .then((response) => {
-                        setChallenge(response);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            }
+        if (state) {
+            setChallenge(state);
+        } else {
+            ChallengeAPIService.getById(challengeId)
+                .then((response) => {
+                    setChallenge(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         }
-    }, [challengeId, isChallenge, state]);
+    }, [challengeId, state]);
 
     const handleLanguageChange = (selectedLanguage: languageNameType) => {
-        switch (selectedLanguage) {
-            case 'Python':
-                setSelectEditorLanguage(ProgrammingLanguages.python);
-                break;
-            case 'Java':
-                setSelectEditorLanguage(ProgrammingLanguages.java);
-                break;
-            case 'C':
-                setSelectEditorLanguage(ProgrammingLanguages.c);
-                break;
-            case 'C++':
-                setSelectEditorLanguage(ProgrammingLanguages.cpp);
-                break;
-            default:
-                setSelectEditorLanguage(ProgrammingLanguages.javaScript);
-                break;
-        }
+        setSelectEditorLanguage(languagesNameMap[selectedLanguage]);
     };
 
     useEffect(() => {
@@ -82,15 +74,19 @@ const Editor = () => {
 
     const handleRun = async () => {
         try {
+            setrunLoading(true);
             const result = await evaluator.runAndEvaluateCode(code, sampleInput.inputOutput);
             setOutput(result.stdout);
+            setrunLoading(false);
             if (result.stdout === null) {
                 setOutput(
-                    `${result.status.description !== 'Accepted' ? result.status.description : ''}\n${result.stderr}\n${result.compile_output !== null ? result.compile_output : ''
+                    `${result.status.description !== 'Accepted' ? result.status.description : ''}\n${result.stderr}\n${
+                        result.compile_output !== null ? result.compile_output : ''
                     }`,
                 );
             }
         } catch (error) {
+            setrunLoading(false);
             if (error.response && error.response.data) {
                 setOutput(`Compiler Error: ${error.response.data.error}`);
             } else {
@@ -119,11 +115,25 @@ const Editor = () => {
         setOutput('');
     };
 
-    const handleSubmit = async () => {
+    const handleTestCase = async () => {
         try {
+            setTestCaseLoading(true);
             const result = await evaluator.evaluate(code, sampleInput.inputOutput);
+            setTestCaseLoading(false);
             setResult(result);
         } catch (error) {
+            setTestCaseLoading(false);
+            console.error('Error evaluating code:', error);
+        }
+    };
+
+    const handleSubmit = async () => {
+        try {
+            setSubmitLoading(true);
+            const result = await evaluator.evaluate(code, sampleInput.inputOutput);
+            setSubmitLoading(false);
+        } catch (error) {
+            setSubmitLoading(false);
             console.error('Error evaluating code:', error);
         }
     };
@@ -132,7 +142,6 @@ const Editor = () => {
         <div>
             <div className={classes.main} style={{ padding: '1rem' }}>
                 <SplitPane
-                
                     split="vertical"
                     sizes={sizes}
                     onChange={setSizes}
@@ -155,13 +164,21 @@ const Editor = () => {
                     </Pane>
                     <Pane>
                         <div style={{ padding: '1rem' }}>
-                            <Output output={output} handleRun={handleRun} handleSubmit={handleSubmit} />
+                            <Output
+                                output={output}
+                                runLoading={runLoading}
+                                handleRun={handleRun}
+                                testCaseLoading={testCaseLoading}
+                                handleTestCase={handleTestCase}
+                                submitLoading={submitLoading}
+                                handleSubmit={handleSubmit}
+                            />
                             <TestCaseTable result={result} />
                         </div>
                     </Pane>
                 </SplitPane>
             </div>
-        </div >
+        </div>
     );
 };
 

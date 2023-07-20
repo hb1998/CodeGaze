@@ -2,7 +2,7 @@ import { CodeOutput, CompilationStatus, FUNCTION_NAME, IInputOutput, IParamType 
 import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
 import { ProgrammingLanguages } from '../common/CodeEditor/ProgrammingLanguages';
 
-const separator = '##---##';
+const separator = '##--------##';
 export class JavascriptEvaluator {
     inputTypes: IParamType[];
     outputType: IParamType;
@@ -27,7 +27,7 @@ export class JavascriptEvaluator {
                     return outputArray[index].trim() === testCase.output;
                 });
             }
-            return null;
+            return testCases.map(() => false);
         } catch (error) {
             console.log(error);
         }
@@ -54,7 +54,8 @@ export class JavascriptEvaluator {
                 ${testCases
                     .map((testCase) => {
                         return `
-                   console.log(${FUNCTION_NAME}(${testCase.input.join(', ')}));
+                     console.log(${FUNCTION_NAME}(${testCase.input.join(', ')}));
+                     console.log('${separator}');
                    `;
                     })
                     .join('\n')}

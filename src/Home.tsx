@@ -48,23 +48,22 @@ const Home = () => {
 
                         <Route path={ROUTES.DASHBOARD} element={getProtectedRoute(<Dashboard />)} />
 
-                        <Route path="assessments" element={getProtectedRoute(<Exam />)}>
+                        <Route path={ROUTES.EXAM} element={getProtectedRoute(<Exam />)}>
                             <Route index path="open" element={getProtectedRoute(<ExamList />)} />
                         </Route>
 
-                        <Route path="/challenges" element={getProtectedRoute(<Challenges />)} />
+                        <Route path={ROUTES.CHALLENGES} element={getProtectedRoute(<Challenges />)} />
                         <Route path="/candidates" element={getProtectedRoute(<Candidates />)} />
                         <Route path="/account" element={getProtectedRoute(<Account />)}>
                             <Route index path="admin" element={getProtectedRoute(<Admin />)} />
                             <Route path="personal-settings" element={getProtectedRoute(<PersonalSettings />)} />
                         </Route>
-                        <Route path="/challenges/:challengeId" element={getProtectedRoute(<Editor />)} />
+                        <Route path={`${ROUTES.CHALLENGES}/:challengeId`} element={getProtectedRoute(<Editor />)} />
 
                         <Route
                             path="/assessments/open/openAssessment/:id"
                             element={getProtectedRoute(<ExamDetail />)}
                         ></Route>
-                        <Route path="/editor" element={<Editor />} />
                         <Route path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId`} element={<CandidateAssessment />} />
                         <Route path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId/:candidateId`} element={<QuestionsComponent />} />
                         <Route path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId/:candidateId/:challengeId`} element={<Editor />} />
