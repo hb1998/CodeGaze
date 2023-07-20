@@ -5,6 +5,8 @@ import Search from 'antd/es/input/Search';
 import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
 import { Status } from '../../types/Models';
 import dayjs from 'dayjs';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '../../constants/Route.constants';
 
 const AssessmentColumnDef = [
     {
@@ -38,13 +40,13 @@ const AssessmentColumnDef = [
         title: 'Exam',
         dataIndex: ['exam', 'name'],
         key: 'exam',
-        render: (text) => <a>{text}</a>,
+        render: (text: string, record: AssessmentQueryResult[number]) => <Link to={`${ROUTES.EXAM}/open/openAssessment/${record?.id}`} >{text}</Link>,
     },
     {
         title: 'Challenge',
         dataIndex: ['challenge', 'name'],
         key: 'challenge',
-        render: (text) => <a>{text}</a>,
+        render: (text: string, record: AssessmentQueryResult[number]) => <Link to={`${ROUTES.CHALLENGES}/${record.challenge?.id}`} >{text}</Link>,
     },
 ];
 
@@ -58,7 +60,6 @@ const Dashboard = () => {
         try {
             const data = await CandidateAssessmentAPIService.getAll();
             setAssessments(data);
-            console.log(data);
         } catch (error) {
             console.error('Error fetching assessments:', error);
         } finally {

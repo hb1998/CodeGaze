@@ -1,3 +1,7 @@
+:root {
+    --lumel-brand-color: #f76919;
+  }
+
 .main-layout{
     min-height: 100vh;
 }
