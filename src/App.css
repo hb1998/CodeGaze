@@ -6,7 +6,7 @@
     min-height: 100vh;
 }
 
-.main-container{
+.main-container:not(.full-page) {
     overflow-y: scroll;
     max-height: calc(100vh - 65px);
     padding: '0 50px'
@@ -18,5 +18,5 @@
 
 .container {
     height: 100%;
-    padding: 0 50px;
+    padding: 0 3rem;
 }
