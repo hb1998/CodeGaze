@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 import { Button, Form, Input, Modal, Table } from 'antd';
 import { supabase } from '../API/supabase';
 import dayjs from 'dayjs';
-import axios from 'axios';
+import { FUNCTIONS } from '../../constants/functions.constants';
+import { useSelector } from 'react-redux';
+import { IRootState } from '../../store';
+import { toast } from 'react-toastify';
 interface IEmailProps {
-    Email: string;
+    emailId: string;
 }
 
 const adminTableDef = [
@@ -25,6 +28,9 @@ function Admin() {
     const [users, setUsers] = useState([]);
     const [usersLoading, setUserLoading] = useState(true);
     const [form] = Form.useForm();
+
+    const session = useSelector((state: IRootState) => state.session);
+
     const emailValidator = (rule: any, value: any, callback: any) => {
         if (value && !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
             callback('Please enter a valid email address!');
@@ -35,28 +41,9 @@ function Admin() {
 
     const fetchUsers = async () => {
         try {
-            // const { data, error } = await fetch('http://localhost:54321/functions/v1/getusers', {
-            //     headers: {
-            //         Authorization: 'Bearer your_token_value',
-            //     },
-            //     mode: 'no-cors',
-            // });
-            const url = 'http://localhost:54321/functions/v1/getusers';
-            const headers = {
-                Authorization: 'Bearer ANON_KEY',
-                'Content-Type': 'application/json',
-            };
-
-            axios
-                .get(url)
-                .then((response) => {
-                    console.log(response.data, 'jhjh');
-                })
-                .catch((error) => {
-                    console.error(error, 'uy');
-                });
-
-            // supabase.auth.admin.listUsers();
+            const { data, error } = await supabase.functions.invoke(FUNCTIONS.GET_USERS);
+            if (error) throw error;
+            setUsers(data);
             setUserLoading(false);
         } catch (error) {
             setUserLoading(false);
@@ -70,16 +57,24 @@ function Admin() {
 
     const handleSubmit = async (details: IEmailProps) => {
         setModalLoading(true);
-
-        const { data, error } = await supabase.auth.admin.generateLink({
-            type: 'invite',
-            email: details.Email,
-        });
-        console.log(data, error);
-
-        setModalLoading(false);
-        setModalVisible(false);
-        form.resetFields();
+        try {
+            const { data, error } = await supabase.functions.invoke(FUNCTIONS.INVITE_USER, {
+                body: {
+                    type: 'invite',
+                    emailId: details.emailId,
+                },
+            });
+            fetchUsers();
+            console.log(data)
+            if(error) throw error;
+            toast.success(`${details.emailId} invited successfully`);
+            setModalLoading(false);
+            setModalVisible(false);
+            form.resetFields();
+        } catch (error) {
+            setModalLoading(false);
+            setModalVisible(false);
+        }
     };
 
     return (
@@ -92,7 +87,7 @@ function Admin() {
                 </div>
                 <Modal
                     title="Enter email to invite"
-                    visible={modalVisible}
+                    open={modalVisible}
                     okText="Invite user"
                     onCancel={() => {
                         form.resetFields();
@@ -102,7 +97,7 @@ function Admin() {
                 >
                     <Form form={form} onFinish={handleSubmit}>
                         <Form.Item
-                            name="Email"
+                            name="emailId"
                             rules={[
                                 { required: true, message: 'Please enter your email!' },
                                 { validator: emailValidator, validateTrigger: 'blur' },

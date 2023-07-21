@@ -1,5 +1,5 @@
 import { Layout } from 'antd';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation,  } from 'react-router-dom';
 import Exam from './Modules/Exam/Exam';
 import Challenges from './Modules/Challenges/Challenges';
 import Dashboard from './Modules/Dashboard/Dashboard';
@@ -14,7 +14,7 @@ import Account from './Modules/Account/Account';
 import Admin from './Modules/Account/Admin';
 import PersonalSettings from './Modules/Account/PersonalSettings';
 import Recover from './Modules/Auth/Recover';
-import Update from './Modules/Auth/Update';
+import Update from './Modules/Auth/SignUp';
 import CandidateAssessment from './Modules/CandidateAssessment/CandidateAssessment';
 import HeaderComponent from './Modules/common/Header';
 import CommonUtils from './Modules/common/utils/Common.utils';
@@ -22,6 +22,7 @@ import QuestionsComponent from './Modules/CandidateAssessment/QuestionsPage';
 import { ROUTES } from './constants/Route.constants';
 import ExamDetail from './Modules/Exam/ExamDetail';
 import ExamList from './Modules/Exam/ExamList';
+import SignUp from './Modules/Auth/SignUp';
 const { Content } = Layout;
 
 const getProtectedRoute = (component: React.ReactNode) => {
@@ -32,17 +33,20 @@ const Home = () => {
     const session = useSelector((state: IRootState) => state.session);
     const location = useLocation();
     const route = location.pathname.split('/')[1];
-    const headerNotAllowedPaths = [ROUTES.LOGIN, ROUTES.CANDIDATE_ASSESSMENT];
+    const headerNotAllowedPaths = [ROUTES.AUTH, ROUTES.CANDIDATE_ASSESSMENT];
     const showHeader = !headerNotAllowedPaths.includes(`/${route}`) && CommonUtils.isLoggedIn(session);
     return (
         <Layout className="main-layout">
-            {showHeader && (<HeaderComponent />)}
-            <Content className='main-container'>
+            {showHeader && <HeaderComponent />}
+            <Content className={`main-container ${!showHeader && 'full-page'}`}>
                 <div className="site-layout-content">
                     <Routes>
                         <Route path="/" element={<Navigate to={ROUTES.LOGIN} />} />
-                        <Route path={ROUTES.LOGIN} Component={Login} />
-                        <Route path="*" element={<Navigate to='/' />} />
+                        <Route path={ROUTES.AUTH} >
+                            <Route path={ROUTES._LOGIN} Component={Login} />
+                            <Route path={ROUTES._SIGN_UP} Component={SignUp} />
+                        </Route>
+                        <Route path="*" element={<Navigate to="/" />} />
                         <Route path="/RecoverUser" Component={Recover} />
                         <Route path="/updateUser" Component={Update} />
 
@@ -65,13 +69,20 @@ const Home = () => {
                             element={getProtectedRoute(<ExamDetail />)}
                         ></Route>
                         <Route path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId`} element={<CandidateAssessment />} />
-                        <Route path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId/:candidateId`} element={<QuestionsComponent />} />
-                        <Route path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId/:candidateId/:challengeId`} element={<Editor />} />
+                        <Route
+                            path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId/:candidateId`}
+                            element={<QuestionsComponent />}
+                        />
+                        <Route
+                            path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId/:candidateId/:challengeId`}
+                            element={<Editor />}
+                        />
                     </Routes>
                 </div>
             </Content>
         </Layout>
     );
 };
+
 
 export default Home;

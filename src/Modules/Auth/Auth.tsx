@@ -1,19 +1,7 @@
-import { Button } from 'antd';
-import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { supabase } from '../API/supabase';
+import { Outlet } from "react-router";
 
 function Auth() {
-    return (
-        <div>
-            <h1>Welcome to Lumel Assessment </h1>
-            <div>
-                <Link to="/Login">
-                    <Button style={{ marginRight: 10 }}>Login</Button>
-                </Link>
-            </div>
-        </div>
-    );
+    return <Outlet />;
 }
 
 export default Auth;
