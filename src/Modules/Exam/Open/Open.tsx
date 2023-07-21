@@ -6,16 +6,15 @@ import { Content } from 'antd/es/layout/layout';
 import { Outlet, useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import Title from 'antd/es/typography/Title';
+import { ExamAPIService } from '../services/Exam.API';
 import { useSelector } from 'react-redux';
-import { IRootState } from '../../store';
-import { ExamAPIService } from './services/Exam.API';
-import { toast } from 'react-toastify';
-import { ROUTES } from '../../constants/Route.constants';
-
+import { IRootState } from '../../../store';
+import { Challenge } from '../../../types/Models';
+import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
 
 type ExamQueryResult = Awaited<ReturnType<typeof ExamAPIService.getAll>>;
 
-const ExamList = () => {
+const Open = () => {
     const session = useSelector((state: IRootState) => state.session);
     const [exams, setExams] = useState<ExamQueryResult>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -23,6 +22,7 @@ const ExamList = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
     const navigate = useNavigate();
+    const [challenges, setChallenges] = useState<Challenge[]>([]);
 
     const handleOpenModal = () => {
         setModalVisible(true);
@@ -31,10 +31,24 @@ const ExamList = () => {
         setModalVisible(false);
     };
 
+    const fetchChallenges = async () => {
+        try {
+            const data = await ChallengeAPIService.getAll();
+            setChallenges(data);
+            console.log(data);
+        } catch (error) {
+            console.error('Error fetching candidates:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchChallenges();
+    }, []);
     const fetchExams = async () => {
         try {
             const data = await ExamAPIService.getAll();
-            setExams(data)
+            console.log(setExams(data));
+            console.log(data);
             setLoading(false);
         } catch (error) {
             setLoading(false);
@@ -91,11 +105,9 @@ const ExamList = () => {
         setSearchQuery('');
     };
 
-    const copyInviteLink = (examId) => {
-        const domain = window.location.origin;
-        navigator.clipboard.writeText(`${domain}${ROUTES.CANDIDATE_ASSESSMENT}/${examId}`);
-        toast.success('Link copied to clipboard');
-    };
+    // const handleEdit = (examId) => {
+    //     navigate(`/assessments/${examId}/edit`);
+    // };
 
     const handleOpenCard = (examId) => {
         navigate(`/assessments/open/openAssessment/${examId}`);
@@ -176,7 +188,7 @@ const ExamList = () => {
                                                 <Statistic title="Qualifying" value={70} suffix="%" />
                                             </Col>
                                             <Col span={6}>
-                                                <Statistic title="Challenges" value={(exam.challenge[0] as any)?.count} />
+                                                <Statistic title="Challenges" value={(exam.challenge[0] as Record<string, any>)?.count} />
                                             </Col>
                                             {/* <Col span={12}>
                                     <Timeline>
@@ -189,7 +201,7 @@ const ExamList = () => {
                                         <Divider></Divider>
                                         <Row className='actions-container' >
                                             <Col>
-                                                <Button onClick={() => copyInviteLink(exam.id)} type="dashed">Copy Invite Link</Button>
+                                                <Button type="dashed">Copy Invite Link</Button>
                                                 {/* <Link to={`/open/${exam.id}`} state={exam}>
                                                         <Button type="link" icon={<EyeOutlined />}>
                                                             Preview
@@ -220,4 +232,4 @@ const ExamList = () => {
     );
 };
 
-export default ExamList;
+export default Open;

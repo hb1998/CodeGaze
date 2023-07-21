@@ -1,3 +1,4 @@
+import { ColumnsType } from 'antd/es/table';
 import { Status, statusLabels } from '../../types/Models';
 
 const formatTimestamp = (timestamp: string) => {
@@ -21,7 +22,7 @@ const compareTimestamps = (a: string, b: string) => {
     return timestampA - timestampB;
 };
 
-export const candidateColumn = [
+export const candidateColumn: ColumnsType<any> = [
     {
         title: 'ID',
         dataIndex: 'id',

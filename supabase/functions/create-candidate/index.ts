@@ -37,7 +37,7 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify(candidateData?.[0]),
+      JSON.stringify(candidatedata ? data[0] : null),
       { headers: { "Content-Type": "application/json" } },
     )
     

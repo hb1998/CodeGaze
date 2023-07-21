@@ -1,4 +1,4 @@
-import { IParamType } from './CodeGenerator';
+import { IParamType } from '../../types/Evaluator.types';
 import { LanguageHandler } from './Handler.types';
 
 export class CHandler implements LanguageHandler {

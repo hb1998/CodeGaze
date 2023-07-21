@@ -23,7 +23,7 @@ export class ExamAPIService {
         if (error) {
             throw error;
         }
-        return data?.[0];
+        return data ? data[0] : null;
     }
 
     static async update(exam: ExamUpdateDto) {
@@ -31,7 +31,7 @@ export class ExamAPIService {
         if (error) {
             throw error;
         }
-        return data?.[0];
+        return data ? data[0] : null;
     }
 
     static async delete(id: number): Promise<void> {

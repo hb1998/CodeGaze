@@ -34,7 +34,7 @@ export class JavascriptEvaluator {
         return [true];
     }
 
-    async evaluateAndReturnOutput(code: string, testCases: IInputOutput): Promise<CodeOutput> {
+    async evaluateAndReturnOutput(code: string, testCases: IInputOutput[]): Promise<CodeOutput> {
         const evaluateTemplate = this.getEvaluateTemplate(code, [testCases[1]]);
         try {
             const output = await CandidateAssessmentAPIService.runCode(

@@ -32,7 +32,7 @@ export class CodeEvaluator {
         return this.evaluator?.evaluate(code, testCases);
     }
 
-    runAndEvaluateCode(code: string, testCases: IInputOutput): Promise<CodeOutput> {
+    runAndEvaluateCode(code: string, testCases: IInputOutput[]): Promise<CodeOutput> {
         return this.evaluator?.evaluateAndReturnOutput(code, testCases);
     }
 }

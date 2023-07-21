@@ -43,7 +43,7 @@ export class CandidateAPIService {
         if (error) {
             throw error;
         }
-        return data?.[0];
+        return data ? data[0] : null;
     }
 
     static async delete(id: number): Promise<void> {

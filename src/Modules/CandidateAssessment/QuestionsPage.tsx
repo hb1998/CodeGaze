@@ -2,7 +2,7 @@ import { Button, Divider, List, Skeleton, Typography } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import { ExamAPIService } from '../Exam/services/Exam.api';
+import { ExamAPIService } from '../Exam/services/Exam.API';
 import { Challenge } from '../../types/Models';
 import { ROUTES } from '../../constants/Route.constants';
 import './styles/Assessment.css';
