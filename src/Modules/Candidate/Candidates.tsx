@@ -18,9 +18,11 @@ interface ICandidate {
     createdAt: Date;
 }
 
+type CandidateQueryResult = Awaited<ReturnType<typeof CandidateAPIService.getAll>>;
+
 const Candidates = () => {
-    const [candidates, setCandidates] = useState<ICandidate[]>([]);
-    const [filteredCandidates, setFilteredCandidates] = useState<ICandidate[]>([]);
+    const [candidates, setCandidates] = useState<CandidateQueryResult>([]);
+    const [filteredCandidates, setFilteredCandidates] = useState<CandidateQueryResult>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
     const fetchCandidates = async () => {

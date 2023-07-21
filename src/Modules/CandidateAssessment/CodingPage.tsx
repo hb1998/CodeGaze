@@ -3,13 +3,11 @@ import { useParams } from 'react-router-dom';
 import Editor from '../common/CodeEditor/Editor';
 import { CandidateAssessmentAPIService } from './services/CandidateAssessment.API';
 
-interface AssessmentData {
-    question: string;
-}
+type AssessmentDataResponse = Awaited<ReturnType<typeof CandidateAssessmentAPIService.getByExam>>;
 
 function CodingPage() {
     const { assessmentID } = useParams<{ assessmentID: string }>();
-    const [assessmentData, setAssessmentData] = useState<AssessmentData>();
+    const [assessmentData, setAssessmentData] = useState<AssessmentDataResponse>();
 
     const fetchAssessmentData = async (assessmentID: string) => {
         try {
@@ -23,7 +21,6 @@ function CodingPage() {
     };
 
     useEffect(() => {
-        console.log(assessmentID);
         fetchAssessmentData(assessmentID)
             .then((data) => setAssessmentData(data))
             .catch((error) => console.error(error));

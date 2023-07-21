@@ -23,9 +23,11 @@ export interface IAssessments {
   language: number | null;
 }
 
+type ChallengeResult = Awaited<ReturnType<typeof ChallengeAPIService.getAll>>;
+
 const ChallengesAssessment = ({ onChange }) => {
-  const [challenges, setChallenges] = useState<Challenge[]>([]);
-  const [selectedChallenges, setSelectedChallenges] = useState<Challenge[]>([]);
+  const [challenges, setChallenges] = useState<ChallengeResult>([]);
+  const [selectedChallenges, setSelectedChallenges] = useState<ChallengeResult>([]);
 //   const [selectedChallengeName, setSelectedChallengeName] = useState('');
 
   const fetchChallenges = async () => {
@@ -42,7 +44,7 @@ const ChallengesAssessment = ({ onChange }) => {
     fetchChallenges();
   }, []);
 
-  const handleAddChallenge = (selectedChallenge: Challenge) => {
+  const handleAddChallenge = (selectedChallenge: ChallengeResult[number]) => {
     setSelectedChallenges((prevChallenges) => [...prevChallenges, selectedChallenge]);
     setChallenges((prevChallenges) => prevChallenges.filter((challenge) => challenge.id !== selectedChallenge.id));
   };
@@ -141,7 +143,7 @@ const ChallengesAssessment = ({ onChange }) => {
               </div>
               <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
                 <p>
-                  difficulty: {selectedChallenge.difficulty} | est: 30min | Language: {selectedChallenge.language}{' '}
+                  difficulty: {selectedChallenge.difficulty} | est: 30min | Language: javascript
                 </p>
                 <p> </p>
               </div>

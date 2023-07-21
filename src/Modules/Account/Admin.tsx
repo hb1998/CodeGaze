@@ -57,8 +57,6 @@ function Admin() {
                 });
 
             // supabase.auth.admin.listUsers();
-            console.log(data, 'jh');
-            setUsers(data.users);
             setUserLoading(false);
         } catch (error) {
             setUserLoading(false);

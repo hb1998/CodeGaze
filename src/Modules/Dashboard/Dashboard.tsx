@@ -46,7 +46,7 @@ const AssessmentColumnDef = [
         title: 'Challenge',
         dataIndex: ['challenge', 'name'],
         key: 'challenge',
-        render: (text: string, record: AssessmentQueryResult[number]) => <Link to={`${ROUTES.CHALLENGES}/${record.challenge?.id}`} >{text}</Link>,
+        render: (text: string, record) => <Link to={`${ROUTES.CHALLENGES}/${record.challenge?.id}`} >{text}</Link>,
     },
 ];
 
