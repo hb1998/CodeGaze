@@ -13,7 +13,7 @@ export type Candidate = Row<'candidate'>;
 export type CandidateInsertDto = InsertDto<'candidate'>;
 export type CandidateUpdateDto = UpdateDto<'candidate'>;
 
-export type Challenge = Row<'challenge'>;
+export type Challenge = Omit<Row<'challenge'>, 'input_output'> & { input_output: InputOutput };
 export type ChallengeInsertDto = InsertDto<'challenge'>;
 export type ChallengeUpdateDto = UpdateDto<'challenge'>;
 
@@ -43,37 +43,8 @@ export const statusLabels = {
 };
 
 export interface InputOutput {
-    inputType: string;
-    outputType: string;
-    inputOutput: {
-        input: string | number | boolean | string[] | number[];
-        output: string | number | boolean | string[] | number[];
-    }[];
+    inputType: IParamType[];
+    outputType: IParamType;
+    inputOutput: IInputOutput[];
 }
 
-export const sampleInput = {
-    inputType: [
-        {
-            name: 'numberParam',
-            type: 'number',
-        },
-        {
-            name: 'numberArrayParam',
-            type: 'arrayOfNumber',
-        },
-    ] as IParamType[],
-    outputType: {
-        name: 'output',
-        type: 'number',
-    } as IParamType,
-    inputOutput: [
-        {
-            input: ['4', `[1,2,3]`],
-            output: '4',
-        },
-        {
-            input: ['3', '[1, 2, 3]'],
-            output: '3',
-        },
-    ] as IInputOutput[],
-};

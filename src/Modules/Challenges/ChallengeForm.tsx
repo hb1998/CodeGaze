@@ -1,92 +1,87 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Form, Input, Modal, Row, Select } from 'antd';
 import MDEditor from '@uiw/react-md-editor';
-import { ChallengeInsertDto, Difficulty } from '../../types/Models';
+import { Challenge, ChallengeInsertDto, ChallengeUpdateDto, Difficulty } from '../../types/Models';
 import { IInputOutput, IParamType } from '../../types/Evaluator.types';
 import { ChallengeAPIService } from './services/Challenge.API';
 import InputType from './InputType';
 import OutputType from './OutputType';
 import TestCases from './TestCases';
+import { Json } from '../../types/schema';
 
 const { Option } = Select;
 
-
-export interface IChallengeCreateForm extends Pick<ChallengeInsertDto, 'name' | 'difficulty' | 'short_description' | 'description'> {
+export interface IChallengeCreateForm
+    extends Pick<Challenge, 'name' | 'difficulty' | 'short_description' | 'description' | 'id'> {
     inputType: IParamType[];
     outputType: IParamType;
     inputOutput: IInputOutput[];
 }
 interface ICollectionCreateFormProps {
     open: boolean;
-    onCreate: (values: IChallengeCreateForm) => void;
-    values: IChallengeCreateForm;
+    onCreate: () => void;
+    challenge: Challenge;
     onCancel: () => void;
 }
 
-export const inputOutputTypes: IParamType['type'][] = [
-    'number',
-    'string',
-    'boolean',
-    'arrayOfNumber',
-    'arrayOfString',
-];
+export const inputOutputTypes: IParamType['type'][] = ['number', 'string', 'boolean', 'arrayOfNumber', 'arrayOfString'];
 
-export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, values, onCreate, onCancel }) => {
+export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, challenge, onCreate, onCancel }) => {
     const [form] = Form.useForm();
     const [value, setValue] = React.useState('**Hello world!!!**');
-    const isEditMode = !!values;
-    const saveFormData = async (values: IChallengeCreateForm) => {
+    const [loading, setLoading] = useState<boolean>(false);
+    const isEditMode = !!challenge;
+
+    const saveFormData = async (formValues: IChallengeCreateForm) => {
         try {
-            const { inputType, outputType, inputOutput } = values;
-            const dataToSave = {
-                name: values.name,
-                description: values.description,
-                difficulty: values.difficulty,
-                short_description: values.short_description,
-                input_output: JSON.stringify({
+            setLoading(true);
+            const { inputType, outputType, inputOutput } = formValues;
+            const dataToSave: ChallengeInsertDto = {
+                id: challenge.id,
+                name: formValues.name,
+                description: formValues.description,
+                difficulty: formValues.difficulty,
+                short_description: formValues.short_description,
+                input_output: {
                     inputType: inputType,
                     outputType: outputType,
                     inputOutput: inputOutput,
-                }),
+                } as Record<string, any>,
             };
-
-            const response = await ChallengeAPIService.create(dataToSave);
-            if (response && response.error) {
-                console.error('Error saving form data:', response.error);
-                return;
+            if (challenge.id) {
+                await ChallengeAPIService.update(dataToSave);
+            } else {
+                await ChallengeAPIService.create(dataToSave);
             }
-
-            console.log('Form data saved:', response.data);
-            onCreate(values);
-            window.location.href = '/challenges';
+            form.resetFields();
+            onCreate();
         } catch (error) {
             console.error('Error saving form data:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
+        const values = getFormValues(challenge);
         form.setFieldsValue(values);
-    }, [form, values])
-
+    }, [form, challenge]);
 
     return (
         <div style={{ width: '1200px' }}>
             <Modal
                 bodyStyle={{ overflowY: 'auto', maxHeight: 'calc(100vh - 200px)' }}
                 open={open}
-                title={isEditMode ? "Edit Challenge" : "Create Challenge"}
+                title={isEditMode ? 'Edit Challenge' : 'Create Challenge'}
                 okText="Update custom challenges"
                 cancelText="Cancel"
                 onCancel={onCancel}
                 width={900}
+                confirmLoading={loading}
                 onOk={() => {
                     form.validateFields()
                         .then((values) => {
-                            console.log(values)
-                            form.resetFields();
-                            onCreate(values);
                             saveFormData(values);
-
                         })
                         .catch((info) => {
                             console.log('Validate Failed:', info);
@@ -97,21 +92,25 @@ export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, valu
                     form={form}
                     autoComplete="off"
                     name="form_in_modal"
-                    initialValues={{
-                        inputType: [
-                            {
-                                type: "number",
-                                name: "input1"
-                            }
-                        ],
-                        output: {
-                            type: "number",
-                            name: "output1"
-                        }
-                    }}
+                    initialValues={
+                        challenge
+                            ? getFormValues(challenge)
+                            : {
+                                  inputType: [
+                                      {
+                                          type: 'number',
+                                          name: 'input1',
+                                      },
+                                  ],
+                                  output: {
+                                      type: 'number',
+                                      name: 'output1',
+                                  },
+                              }
+                    }
                     layout="vertical"
                 >
-                    <Form.Item label='Name' name="name">
+                    <Form.Item label="Name" name="name">
                         <Input placeholder="Name" />
                     </Form.Item>
                     <Form.Item name="difficulty" label="Difficulty">
@@ -143,6 +142,16 @@ export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, valu
                     <TestCases />
                 </Form>
             </Modal>
-        </div >
+        </div>
     );
 };
+
+const getFormValues = (values: Challenge): IChallengeCreateForm =>
+    values
+        ? ({
+              ...values,
+              inputType: (values.input_output as Record<string, any>).inputType,
+              outputType: (values.input_output as Record<string, any>).outputType,
+              inputOutput: (values.input_output as Record<string, unknown>).inputOutput,
+          } as IChallengeCreateForm)
+        : ({} as IChallengeCreateForm);
