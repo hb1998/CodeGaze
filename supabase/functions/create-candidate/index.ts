@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
+import { createJWT } from '../_shared/jwt.ts'
 
 serve(async (req) => {
 
@@ -9,6 +10,7 @@ serve(async (req) => {
   }
 
   const { emailId, name } = await req.json();
+
 
   const candidate = {
     emailId,
@@ -19,26 +21,38 @@ serve(async (req) => {
     Deno.env.get('SUPABASE_URL'),
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'))
 
-  const response = await supabase
-    .from('candidate')
-    .insert(candidate)
-    .select();
-  const { error } = response;
-  let candidateData = response.data;
   try {
 
+    const token = await createJWT(candidate)
+
+    const response = await supabase
+      .from('candidate')
+      .insert({
+        ...candidate,
+        token
+      })
+      .select();
+    const { error } = response;
+    let candidateData = response.data;
+
     if (error?.code === DatabaseCode.ALREADY_EXISTS) {
-      const { data, error } = await supabase.from('candidate').select().eq('emailId', candidate.emailId);
-      if (error) {
-        throw error;
-      }
+      // update the candidate with token if already exists
+      const { data, error } = await supabase
+        .from('candidate')
+        .update({
+          token
+        })
+        .eq('emailId', emailId)
+        .select();
+
+      if (error) throw error;
       candidateData = data;
     } else if (error) {
       throw error;
     }
 
     return new Response(
-      JSON.stringify(candidatedata ? data[0] : null),
+      JSON.stringify(candidateData ? candidateData[0] : null),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     )
 
@@ -49,3 +63,7 @@ serve(async (req) => {
     })
   }
 })
+
+enum DatabaseCode {
+  ALREADY_EXISTS = '23505',
+}

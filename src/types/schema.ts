@@ -12,6 +12,7 @@ export interface Database {
             assessment: {
                 Row: {
                     candidate_id: number | null
+                    challenge_id: number | null
                     code: string | null
                     created_at: string | null
                     exam_id: number | null
@@ -22,6 +23,7 @@ export interface Database {
                 }
                 Insert: {
                     candidate_id?: number | null
+                    challenge_id?: number | null
                     code?: string | null
                     created_at?: string | null
                     exam_id?: number | null
@@ -32,6 +34,7 @@ export interface Database {
                 }
                 Update: {
                     candidate_id?: number | null
+                    challenge_id?: number | null
                     code?: string | null
                     created_at?: string | null
                     exam_id?: number | null
@@ -48,6 +51,12 @@ export interface Database {
                         referencedColumns: ["id"]
                     },
                     {
+                        foreignKeyName: "assessment_challenge_id_fkey"
+                        columns: ["challenge_id"]
+                        referencedRelation: "challenge"
+                        referencedColumns: ["id"]
+                    },
+                    {
                         foreignKeyName: "assessment_exam_id_fkey"
                         columns: ["exam_id"]
                         referencedRelation: "exam"
@@ -61,18 +70,21 @@ export interface Database {
                     emailId: string | null
                     id: number
                     name: string | null
+                    token: string | null
                 }
                 Insert: {
                     created_at?: string | null
                     emailId?: string | null
                     id?: number
                     name?: string | null
+                    token?: string | null
                 }
                 Update: {
                     created_at?: string | null
                     emailId?: string | null
                     id?: number
                     name?: string | null
+                    token?: string | null
                 }
                 Relationships: []
             }
@@ -210,4 +222,3 @@ export interface Database {
         }
     }
 }
-

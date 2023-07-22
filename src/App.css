@@ -1,8 +1,8 @@
 :root {
     --lumel-brand-color: #f76919;
-  }
+}
 
-.main-layout{
+.main-layout {
     min-height: 100vh;
 }
 
@@ -12,11 +12,31 @@
     padding: '0 50px'
 }
 
-.wmde-markdown{
+.wmde-markdown {
     font-size: 14px !important;
 }
 
 .container {
     height: 100%;
     padding: 0 3rem;
+}
+
+.flex-container {
+    display: flex;
+}
+
+.flex-container.justify-between {
+    justify-content: space-between;
+}
+
+.flex-container.align-center {
+    align-items: center;
+}
+
+.flex-container.row {
+    flex-direction: row;
+}
+
+.flex-container.column {
+    flex-direction: column;
 }
