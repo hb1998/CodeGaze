@@ -48,7 +48,7 @@ const Editor = () => {
 
     useEffect(() => {
         if (state) {
-            setChallenge(state);
+            setChallenge(state?.challenge);
         } else {
             ChallengeAPIService.getById(challengeId)
                 .then((response) => {
