@@ -2,6 +2,7 @@ import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Table, Tag } from 'antd';
 import Title from 'antd/es/typography/Title';
 import { Challenge } from '../../../types/Models';
+import { ColumnsType } from 'antd/es/table';
 interface ITestCaseProps {
     result: boolean[];
     input_output: Challenge['input_output'];
@@ -17,7 +18,7 @@ const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
         };
     });
 
-    const colDef = [
+    const colDef: ColumnsType<any> = [
         {
             title: 'Input',
             dataIndex: 'input',
@@ -44,6 +45,7 @@ const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
             title: 'Result',
             dataIndex: 'result',
             key: 'result',
+            fixed: 'right',
             render: (value: string) => {
                 if (value === '') {
                     return null;
@@ -65,7 +67,14 @@ const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
     return (
         <div style={{ height: '30%' }}>
             <Title level={4}>Test Cases</Title>
-            <Table dataSource={testCaseResult} columns={colDef} pagination={false} />
+            <Table
+                dataSource={testCaseResult}
+                columns={colDef}
+                pagination={false}
+                scroll={{
+                    x: 'max-content',
+                }}
+            />
         </div>
     );
 };

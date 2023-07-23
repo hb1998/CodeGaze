@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent, useMemo } from 'react';
-import { Card, Col, Row, Space, Statistic, Table } from 'antd';
+import { Card, Col, Row, Space, Statistic, Table, Tag } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Search from 'antd/es/input/Search';
 import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
@@ -7,8 +7,11 @@ import { Status } from '../../types/Models';
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../constants/Route.constants';
+import { ColumnsType } from 'antd/es/table';
 
-const AssessmentColumnDef = [
+const qualifyingScore = 50;
+
+const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
     {
         title: 'Name',
         dataIndex: ['candidate', 'name'],
@@ -18,6 +21,12 @@ const AssessmentColumnDef = [
         title: 'Email',
         dataIndex: ['candidate', 'emailId'],
         key: 'email',
+    },
+    {
+        title: 'Result',
+        dataIndex: 'result',
+        key: 'result',
+        render: (value) => (value ? <Tag color={value > qualifyingScore ? 'green':'red'} >{value}%</Tag> : ''),
     },
     {
         title: 'Status',
@@ -30,6 +39,8 @@ const AssessmentColumnDef = [
         dataIndex: 'created_at',
         key: 'joined',
         render: (date: string) => dayjs(date).format('h:mm A MMM DD, YYYY'),
+        sorter: (a, b) => dayjs(a.created_at).unix() - dayjs(b.created_at).unix(),
+        defaultSortOrder: 'descend',
     },
     {
         title: 'Language',
@@ -40,13 +51,15 @@ const AssessmentColumnDef = [
         title: 'Exam',
         dataIndex: ['exam', 'name'],
         key: 'exam',
-        render: (text: string, record: AssessmentQueryResult[number]) => <Link to={`${ROUTES.EXAM}/open/openAssessment/${record?.id}`} >{text}</Link>,
+        render: (text: string, record: AssessmentQueryResult[number]) => (
+            <Link to={`${ROUTES.EXAM}/open/openAssessment/${record?.id}`}>{text}</Link>
+        ),
     },
     {
         title: 'Challenge',
         dataIndex: ['challenge', 'name'],
         key: 'challenge',
-        render: (text: string, record) => <Link to={`${ROUTES.CHALLENGES}/${record.challenge?.id}`} >{text}</Link>,
+        render: (text: string, record) => <Link to={`${ROUTES.CHALLENGES}/${record.challenge?.id}`}>{text}</Link>,
     },
 ];
 

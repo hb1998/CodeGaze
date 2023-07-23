@@ -56,7 +56,7 @@ export class JavascriptEvaluator {
                 ${testCases
                 .map((testCase) => {
                     return `
-                     console.log(${FUNCTION_NAME}(${EvaluatorUtils.getInputArgs(testCase, this.inputTypes)}));
+                     console.log(JSON.stringify(${FUNCTION_NAME}(${EvaluatorUtils.getInputArgs(testCase, this.inputTypes)})));
                      console.log('${separator}');
                    `;
                 })

@@ -1,5 +1,5 @@
 import { Layout } from 'antd';
-import { Routes, Route, Navigate, useLocation,  } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Exam from './Modules/Exam/Exam';
 import Challenges from './Modules/Challenges/Challenges';
 import Dashboard from './Modules/Dashboard/Dashboard';
@@ -23,6 +23,7 @@ import { ROUTES } from './constants/Route.constants';
 import ExamDetail from './Modules/Exam/ExamDetail';
 import ExamList from './Modules/Exam/ExamList';
 import SignUp from './Modules/Auth/SignUp';
+import AssessmentOver from './Modules/CandidateAssessment/AssessmentOver';
 const { Content } = Layout;
 
 const getProtectedRoute = (component: React.ReactNode) => {
@@ -42,7 +43,7 @@ const Home = () => {
                 <div className="site-layout-content">
                     <Routes>
                         <Route path="/" element={<Navigate to={ROUTES.LOGIN} />} />
-                        <Route path={ROUTES.AUTH} >
+                        <Route path={ROUTES.AUTH}>
                             <Route path={ROUTES._LOGIN} Component={Login} />
                             <Route path={ROUTES._SIGN_UP} Component={SignUp} />
                         </Route>
@@ -64,10 +65,7 @@ const Home = () => {
                         </Route>
                         <Route path={`${ROUTES.CHALLENGES}/:challengeId`} element={getProtectedRoute(<Editor />)} />
 
-                        <Route
-                            path={`${ROUTES.EXAM_DETAIL}/:id`}
-                            element={getProtectedRoute(<ExamDetail />)}
-                        ></Route>
+                        <Route path={`${ROUTES.EXAM_DETAIL}/:id`} element={getProtectedRoute(<ExamDetail />)}></Route>
                         <Route path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId`} element={<CandidateAssessment />} />
                         <Route
                             path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId/:candidateId`}
@@ -77,12 +75,12 @@ const Home = () => {
                             path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId/:candidateId/:challengeId`}
                             element={<Editor />}
                         />
+                        <Route path={ROUTES.ASSESSMENT_OVER} element={<AssessmentOver />} />
                     </Routes>
                 </div>
             </Content>
         </Layout>
     );
 };
-
 
 export default Home;

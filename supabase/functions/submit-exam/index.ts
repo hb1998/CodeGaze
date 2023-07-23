@@ -11,7 +11,7 @@ serve(async (req: Request) => {
     return new Response('ok', { headers: corsHeaders })
   }
 
-  const { id, exam_id, challenge_id, candidate_id, language, code } = await req.json();
+  const { id, language, code, result } = await req.json();
 
 
   const supabase = createClient(
@@ -22,31 +22,26 @@ serve(async (req: Request) => {
     const token = getToken(req);
     await verifyJWT(token);
 
-    if (id) {
-      const { data, error } = await supabase.from('assessment').update({
-        language,
-        code
-      }).eq('id', id).select();
-      if (error) {
-        throw error;
-      }
-
-      return new Response(
-        JSON.stringify(data),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      )
+    const { data: assessment, error: assessmentError } = await supabase.from('assessment').select().eq('id', id).single();
+    if (assessmentError) {
+      throw assessmentError;
+    }
+    if (assessment?.status === Status.SUBMITTED) {
+      throw new Error('Assessment already submitted');
     }
 
-    const { data, error } = await supabase.from('assessment').insert({
-      exam_id,
-      challenge_id,
-      candidate_id,
-      joined: new Date(),
-      status: Status.JOINED,
-      language: language ?? null,
-      code: code ?? null,
-    }).select();
-
+    if (assessment?.status !== Status.JOINED) {
+      throw new Error('Assessment not joined');
+    }
+    removeCandidateToken(supabase, assessment.candidate_id);
+    
+    const { data, error } = await supabase.from('assessment').update({
+      language,
+      code,
+      status: Status.SUBMITTED,
+      finished: new Date(),
+      result
+    }).eq('id', id).select();
     if (error) {
       throw error;
     }
@@ -64,6 +59,16 @@ serve(async (req: Request) => {
   }
 })
 
+const removeCandidateToken = async (supabase: any, candidateId: number) => {
+  const { error } = await supabase.from('candidate').update({
+    token: null
+  }).eq('id', candidateId).select();
+  if (error) {
+    throw error;
+  }
+}
+
+
 const getToken = (req: Request) => {
   const token = req.headers.get('Authorization')?.split(' ')[1];
   if (!token) {
@@ -71,3 +76,5 @@ const getToken = (req: Request) => {
   }
   return token;
 }
+
+

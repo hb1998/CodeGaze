@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 // SplitPane imports
 import SplitPane, { Pane } from 'split-pane-react';
 import 'split-pane-react/esm/themes/default.css';
@@ -12,8 +12,14 @@ import { ProgrammingLanguages } from './ProgrammingLanguages';
 import { CodeGenerator } from '../../CodeGeneration/CodeGenerator';
 import { CodeEvaluator } from '../../CodeEvaluator/CodeEvaluator';
 import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
-import { Challenge } from '../../../types/Models';
+import { AssessmentUpdateDto, Challenge, Status } from '../../../types/Models';
 import classes from './Editor.module.css';
+import { useSelector } from 'react-redux';
+import { IRootState } from '../../../store';
+import { supabase } from '../../API/supabase';
+import { FUNCTIONS } from '../../../constants/functions.constants';
+import { toast } from 'react-toastify';
+import { ROUTES } from '../../../constants/Route.constants';
 
 export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
 export type languageNameType = languageObjectType['name'];
@@ -46,7 +52,9 @@ const Editor = () => {
     );
 
     const { state } = useLocation();
-
+    const navigate = useNavigate();
+    const assessment = useSelector((state: IRootState) => state.assessment);
+    const candidate = useSelector((state: IRootState) => state.candidate);
     const { challengeId } = useParams<{ challengeId: string }>();
 
     useEffect(() => {
@@ -55,7 +63,7 @@ const Editor = () => {
         } else {
             ChallengeAPIService.getById(challengeId)
                 .then((response) => {
-                    setChallenge(response as unknown as  Challenge);
+                    setChallenge(response as unknown as Challenge);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -78,6 +86,7 @@ const Editor = () => {
     const handleRun = async () => {
         try {
             setrunLoading(true);
+            setOutput('');
             const result = await evaluator.runAndEvaluateCode(code, challenge?.input_output?.inputOutput);
             setOutput(result.stdout);
             setrunLoading(false);
@@ -130,9 +139,23 @@ const Editor = () => {
         try {
             setSubmitLoading(true);
             const result = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
+            const correctTestCases = result.reduce((acc, curr) => (curr ? acc + 1 : acc), 0) / result.length;
+            const percentageOfCorrectTestCases = correctTestCases * 100;
+            await supabase.functions.setAuth(candidate?.token);
+            const { error } = await supabase.functions.invoke(FUNCTIONS.SUBMIT_EXAM, {
+                body: {
+                    id: assessment.id,
+                    code,
+                    lanuage: selectEditorLanguage.name,
+                    result: Math.round(percentageOfCorrectTestCases),
+                } as AssessmentUpdateDto,
+            });
+            navigate(ROUTES.ASSESSMENT_OVER)
+            if (error) throw error;
             setSubmitLoading(false);
         } catch (error) {
             setSubmitLoading(false);
+            toast.error(error.message ?? 'Error submitting code');
             console.error('Error evaluating code:', error);
         }
     };
