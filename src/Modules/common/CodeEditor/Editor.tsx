@@ -10,7 +10,6 @@ import Output from './Output';
 import TestCaseTable from './TestCaseTable';
 import { ProgrammingLanguages } from './ProgrammingLanguages';
 import { CodeGenerator } from '../../CodeGeneration/CodeGenerator';
-import { IParamType } from '../../../types/Evaluator.types';
 import { CodeEvaluator } from '../../CodeEvaluator/CodeEvaluator';
 import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
 import { Challenge } from '../../../types/Models';
@@ -26,7 +25,6 @@ const languagesNameMap = Object.keys(ProgrammingLanguages).reduce(
     },
     {} as Record<languageNameType, languageObjectType>,
 );
-
 
 const Editor = () => {
     const [sizes, setSizes] = useState([600, '100%', 750]);
@@ -71,7 +69,7 @@ const Editor = () => {
 
     useEffect(() => {
         updateBoilerCode(selectEditorLanguage['name']);
-    }, [selectEditorLanguage]);
+    }, [selectEditorLanguage, challenge]);
 
     const handleCodeChange = (value: string) => {
         setCode(value);
@@ -102,15 +100,11 @@ const Editor = () => {
     };
 
     const updateBoilerCode = (languageSelected: languageNameType) => {
-        const inputTypes: IParamType[] = [
-            { type: 'number', name: 'n' },
-            { type: 'arrayOfNumber', name: 'nums' },
-        ];
-        const outputTypes: IParamType = {
-            type: 'number',
-            name: 'int',
-        };
-        const generator = new CodeGenerator(languageSelected, inputTypes, outputTypes);
+        const generator = new CodeGenerator(
+            languageSelected,
+            challenge?.input_output?.inputType,
+            challenge?.input_output?.outputType,
+        );
         const starterCode = generator.generateStarterCode();
         starterCode !== undefined ? setCode(starterCode) : setCode('');
     };
@@ -178,7 +172,16 @@ const Editor = () => {
                                 submitLoading={submitLoading}
                                 handleSubmit={handleSubmit}
                             />
-                            <TestCaseTable input_output={challenge.input_output} result={result} />
+                            <TestCaseTable
+                                input_output={
+                                    challenge?.input_output || {
+                                        inputOutput: [],
+                                        inputType: [],
+                                        outputType: null,
+                                    }
+                                }
+                                result={result}
+                            />
                         </div>
                     </Pane>
                 </SplitPane>

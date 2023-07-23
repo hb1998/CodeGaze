@@ -1,5 +1,15 @@
+export enum ParamType {
+    STRING = 'string',
+    NUMBER = 'number',
+    ARRAY_OF_STRING = 'arrayOfString',
+    ARRAY_OF_NUMBER = 'arrayOfNumber',
+    OBJECT = 'object',
+    ARRAY_OF_OBJECT = 'arrayOfObject',
+    BOOLEAN = 'boolean'
+}
+
 export interface IParamType {
-    type: 'string' | 'number' | 'arrayOfString' | 'arrayOfNumber' | 'object' | 'arrayOfObject' | 'boolean';
+    type: ParamType;
     name: string;
     objectStructure?: string;
 }

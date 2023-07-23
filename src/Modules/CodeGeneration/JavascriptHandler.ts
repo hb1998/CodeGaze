@@ -7,14 +7,17 @@ export class JavascriptHandler implements LanguageHandler {
     outputType: IParamType;
 
     constructor(inputTypes: IParamType[], outputType: IParamType) {
-        this.inputTypes = inputTypes;
-        this.outputType = outputType;
+        this.inputTypes = inputTypes || [];
+        this.outputType = outputType || {
+            name: 'output',
+            type: 'string',
+        };
     }
     generate(): string {
         let functionTemplate = `function ${FUNCTION_NAME}(${this.generateParameterList()}) {
     // TODO: Implement the function logic here
     // Return the output
-    return output;
+    return #output;
 }
 `;
         // Replace the placeholders in the function template with the input and output variables
