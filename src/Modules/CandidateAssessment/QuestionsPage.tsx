@@ -2,7 +2,7 @@ import { Button, Divider, List, Skeleton, Typography } from 'antd';
 import jwt_decode from 'jwt-decode';
 import { Content } from 'antd/es/layout/layout';
 import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Challenge } from '../../types/Models';
 import { ROUTES } from '../../constants/Route.constants';
 import './styles/Assessment.css';

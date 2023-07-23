@@ -1,51 +1,130 @@
-import { ArrowLeftOutlined, CopyOutlined,  SelectOutlined } from '@ant-design/icons';
-import { Button, Tabs } from 'antd';
+import { ArrowLeftOutlined, CopyOutlined } from '@ant-design/icons';
+import { Button, Skeleton, Tabs } from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ChallengesAssessment from './components/ChallengesAssessment';
 import ExamSettings from './components/ExamSettings';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Title from 'antd/es/typography/Title';
+import { ChallengeAPIService } from '../Challenges/services/Challenge.API';
+import { ExamQueryResult } from './ExamList';
+import { toast } from 'react-toastify';
+import { ExamAPIService } from './services/Exam.API';
+import { ROUTES } from '../../constants/Route.constants';
 
+export type ChallengeResult = Awaited<ReturnType<typeof ChallengeAPIService.getAll>>;
 
 const ExamDetail = () => {
-    const [challengesChanges, setChallengesChanges] = useState(null);
-    const [settingsChanges, setSettingsChanges] = useState(null);
+    const { state } = useLocation();
+    const exam = state?.exam as ExamQueryResult[number];
 
-    const handleChallengesChange = (changes) => {
-        setChallengesChanges(changes);
+    const [challenges, setChallenges] = useState<ChallengeResult>([]);
+    const [selectedChallenges, setSelectedChallenges] = useState<Set<number>>(new Set());
+    const [loading, setLoading] = useState<boolean>(true);
+    const [saveLoading, setSaveLoading] = useState<boolean>(false);
+    const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        setSelectedChallenges(new Set(exam.challenge.map((challenge) => challenge.id)));
+    }, [exam]);
+
+    const addChallenge = (challenge: ChallengeResult[number]) => {
+        setSelectedChallenges((prevChallenges) => new Set([...prevChallenges, challenge.id]));
     };
 
-    const handleSettingsChange = (changes) => {
-        setSettingsChanges(changes);
+    const deleteChallenge = (challenge: ChallengeResult[number]) => {
+        setSelectedChallenges((prevChallenges) => {
+            const newChallenges = new Set(prevChallenges);
+            newChallenges.delete(challenge.id);
+            return newChallenges;
+        });
     };
 
-    const handleSave = () => {
-        
-        console.log('Saving changes:', challengesChanges, settingsChanges);
+    const handleSettingsChange = () => {
+        return null;
     };
+
+    const fetchChallenges = async () => {
+        try {
+            setLoading(true);
+            const data = await ChallengeAPIService.getAll();
+            setChallenges(data);
+        } catch (error) {
+            console.error('Error fetching candidates:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchChallenges();
+    }, []);
+
+    const handleSave = async () => {
+        setSaveLoading(true);
+        try {
+            await ExamAPIService.updateExamChallenges(exam.id, selectedChallenges);
+        } catch (error) {
+            toast.error(error?.message || 'Error saving exam');
+        } finally {
+            setSaveLoading(false);
+        }
+    };
+
+    const onDelete = async () => {
+        try {
+            setDeleteLoading(true);
+            await ExamAPIService.delete(exam.id);
+            navigate(`${ROUTES.EXAM}/open`);
+            toast.success('Exam deleted');
+
+        } catch (error) {
+            toast.error(error?.message || 'Error deleting exam');
+        } finally {
+            setSaveLoading(false);
+        }
+    };
+
+    const challengesAvailable = challenges.filter((challenge) => !selectedChallenges.has(challenge.id));
+    const selectedChallengesArray = challenges.filter((challenge) => selectedChallenges.has(challenge.id));
     return (
-        <div style={{ padding: '2rem' }} >
-           <Link to="/assessments/open"> <Button  type="link" icon={<ArrowLeftOutlined />} ></Button>  back to candidate results</Link>
+        <div style={{ padding: '2rem' }}>
+            <Link to="/assessments/open">
+                {' '}
+                <Button type="link" icon={<ArrowLeftOutlined />}></Button> back to candidate results
+            </Link>
 
             <div style={{ float: 'right', display: 'flex', padding: '10px' }}>
                 <Button type="link" icon={<CopyOutlined />}>
                     Duplicate
                 </Button>
-                <Button type="link" icon={<SelectOutlined />}>
+                {/* <Button type="link" icon={<SelectOutlined />}>
                     Preview
+                </Button> */}
+                <Button loading={saveLoading} type="primary" onClick={handleSave}>
+                    save
                 </Button>
-                <Button type="primary"  onClick={handleSave}>save</Button>
             </div>
-            <Title level={3}>{'Technical Assessment'}</Title>
+            <Title level={3}>{exam.name}</Title>
             <div>
                 <Tabs>
                     <TabPane tab="Challenges" key="1">
-                        <ChallengesAssessment onChange={handleChallengesChange}/>
+                        {loading ? (
+                            <Skeleton />
+                        ) : (
+                            <ChallengesAssessment
+                                challenges={challengesAvailable}
+                                addChallenge={addChallenge}
+                                selectedChallenges={selectedChallengesArray}
+                                deleteChallenge={deleteChallenge}
+                            />
+                        )}
                     </TabPane>
-                 
+
                     <TabPane tab="Settings" key="2">
-                        <ExamSettings onChange={handleSettingsChange}/>
+                        <ExamSettings onDelete={onDelete} onChange={handleSettingsChange} />
                     </TabPane>
                 </Tabs>
             </div>

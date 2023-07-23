@@ -1,4 +1,4 @@
-import { Form, Layout, Select, Space } from 'antd';
+import { Button, Form, Layout, Popconfirm, Select, Space } from 'antd';
 
 const { Option } = Select;
 
@@ -7,19 +7,14 @@ const handleTimeLimitChange = (value) => {
     console.log(value);
 };
 
-const ExamSettings = ({
-    onChange
-}) => {
+const ExamSettings = ({ onChange, onDelete }) => {
+  
     return (
         <Layout style={{ padding: '24px' }}>
             <Form>
                 <Form.Item label="Time limit">
-                    <Space direction='horizontal'  >
-                        <Select
-                            placeholder="No hour limit"
-                            style={{ width: 180 }}
-                            onChange={handleTimeLimitChange}
-                        >
+                    <Space direction="horizontal">
+                        <Select placeholder="No hour limit" style={{ width: 180 }} onChange={handleTimeLimitChange}>
                             <Option value="0">0 hr</Option>
                             <Option value="1">1 hr</Option>
                             <Option value="2">2 hr</Option>
@@ -34,6 +29,19 @@ const ExamSettings = ({
                             {/* Add more options as needed */}
                         </Select>
                     </Space>
+                </Form.Item>
+                <Form.Item>
+                    <Popconfirm
+                        title="Delete the Exam"
+                        description="Are you sure to delete the Exam?"
+                        okText="Yes"
+                        cancelText="No"
+                        onConfirm={onDelete}
+                    >
+                        <Button  danger>
+                            Delete
+                        </Button>
+                    </Popconfirm>
                 </Form.Item>
             </Form>
         </Layout>

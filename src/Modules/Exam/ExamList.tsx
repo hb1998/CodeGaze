@@ -12,8 +12,7 @@ import { ExamAPIService } from './services/Exam.API';
 import { toast } from 'react-toastify';
 import { ROUTES } from '../../constants/Route.constants';
 
-
-type ExamQueryResult = Awaited<ReturnType<typeof ExamAPIService.getAll>>;
+export type ExamQueryResult = Awaited<ReturnType<typeof ExamAPIService.getAll>>;
 
 const ExamList = () => {
     const session = useSelector((state: IRootState) => state.session);
@@ -21,20 +20,12 @@ const ExamList = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [newExamLoading, setNewExamLoading] = useState<boolean>(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [modalVisible, setModalVisible] = useState(false);
     const navigate = useNavigate();
-
-    const handleOpenModal = () => {
-        setModalVisible(true);
-    };
-    const handleCloseModal = () => {
-        setModalVisible(false);
-    };
 
     const fetchExams = async () => {
         try {
             const data = await ExamAPIService.getAll();
-            setExams(data)
+            setExams(data);
             setLoading(false);
         } catch (error) {
             setLoading(false);
@@ -47,14 +38,19 @@ const ExamList = () => {
     }, []);
 
     const addExam = async () => {
-        setModalVisible(false);
+        debugger;
         setNewExamLoading(true);
         try {
-            await ExamAPIService.create({
+            const exam = await ExamAPIService.create({
                 name: `Technical Assessment ${exams.length + 1}`,
                 created_by: session?.user?.email || '',
             });
             await fetchExams();
+            navigate(`${ROUTES.EXAM_DETAIL}/${exam.id}` , {
+                state: {
+                    exam,
+                },
+            });
         } catch (error) {
             setNewExamLoading(false);
             console.error('Error fetching assessments:', error);
@@ -71,7 +67,6 @@ const ExamList = () => {
                     name: existingExam.name,
                     created_by: session.user.email,
                 };
-                console.log(newExam, existingExam);
                 await ExamAPIService.create(newExam);
                 await fetchExams();
             } catch (error) {
@@ -97,8 +92,12 @@ const ExamList = () => {
         toast.success('Link copied to clipboard');
     };
 
-    const handleOpenCard = (examId) => {
-        navigate(`/assessments/open/openAssessment/${examId}`);
+    const handleOpenCard = (exam: ExamQueryResult[number]) => {
+        navigate(`/assessments/open/openAssessment/${exam.id}`, {
+            state: {
+                exam,
+            },
+        });
     };
     return (
         <div>
@@ -116,20 +115,10 @@ const ExamList = () => {
                 icon={<PlusCircleFilled />}
                 style={{ float: 'right', padding: '5px' }}
                 loading={newExamLoading}
-                onClick={handleOpenModal}
+                onClick={addExam}
             >
                 New Exam
             </Button>
-            <Modal
-                title="Confirmation"
-                visible={modalVisible}
-                onCancel={handleCloseModal}
-                onOk={addExam}
-                okText="Confirm"
-                cancelText="Cancel"
-            >
-                <p>Are you sure you want to create a new exam?</p>
-            </Modal>
             <div>
                 {loading ? (
                     <Skeleton />
@@ -143,24 +132,16 @@ const ExamList = () => {
                                         bodyStyle={{ alignItems: 'center' }}
                                         title={
                                             <div
+                                                onClick={() => handleOpenCard(exam)}
                                                 style={{
                                                     display: 'flex',
                                                     flexDirection: 'row',
                                                     justifyContent: 'space-between',
                                                     alignItems: 'center',
+                                                    cursor: 'pointer',
                                                 }}
                                             >
-                                                <Link to={`/assessments/open/openAssessment/${exam.id}`}>
-                                                    <Title onClick={handleOpenCard} level={4}>
-                                                        {exam.name}
-                                                    </Title>
-                                                </Link>
-                                                {/* <Link to={`/assessments/open/openAssessment/${exam.id}`}>
-                                                    <Button
-                                                        onClick={() => handleEdit(exam.id)}
-                                                        icon={<EditFilled />}
-                                                    ></Button>
-                                                </Link> */}
+                                                <Title level={4}>{exam.name}</Title>
                                             </div>
                                         }
                                         bordered={true}
@@ -176,7 +157,7 @@ const ExamList = () => {
                                                 <Statistic title="Qualifying" value={70} suffix="%" />
                                             </Col>
                                             <Col span={6}>
-                                                <Statistic title="Challenges" value={(exam.challenge[0] as any)?.count} />
+                                                <Statistic title="Challenges" value={exam.challenge.length} />
                                             </Col>
                                             {/* <Col span={12}>
                                     <Timeline>
@@ -187,9 +168,11 @@ const ExamList = () => {
                                 </Col> */}
                                         </Row>
                                         <Divider></Divider>
-                                        <Row className='actions-container' >
+                                        <Row className="actions-container">
                                             <Col>
-                                                <Button onClick={() => copyInviteLink(exam.id)} type="dashed">Copy Invite Link</Button>
+                                                <Button onClick={() => copyInviteLink(exam.id)} type="dashed">
+                                                    Copy Invite Link
+                                                </Button>
                                                 {/* <Link to={`/open/${exam.id}`} state={exam}>
                                                         <Button type="link" icon={<EyeOutlined />}>
                                                             Preview
@@ -204,7 +187,8 @@ const ExamList = () => {
                                                 </Button>
                                             </Col>
                                             <Col style={{ display: 'flex', alignItems: 'center' }}>
-                                                <Tag>{exam.created_by}</Tag> | {dayjs(exam.created_at).format('MMM DD YYYY')}
+                                                <Tag>{exam.created_by}</Tag> |{' '}
+                                                {dayjs(exam.created_at).format('MMM DD YYYY')}
                                             </Col>
                                         </Row>
                                     </Card>

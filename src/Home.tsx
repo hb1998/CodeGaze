@@ -65,7 +65,7 @@ const Home = () => {
                         <Route path={`${ROUTES.CHALLENGES}/:challengeId`} element={getProtectedRoute(<Editor />)} />
 
                         <Route
-                            path="/assessments/open/openAssessment/:id"
+                            path={`${ROUTES.EXAM_DETAIL}/:id`}
                             element={getProtectedRoute(<ExamDetail />)}
                         ></Route>
                         <Route path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId`} element={<CandidateAssessment />} />
