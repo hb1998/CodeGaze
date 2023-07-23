@@ -33,7 +33,6 @@ const CodeEditor = (props: ICodeEditorProps) => {
                     <Button type="primary" onClick={props.handleReset}>
                         Reset
                     </Button>
-                    <Button type="primary">Save</Button>
                 </div>
             </div>
             <CodeMirror

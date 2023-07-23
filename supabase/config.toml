@@ -115,3 +115,6 @@ verify_jwt=false
 
 [functions.update-assessment]
 verify_jwt=false
+
+[functions.submit-exam]
+verify_jwt=false

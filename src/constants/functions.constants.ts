@@ -4,4 +4,5 @@ export const FUNCTIONS = {
     GET_USERS: 'get-users',
     INVITE_USER: 'invite-user',
     UPDATE_ASSESSMENT:'update-assessment',
+    SUBMIT_EXAM:'submit-exam',
 }

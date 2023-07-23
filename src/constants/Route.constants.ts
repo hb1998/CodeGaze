@@ -11,5 +11,6 @@ export const ROUTES = {
     CHALLENGES: '/challenges',
     CANDIDATE: '/candidate',
     CANDIDATE_ASSESSMENT: '/candidate-assessment',
+    ASSESSMENT_OVER: '/assessment-over',
 
 }

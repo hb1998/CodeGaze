@@ -10,8 +10,8 @@ import { supabase } from '../API/supabase';
 import { FUNCTIONS } from '../../constants/functions.constants';
 import { toast } from 'react-toastify';
 import Timer from './components/Timer';
-import { useSelector } from 'react-redux';
-import { IRootState } from '../../store';
+import { useDispatch, useSelector } from 'react-redux';
+import { IDispatch, IRootState } from '../../store';
 const { Title } = Typography;
 
 const ChallengesListComponent = () => {
@@ -22,6 +22,7 @@ const ChallengesListComponent = () => {
     const [challenges, setchallenges] = useState<Challenge[]>([]);
 
     const navigate = useNavigate();
+    const dispatch = useDispatch<IDispatch>();
     const fetchExam = async () => {
         try {
             if (!candidate?.token) throw new Error('No token found');
@@ -50,7 +51,7 @@ const ChallengesListComponent = () => {
         try {
             setBeginLoading(true);
             if (!candidate?.token) throw new Error('No token found');
-            const { error } = await supabase.functions.invoke(FUNCTIONS.UPDATE_ASSESSMENT, {
+            const { data, error } = await supabase.functions.invoke(FUNCTIONS.UPDATE_ASSESSMENT, {
                 body: {
                     exam_id: examId,
                     candidate_id: candidateId,
@@ -58,6 +59,7 @@ const ChallengesListComponent = () => {
                 },
             });
             if (error) throw error;
+            dispatch.assessment.update(data?.[0]);
             setBeginLoading(false);
             navigate(`${ROUTES.CANDIDATE_ASSESSMENT}/${examId}/${candidateId}/${challenge.id}`, {
                 state: {
