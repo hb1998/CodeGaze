@@ -10,11 +10,13 @@ import { supabase } from '../API/supabase';
 import { FUNCTIONS } from '../../constants/functions.constants';
 import { toast } from 'react-toastify';
 import Timer from './components/Timer';
+import { useSelector } from 'react-redux';
+import { IRootState } from '../../store';
 const { Title } = Typography;
 
 const ChallengesListComponent = () => {
     const { examId, candidateId } = useParams();
-    const { state } = useLocation();
+    const candidate = useSelector((state: IRootState) => state.candidate);
     const [loading, setLoading] = useState(true);
     const [beginLoading, setBeginLoading] = useState(false);
     const [challenges, setchallenges] = useState<Challenge[]>([]);
@@ -22,8 +24,8 @@ const ChallengesListComponent = () => {
     const navigate = useNavigate();
     const fetchExam = async () => {
         try {
-            if (!state?.token) throw new Error('No token found');
-            await supabase.functions.setAuth(state.token);
+            if (!candidate?.token) throw new Error('No token found');
+            await supabase.functions.setAuth(candidate.token);
             const { data, error } = await supabase.functions.invoke(FUNCTIONS.GET_EXAM, {
                 body: {
                     examId,
@@ -33,7 +35,6 @@ const ChallengesListComponent = () => {
             setchallenges(challenges);
             if (error) throw error;
             setLoading(false);
-            console.log(data);
         } catch (error) {
             setLoading(false);
             console.error('Error fetching exam:', error);
@@ -48,7 +49,7 @@ const ChallengesListComponent = () => {
     const beginExam = async (challenge: Challenge) => {
         try {
             setBeginLoading(true);
-            if (!state?.token) throw new Error('No token found');
+            if (!candidate?.token) throw new Error('No token found');
             const { error } = await supabase.functions.invoke(FUNCTIONS.UPDATE_ASSESSMENT, {
                 body: {
                     exam_id: examId,
@@ -61,7 +62,7 @@ const ChallengesListComponent = () => {
             navigate(`${ROUTES.CANDIDATE_ASSESSMENT}/${examId}/${candidateId}/${challenge.id}`, {
                 state: {
                     challenge,
-                    token: state?.token,
+                    token: candidate?.token,
                 },
             });
         } catch (error) {
@@ -71,7 +72,7 @@ const ChallengesListComponent = () => {
         }
     };
 
-    const expiry = (jwt_decode(state?.token) as { exp: number })?.exp;
+    const expiry = (jwt_decode(candidate?.token) as { exp: number })?.exp;
     const now = Date.now() / 1000;
     const timeLeft = Math.round(expiry - now);
 

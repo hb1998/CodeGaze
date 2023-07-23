@@ -9,8 +9,6 @@ import Title from 'antd/es/typography/Title';
 import { ExamAPIService } from '../services/Exam.API';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../store';
-import { Challenge } from '../../../types/Models';
-import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
 
 type ExamQueryResult = Awaited<ReturnType<typeof ExamAPIService.getAll>>;
 
@@ -22,7 +20,6 @@ const Open = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
     const navigate = useNavigate();
-    const [challenges, setChallenges] = useState<Challenge[]>([]);
 
     const handleOpenModal = () => {
         setModalVisible(true);
@@ -31,19 +28,6 @@ const Open = () => {
         setModalVisible(false);
     };
 
-    const fetchChallenges = async () => {
-        try {
-            const data = await ChallengeAPIService.getAll();
-            setChallenges(data);
-            console.log(data);
-        } catch (error) {
-            console.error('Error fetching candidates:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchChallenges();
-    }, []);
     const fetchExams = async () => {
         try {
             const data = await ExamAPIService.getAll();

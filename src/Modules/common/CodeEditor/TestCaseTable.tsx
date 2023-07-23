@@ -1,18 +1,19 @@
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Table, Tag } from 'antd';
 import Title from 'antd/es/typography/Title';
-import { sampleInput } from '../../../types/Models';
+import { Challenge } from '../../../types/Models';
 interface ITestCaseProps {
     result: boolean[];
+    input_output: Challenge['input_output'];
 }
 
-const TestCaseTable = (props: ITestCaseProps) => {
-    const testCaseResult = sampleInput.inputOutput.map((inputOutput, index) => {
+const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
+    const testCaseResult = input_output.inputOutput.map((inputOutput, index) => {
         return {
             key: index,
             input: inputOutput.input,
             expected: inputOutput.output,
-            result: props.result[index] ? 'Passed' : 'Failed',
+            result: result[index] ? 'Passed' : 'Failed',
         };
     });
 
@@ -47,7 +48,7 @@ const TestCaseTable = (props: ITestCaseProps) => {
                 if (value === '') {
                     return null;
                 }
-                if (props.result.length === 0) {
+                if (result.length === 0) {
                     return '';
                 }
                 const isPass = value === 'Passed';

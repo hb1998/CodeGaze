@@ -1,30 +1,20 @@
 import { useState, useEffect, ChangeEvent, useMemo } from 'react';
 import { Button, Table } from 'antd';
 import { ChallengeAPIService } from './services/Challenge.API';
-import { challengeColumn } from './ChallengeColumn';
+import { getChallengesColDef } from './ChallengeColumn';
 import { Challenge } from '../../types/Models';
 import Title from 'antd/es/typography/Title';
 import Search from 'antd/es/input/Search';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
-const ChallengeTable = ({ openForm }) => {
-    const [challenges, setChallenges] = useState<Challenge[]>([]);
+interface IChallengeTableProps {
+    openForm: (values?: Challenge) => void;
+    challenges: Challenge[];
+    loading: boolean;
+    refreshTable: () => void;
+}
+const ChallengeTable = ({ challenges, loading, openForm, refreshTable }: IChallengeTableProps) => {
     const [search, setsearch] = useState('');
-    const [loading, setLoading] = useState<boolean>(true);
-    const fetchChallenges = async () => {
-        try {
-            const data = await ChallengeAPIService.getAll();
-            setChallenges(data);
-        } catch (error) {
-            console.error('Error fetching candidates:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchChallenges();
-    }, []);
 
     const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
@@ -37,7 +27,7 @@ const ChallengeTable = ({ openForm }) => {
         });
     }, [challenges, search]);
 
-    const columnDef = challengeColumn(openForm);
+    const columnDef = getChallengesColDef(openForm, refreshTable);
     return (
         <div className="container">
             <Title level={2}>Challenges</Title>

@@ -2,11 +2,13 @@ import { Form, Input, Button, Checkbox } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import Logo from '../../assets/Lumel_Logo.png';
 import { toast } from 'react-toastify';
-import { CandidateInsertDto } from '../../types/Models';
+import { Candidate, CandidateInsertDto } from '../../types/Models';
 import { ROUTES } from '../../constants/Route.constants';
 import { useState } from 'react';
 import { supabase } from '../API/supabase';
 import { FUNCTIONS } from '../../constants/functions.constants';
+import { useDispatch } from 'react-redux';
+import { IDispatch } from '../../store';
 
 interface FormValues {
     name: string;
@@ -16,7 +18,7 @@ interface FormValues {
 const CandidateAssessment = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-
+    const dispatch = useDispatch<IDispatch>();
     const params = useParams();
     const examId = params.examId;
 
@@ -27,12 +29,11 @@ const CandidateAssessment = () => {
             name: values.name,
         };
         createCandidate(userData)
-            .then((candidateData) => {
+            .then((candidateData: Candidate) => {
                 setLoading(false);
                 const candidateId = candidateData.id;
-                navigate(`${ROUTES.CANDIDATE_ASSESSMENT}/${examId}/${candidateId}`, {
-                    state: { token: candidateData.token },
-                });
+                dispatch.candidate.update(candidateData);
+                navigate(`${ROUTES.CANDIDATE_ASSESSMENT}/${examId}/${candidateId}`);
             })
             .catch((error) => {
                 setLoading(false);

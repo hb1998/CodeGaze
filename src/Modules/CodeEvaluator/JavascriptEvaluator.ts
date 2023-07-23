@@ -1,6 +1,8 @@
-import { CodeOutput, CompilationStatus, FUNCTION_NAME, IInputOutput, IParamType } from '../../types/Evaluator.types';
+import { CodeOutput, CompilationStatus, FUNCTION_NAME, IInputOutput, IParamType, ParamType } from '../../types/Evaluator.types';
 import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
 import { ProgrammingLanguages } from '../common/CodeEditor/ProgrammingLanguages';
+import EvaluatorUtils from './Evaluator.utils';
+import lodashIsEqual from 'lodash.isequal'
 
 const separator = '##--------##';
 export class JavascriptEvaluator {
@@ -24,7 +26,7 @@ export class JavascriptEvaluator {
                     .map((output) => output.replace(/\n/g, ''))
                     .filter((output) => output);
                 return testCases.map((testCase, index) => {
-                    return outputArray[index].trim() === testCase.output;
+                    return this.isEqual(outputArray[index], testCase.output);
                 });
             }
             return testCases.map(() => false);
@@ -52,15 +54,31 @@ export class JavascriptEvaluator {
             ${code}
             function evaluate() {
                 ${testCases
-                    .map((testCase) => {
-                        return `
-                     console.log(${FUNCTION_NAME}(${testCase.input.join(', ')}));
+                .map((testCase) => {
+                    return `
+                     console.log(${FUNCTION_NAME}(${EvaluatorUtils.getInputArgs(testCase, this.inputTypes)}));
                      console.log('${separator}');
                    `;
-                    })
-                    .join('\n')}
+                })
+                .join('\n')}
             }
             evaluate();
         `;
     }
+
+    private isEqual(result: string, expected: string) {
+        try {
+            if ([ParamType.ARRAY_OF_STRING, ParamType.ARRAY_OF_NUMBER].includes(this.outputType.type)) {
+                return lodashIsEqual(JSON.parse(result), JSON.parse(expected));
+            } else if (this.outputType.type === ParamType.OBJECT || this.outputType.type === ParamType.ARRAY_OF_OBJECT) {
+                return JSON.stringify(result) === JSON.stringify(expected);
+            } else {
+                return result === expected;
+            }
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
+
 }

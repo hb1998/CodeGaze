@@ -10,10 +10,9 @@ import Output from './Output';
 import TestCaseTable from './TestCaseTable';
 import { ProgrammingLanguages } from './ProgrammingLanguages';
 import { CodeGenerator } from '../../CodeGeneration/CodeGenerator';
-import { IParamType } from '../../../types/Evaluator.types';
 import { CodeEvaluator } from '../../CodeEvaluator/CodeEvaluator';
 import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
-import { sampleInput } from '../../../types/Models';
+import { Challenge } from '../../../types/Models';
 import classes from './Editor.module.css';
 
 export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
@@ -28,19 +27,23 @@ const languagesNameMap = Object.keys(ProgrammingLanguages).reduce(
 );
 
 const Editor = () => {
-    const [sizes, setSizes] = useState([500, '100%', '35%']);
+    const [sizes, setSizes] = useState([600, '100%', 750]);
     const [selectEditorLanguage, setSelectEditorLanguage] = useState<languageObjectType>(
         ProgrammingLanguages.javaScript,
     );
     const [code, setCode] = useState<string>('');
     const [output, setOutput] = useState<string>('');
     const [result, setResult] = useState<boolean[]>([]);
-    const [challenge, setChallenge] = useState(null);
+    const [challenge, setChallenge] = useState<Challenge>(null);
     const [runLoading, setrunLoading] = useState(false);
     const [submitLoading, setSubmitLoading] = useState(false);
     const [testCaseLoading, setTestCaseLoading] = useState(false);
 
-    const evaluator = new CodeEvaluator(selectEditorLanguage.name, sampleInput.inputType, sampleInput.outputType);
+    const evaluator = new CodeEvaluator(
+        selectEditorLanguage.name,
+        challenge?.input_output?.inputType,
+        challenge?.input_output?.outputType,
+    );
 
     const { state } = useLocation();
 
@@ -52,7 +55,7 @@ const Editor = () => {
         } else {
             ChallengeAPIService.getById(challengeId)
                 .then((response) => {
-                    setChallenge(response);
+                    setChallenge(response as unknown as  Challenge);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -66,7 +69,7 @@ const Editor = () => {
 
     useEffect(() => {
         updateBoilerCode(selectEditorLanguage['name']);
-    }, [selectEditorLanguage]);
+    }, [selectEditorLanguage, challenge]);
 
     const handleCodeChange = (value: string) => {
         setCode(value);
@@ -75,7 +78,7 @@ const Editor = () => {
     const handleRun = async () => {
         try {
             setrunLoading(true);
-            const result = await evaluator.runAndEvaluateCode(code, sampleInput.inputOutput);
+            const result = await evaluator.runAndEvaluateCode(code, challenge?.input_output?.inputOutput);
             setOutput(result.stdout);
             setrunLoading(false);
             if (result.stdout === null) {
@@ -97,15 +100,11 @@ const Editor = () => {
     };
 
     const updateBoilerCode = (languageSelected: languageNameType) => {
-        const inputTypes: IParamType[] = [
-            { type: 'number', name: 'n' },
-            { type: 'arrayOfNumber', name: 'nums' },
-        ];
-        const outputTypes: IParamType = {
-            type: 'number',
-            name: 'int',
-        };
-        const generator = new CodeGenerator(languageSelected, inputTypes, outputTypes);
+        const generator = new CodeGenerator(
+            languageSelected,
+            challenge?.input_output?.inputType,
+            challenge?.input_output?.outputType,
+        );
         const starterCode = generator.generateStarterCode();
         starterCode !== undefined ? setCode(starterCode) : setCode('');
     };
@@ -118,7 +117,7 @@ const Editor = () => {
     const handleTestCase = async () => {
         try {
             setTestCaseLoading(true);
-            const result = await evaluator.evaluate(code, sampleInput.inputOutput);
+            const result = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
             setTestCaseLoading(false);
             setResult(result);
         } catch (error) {
@@ -130,7 +129,7 @@ const Editor = () => {
     const handleSubmit = async () => {
         try {
             setSubmitLoading(true);
-            const result = await evaluator.evaluate(code, sampleInput.inputOutput);
+            const result = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
             setSubmitLoading(false);
         } catch (error) {
             setSubmitLoading(false);
@@ -173,7 +172,16 @@ const Editor = () => {
                                 submitLoading={submitLoading}
                                 handleSubmit={handleSubmit}
                             />
-                            <TestCaseTable result={result} />
+                            <TestCaseTable
+                                input_output={
+                                    challenge?.input_output || {
+                                        inputOutput: [],
+                                        inputType: [],
+                                        outputType: null,
+                                    }
+                                }
+                                result={result}
+                            />
                         </div>
                     </Pane>
                 </SplitPane>

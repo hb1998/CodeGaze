@@ -5,7 +5,7 @@ import { Popconfirm, Space, Tag } from 'antd';
 import CommonUtils from '../common/utils/Common.utils';
 import { ChallengeAPIService } from './services/Challenge.API';
 
-export const challengeColumn = (openForm) => [
+export const getChallengesColDef = (openForm: (values: Challenge) => void, refreshTable: () => void) => [
     {
         title: 'Name',
         dataIndex: 'name',
@@ -77,7 +77,7 @@ export const challengeColumn = (openForm) => [
             const handleDelete = async () => {
                 try {
                     await ChallengeAPIService.delete(Number(challenge.id));
-                    window.location.href = '/challenges';
+                    refreshTable();
                 } catch (error) {
                     console.error('Error deleting record:', error);
                 }
