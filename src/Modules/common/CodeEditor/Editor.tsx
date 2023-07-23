@@ -55,7 +55,7 @@ const Editor = () => {
         } else {
             ChallengeAPIService.getById(challengeId)
                 .then((response) => {
-                    setChallenge(response);
+                    setChallenge(response as unknown as  Challenge);
                 })
                 .catch((error) => {
                     console.log(error);

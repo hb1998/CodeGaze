@@ -1,4 +1,4 @@
-import { IParamType } from '../../types/Evaluator.types';
+import { IParamType, ParamType } from '../../types/Evaluator.types';
 import { FUNCTION_NAME } from './CodeGenerator';
 import { LanguageHandler } from './Handler.types';
 
@@ -10,7 +10,7 @@ export class JavascriptHandler implements LanguageHandler {
         this.inputTypes = inputTypes || [];
         this.outputType = outputType || {
             name: 'output',
-            type: 'string',
+            type: ParamType.STRING,
         };
     }
     generate(): string {

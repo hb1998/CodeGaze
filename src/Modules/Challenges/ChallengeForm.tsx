@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Col, Form, Input, Modal, Row, Select } from 'antd';
 import MDEditor from '@uiw/react-md-editor';
 import { Challenge, ChallengeInsertDto, ChallengeUpdateDto, Difficulty } from '../../types/Models';
-import { IInputOutput, IParamType } from '../../types/Evaluator.types';
+import { IInputOutput, IParamType, ParamType } from '../../types/Evaluator.types';
 import { ChallengeAPIService } from './services/Challenge.API';
 import InputType from './InputType';
 import OutputType from './OutputType';
@@ -24,7 +24,13 @@ interface ICollectionCreateFormProps {
     onCancel: () => void;
 }
 
-export const inputOutputTypes: IParamType['type'][] = ['number', 'string', 'boolean', 'arrayOfNumber', 'arrayOfString'];
+export const inputOutputTypes: IParamType['type'][] = [
+    ParamType.NUMBER,
+    ParamType.STRING,
+    ParamType.ARRAY_OF_NUMBER,
+    ParamType.ARRAY_OF_STRING,
+    ParamType.BOOLEAN,
+];
 
 export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, challenge, onCreate, onCancel }) => {
     const [form] = Form.useForm();
@@ -152,6 +158,6 @@ const getFormValues = (values: Challenge): IChallengeCreateForm =>
               ...values,
               inputType: (values.input_output as Record<string, any>).inputType,
               outputType: (values.input_output as Record<string, any>).outputType,
-              inputOutput: (values.input_output as Record<string, unknown>).inputOutput,
+              inputOutput: (values.input_output as unknown as Record<string, unknown>).inputOutput,
           } as IChallengeCreateForm)
         : ({} as IChallengeCreateForm);
