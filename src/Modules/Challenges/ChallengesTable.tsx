@@ -1,15 +1,15 @@
-import { useState, useEffect, ChangeEvent, useMemo } from 'react';
+import { useState, ChangeEvent, useMemo } from 'react';
 import { Button, Table } from 'antd';
-import { ChallengeAPIService } from './services/Challenge.API';
 import { getChallengesColDef } from './ChallengeColumn';
 import { Challenge } from '../../types/Models';
 import Title from 'antd/es/typography/Title';
 import Search from 'antd/es/input/Search';
 import { AppstoreAddOutlined } from '@ant-design/icons';
+import { ChallengeResult } from './Challenges';
 
 interface IChallengeTableProps {
     openForm: (values?: Challenge) => void;
-    challenges: Challenge[];
+    challenges: ChallengeResult;
     loading: boolean;
     refreshTable: () => void;
 }

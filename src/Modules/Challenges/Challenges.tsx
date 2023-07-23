@@ -4,12 +4,14 @@ import { Challenge } from '../../types/Models';
 import { ChallengeForm } from './ChallengeForm';
 import { ChallengeAPIService } from './services/Challenge.API';
 
+export type ChallengeResult = Awaited<ReturnType<typeof ChallengeAPIService.getAll>>;
+
 const Challenges: React.FC = () => {
     const [modalState, setModalState] = useState({
         open: false,
         values: null,
     });
-    const [challenges, setChallenges] = useState<Challenge[]>([]);
+    const [challenges, setChallenges] = useState<ChallengeResult>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
     const onCreate = () => {
