@@ -12,10 +12,10 @@ import { ProgrammingLanguages } from './ProgrammingLanguages';
 import { CodeGenerator } from '../../CodeGeneration/CodeGenerator';
 import { CodeEvaluator } from '../../CodeEvaluator/CodeEvaluator';
 import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
-import { AssessmentUpdateDto, Challenge, Status } from '../../../types/Models';
+import { AssessmentUpdateDto, Challenge } from '../../../types/Models';
 import classes from './Editor.module.css';
-import { useSelector } from 'react-redux';
-import { IRootState } from '../../../store';
+import { useDispatch, useSelector } from 'react-redux';
+import { IDispatch, IRootState } from '../../../store';
 import { supabase } from '../../API/supabase';
 import { FUNCTIONS } from '../../../constants/functions.constants';
 import { toast } from 'react-toastify';
@@ -53,6 +53,7 @@ const Editor = () => {
 
     const { state } = useLocation();
     const navigate = useNavigate();
+    const dispatch = useDispatch<IDispatch>();
     const assessment = useSelector((state: IRootState) => state.assessment);
     const candidate = useSelector((state: IRootState) => state.candidate);
     const { challengeId } = useParams<{ challengeId: string }>();
@@ -146,12 +147,13 @@ const Editor = () => {
                 body: {
                     id: assessment.id,
                     code,
-                    lanuage: selectEditorLanguage.name,
+                    language: selectEditorLanguage.name,
                     result: Math.round(percentageOfCorrectTestCases),
                 } as AssessmentUpdateDto,
             });
-            navigate(ROUTES.ASSESSMENT_OVER)
             if (error) throw error;
+            dispatch.candidate.clearToken();
+            navigate(ROUTES.ASSESSMENT_OVER)
             setSubmitLoading(false);
         } catch (error) {
             setSubmitLoading(false);
