@@ -1,6 +1,7 @@
 import { CodeOutput, CompilationStatus, FUNCTION_NAME, IInputOutput, IParamType } from '../../types/Evaluator.types';
 import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
 import { ProgrammingLanguages } from '../common/CodeEditor/ProgrammingLanguages';
+import EvaluatorUtils from './Evaluator.utils';
 
 const separator = '##---##';
 export class PythonEvaluator {
@@ -23,9 +24,7 @@ export class PythonEvaluator {
                     .split(separator)
                     .map((output) => output.replace(/\n/g, ''))
                     .filter((output) => output);
-                return testCases.map((testCase, index) => {
-                    return outputArray[index].trim() === testCase.output;
-                });
+                return testCases.map((testCase, index) => outputArray[index] === 'True');
             }
             return null;
         } catch (error) {
@@ -46,21 +45,19 @@ export class PythonEvaluator {
             console.log(error);
         }
     }
-
     private getEvaluateTemplate(code: string, testCases: IInputOutput[]) {
-        return `
-        ${code}
-            def evaluate():
-        ${testCases
-            .map((testCase) => {
-                return `
-        print(${FUNCTION_NAME}(${testCase.input.join(', ')}))
-        print('${separator}')
-        `;
-            })
-            .join('\n')}
-    
-    evaluate()
+        return `${code}
+def evaluate():
+    ${testCases
+                .map((testCase) => {
+                    return `
+    print(${FUNCTION_NAME}(${EvaluatorUtils.getInputArgs(testCase, this.inputTypes)}) == ${EvaluatorUtils.getOutputArgs(testCase.output, this.outputType)})
+    print('${separator}')
     `;
+                })
+                .join('\n')}
+    
+evaluate()
+`;
     }
 }
