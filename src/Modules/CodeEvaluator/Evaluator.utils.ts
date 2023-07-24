@@ -6,7 +6,7 @@ export default class EvaluatorUtils {
         return testCase.input.map((arg, index) => {
             if (inputTypes[index].type === 'string') {
                 return `'${arg}'`
-            }  else if (inputTypes[index].type === 'object') {
+            } else if (inputTypes[index].type === 'object') {
                 return `{${arg.split(',').map((arg) => `'${arg.split(':')[0]}':${arg.split(':')[1]}`).join(',')}}`
             } else if (inputTypes[index].type === 'arrayOfObject') {
                 return `[${arg.split(',').map((arg) => `{${arg.split(':')[0]}:${arg.split(':')[1]}}`).join(',')}]`
@@ -14,6 +14,18 @@ export default class EvaluatorUtils {
                 return `${arg}`
             }
         }).join(', ')
-
     }
+
+    static getOutputArgs(output: string, outputType: IParamType) {
+        if (outputType.type === 'string') {
+            return `'${output}'`
+        } else if (outputType.type === 'object') {
+            return `{${output.split(',').map((arg) => `'${arg.split(':')[0]}':${arg.split(':')[1]}`).join(',')}}`
+        } else if (outputType.type === 'arrayOfObject') {
+            return `[${output.split(',').map((arg) => `{${arg.split(':')[0]}:${arg.split(':')[1]}}`).join(',')}]`
+        } else {
+            return `${output}`
+        }
+    }
+
 }

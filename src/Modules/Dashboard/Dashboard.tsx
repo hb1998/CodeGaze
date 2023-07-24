@@ -26,7 +26,7 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
         title: 'Result',
         dataIndex: 'result',
         key: 'result',
-        render: (value) => (value ? <Tag color={value > qualifyingScore ? 'green' : 'red'} >{value}%</Tag> : ''),
+        render: (value) => (value ? <Tag color={value > qualifyingScore ? 'green' : 'red'}>{value}%</Tag> : ''),
     },
     {
         title: 'Status',
@@ -41,6 +41,12 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
         render: (date: string) => dayjs(date).format('h:mm A MMM DD, YYYY'),
         sorter: (a, b) => dayjs(a.created_at).unix() - dayjs(b.created_at).unix(),
         defaultSortOrder: 'descend',
+    },
+    {
+        title: 'Time taken',
+        key: 'timeTaken',
+        render: (date: string, record) =>
+            dayjs(`${record.finished}+00:00`).diff(dayjs(record.created_at), 'minute') + ' mins',
     },
     {
         title: 'Language',

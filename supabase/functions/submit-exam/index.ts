@@ -34,7 +34,7 @@ serve(async (req: Request) => {
       throw new Error('Assessment not joined');
     }
     removeCandidateToken(supabase, assessment.candidate_id);
-    
+
     const { data, error } = await supabase.from('assessment').update({
       language,
       code,
