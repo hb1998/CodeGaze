@@ -36,20 +36,30 @@ serve(async (req) => {
     let candidateData = response.data;
 
     if (error?.code === DatabaseCode.ALREADY_EXISTS) {
-      // update the candidate with token if already exists
-      const { data, error } = await supabase
-        .from('candidate')
-        .update({
-          token
-        })
-        .eq('emailId', emailId)
-        .select();
+      const toTime = (date) => new Date(date).getTime();
 
-      if (error) throw error;
-      candidateData = data;
-    } else if (error) {
-      throw error;
+      const { data: candidateRecord } = await supabase.from('candidate').select('*, assessment(*)').eq('emailId', candidate.emailId);
+      const assessments = candidateRecord[0].assessment || [];
+      const latestAssessment = assessments.reduce((prev, current) => (toTime(prev.created_at) > toTime(current.created_at)) ? prev : current);
+      const cooldownPeriod = 1000 * 60 * 60 * 24 * 30 * 6; // 6 months in milliseconds;
+      const isCooldownPeriodOver = (new Date().getTime() - toTime(latestAssessment.created_at)) > cooldownPeriod;
+      if (isCooldownPeriodOver) {
+        // update the candidate with token if already exists
+        const { data, error } = await supabase
+          .from('candidate')
+          .update({
+            token
+          })
+          .eq('emailId', candidate.emailId)
+          .select();
+
+        if (error) throw error;
+        candidateData = data;
+      } else {
+        throw new Error('You can only take the assessment once every 6 months');
+      }
     }
+
 
     return new Response(
       JSON.stringify(candidateData ? candidateData[0] : null),
