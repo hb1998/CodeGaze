@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent, useMemo } from 'react';
-import { Card, Col, Row, Space, Statistic, Table, Tag } from 'antd';
+import { Button, Card, Col, Row, Space, Statistic, Table, Tag } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Search from 'antd/es/input/Search';
 import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
@@ -26,7 +26,7 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
         title: 'Result',
         dataIndex: 'result',
         key: 'result',
-        render: (value) => (value ? <Tag color={value > qualifyingScore ? 'green':'red'} >{value}%</Tag> : ''),
+        render: (value) => (value ? <Tag color={value > qualifyingScore ? 'green' : 'red'} >{value}%</Tag> : ''),
     },
     {
         title: 'Status',

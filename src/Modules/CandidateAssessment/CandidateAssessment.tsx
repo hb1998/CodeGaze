@@ -9,6 +9,7 @@ import { supabase } from '../API/supabase';
 import { FUNCTIONS } from '../../constants/functions.constants';
 import { useDispatch } from 'react-redux';
 import { IDispatch } from '../../store';
+import { FunctionsHttpError } from "@supabase/supabase-js";
 
 interface FormValues {
     name: string;
@@ -38,23 +39,24 @@ const CandidateAssessment = () => {
             .catch((error) => {
                 setLoading(false);
                 console.error('Error creating user:', error);
-                toast.error('Error creating user');
+                toast.error(error.message ?? 'Error creating user');
             });
     };
 
     const createCandidate = async (candidateData: CandidateInsertDto) => {
-        try {
-            const { data, error } = await supabase.functions.invoke<CandidateInsertDto>(FUNCTIONS.CREATE_CANDIDATE, {
-                body: candidateData,
-            });
-            setLoading(false);
-            if (error) throw error;
-            return data;
-        } catch (error) {
-            setLoading(false);
-            console.error('Error creating user:', error);
-            toast.error('Error creating user');
+        const { data, error } = await supabase.functions.invoke<CandidateInsertDto>(FUNCTIONS.CREATE_CANDIDATE, {
+            body: candidateData,
+        });
+        setLoading(false);
+        if (error) {
+            if (error instanceof FunctionsHttpError) {
+                const errorMessage = await error.context.json()
+                throw new Error(errorMessage.error);
+            } else {
+                throw error;
+            }
         }
+        return data;
     };
 
     return (
