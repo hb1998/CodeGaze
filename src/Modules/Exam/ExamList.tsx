@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { CopyOutlined, PlusCircleFilled } from '@ant-design/icons';
-import * as dayjs from 'dayjs';
-import { Button, Card, Col, Divider, Input, Modal, Row, Skeleton, Statistic, Tag } from 'antd';
+import dayjs from 'dayjs';
+import { Button, Card, Col, Divider, Input, Row, Skeleton, Statistic, Tag } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import { Outlet, useNavigate } from 'react-router';
-import { Link } from 'react-router-dom';
 import Title from 'antd/es/typography/Title';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../store';
@@ -38,7 +37,6 @@ const ExamList = () => {
     }, []);
 
     const addExam = async () => {
-        debugger;
         setNewExamLoading(true);
         try {
             const exam = await ExamAPIService.create({
@@ -46,7 +44,7 @@ const ExamList = () => {
                 created_by: session?.user?.email || '',
             });
             await fetchExams();
-            navigate(`${ROUTES.EXAM_DETAIL}/${exam.id}` , {
+            navigate(`${ROUTES.EXAM_DETAIL}/${exam.id}`, {
                 state: {
                     exam,
                 },
@@ -159,13 +157,6 @@ const ExamList = () => {
                                             <Col span={6}>
                                                 <Statistic title="Challenges" value={exam.challenge.length} />
                                             </Col>
-                                            {/* <Col span={12}>
-                                    <Timeline>
-                                        <Timeline.Item>Invited</Timeline.Item>
-                                        <Timeline.Item>Assessed</Timeline.Item>
-                                        <Timeline.Item>Qualified</Timeline.Item>
-                                    </Timeline>
-                                </Col> */}
                                         </Row>
                                         <Divider></Divider>
                                         <Row className="actions-container">
@@ -173,11 +164,6 @@ const ExamList = () => {
                                                 <Button onClick={() => copyInviteLink(exam.id)} type="dashed">
                                                     Copy Invite Link
                                                 </Button>
-                                                {/* <Link to={`/open/${exam.id}`} state={exam}>
-                                                        <Button type="link" icon={<EyeOutlined />}>
-                                                            Preview
-                                                        </Button>
-                                                    </Link> */}
                                                 <Button
                                                     onClick={() => handleDuplicate(exam.id)}
                                                     type="link"
