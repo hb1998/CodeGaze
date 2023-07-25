@@ -14,6 +14,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
     "@rematch/core": "^2.2.0",
+    "@rematch/persist": "^2.1.2",
     "@supabase/auth-ui-react": "^0.4.2",
     "@supabase/supabase-js": "^2.26.0",
     "@types/antd": "^1.0.0",

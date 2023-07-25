@@ -24,7 +24,7 @@ export class CandidateAssessmentAPIService {
         return data || [];
     }
 
-    static async create(payload: Pick<CandidateInsertDto, 'emailId' | 'name'> & { exam_id: number }) {
+    static async create(payload: Pick<CandidateInsertDto, 'emailId' | 'name'> & { exam_id: string }) {
         const response = await supabase
             .from('candidate')
             .insert({

@@ -7,9 +7,10 @@ import { ColumnsType } from 'antd/es/table';
 interface ITestCaseProps {
     result: boolean[];
     input_output: Challenge['input_output'];
+    showOnlyFirstTwoTestCases?: boolean;
 }
 
-const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
+const TestCaseTable = ({ result, input_output, showOnlyFirstTwoTestCases = true }: ITestCaseProps) => {
     const containerRef = useRef();
     const [tableHeight, setTableHeight] = useState(200);
     useEffect(() => {
@@ -34,14 +35,14 @@ const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
             dataIndex: 'input',
             key: 'input',
             render: (inputs: string[], record, index) =>
-                index < 2 ? (
+                !showOnlyFirstTwoTestCases || index < 2 ? (
                     <div>
                         {inputs.map((input, index) => (
                             <Tag key={index}>{input}</Tag>
                         ))}
                     </div>
                 ) : (
-                    <div className='blur-test-case'>Hidden</div>
+                    <div className="blur-test-case">Hidden</div>
                 ),
         },
         {
@@ -49,12 +50,12 @@ const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
             dataIndex: 'expected',
             key: 'expected',
             render: (output: string, record, index) =>
-                index < 2 ? (
+            !showOnlyFirstTwoTestCases || index < 2 ? (
                     <div>
                         <Tag>{output}</Tag>
                     </div>
                 ) : (
-                    <div className='blur-test-case' >Hidden</div>
+                    <div className="blur-test-case">Hidden</div>
                 ),
         },
         {
@@ -83,14 +84,13 @@ const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
 
     return (
         <div ref={containerRef} className="test-case-table-container">
-            <Title level={4}>Test Cases</Title>
             <Table
                 dataSource={testCaseResult}
                 columns={colDef}
                 pagination={false}
                 scroll={{
                     x: 'max-content',
-                    y: tableHeight,
+                    y: 500,
                 }}
             />
         </div>

@@ -34,14 +34,14 @@ export class ExamAPIService {
         return data ? data[0] : null;
     }
 
-    static async delete(id: number): Promise<void> {
+    static async delete(id: string): Promise<void> {
         const { error } = await supabase.from('exam').delete().eq('id', id);
         if (error) {
             throw error;
         }
     }
 
-    static async updateExamChallenges(examId: number, challengeIds: Set<number>) {
+    static async updateExamChallenges(examId: string, challengeIds: Set<string>) {
         // Extract the array of challenge IDs from the exam_challenge data
         const { data: examChallengeData, error: examChallengeError } = await supabase
             .from('exam_challenge')

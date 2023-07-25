@@ -24,6 +24,7 @@ import ExamDetail from './Modules/Exam/ExamDetail';
 import ExamList from './Modules/Exam/ExamList';
 import SignUp from './Modules/Auth/SignUp';
 import AssessmentOver from './Modules/CandidateAssessment/AssessmentOver';
+import ReportPage from './Modules/CandidateAssessment/ReportPage';
 const { Content } = Layout;
 
 const getProtectedRoute = (component: React.ReactNode) => {
@@ -76,6 +77,7 @@ const Home = () => {
                             element={<Editor />}
                         />
                         <Route path={ROUTES.ASSESSMENT_OVER} element={<AssessmentOver />} />
+                        <Route path={`${ROUTES.ASSESSMENT_RESULT}/:assessmentId`} element={<ReportPage />} />
                     </Routes>
                 </div>
             </Content>

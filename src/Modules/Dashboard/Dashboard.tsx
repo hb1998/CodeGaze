@@ -27,7 +27,19 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
         title: 'Result',
         dataIndex: 'result',
         key: 'result',
-        render: (value) => (value ? <Tag color={value > qualifyingScore ? 'green' : 'red'}>{value}%</Tag> : ''),
+        render: (result) => {
+            if (result) {
+                const correctTestCases = result.reduce((acc, curr) => (curr ? acc + 1 : acc), 0) / result.length;
+                const percentageOfCorrectTestCases = Math.round(correctTestCases * 100);
+
+                return percentageOfCorrectTestCases ? (
+                    <Tag color={percentageOfCorrectTestCases > qualifyingScore ? 'green' : 'red'}>
+                        {percentageOfCorrectTestCases}%
+                    </Tag>
+                ) : null;
+            }
+            return null;
+        },
     },
     StatusColDef('status'),
     {
@@ -41,9 +53,9 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
     {
         title: 'Time taken',
         key: 'timeTaken',
-        render: (date: string, record) =>{
-            const timeTaken = dayjs(`${record.finished}+00:00`).diff(dayjs(record.created_at), 'minute') 
-            return isNaN(timeTaken) ? 'In Process' : `${timeTaken} minutes`
+        render: (date: string, record) => {
+            const timeTaken = dayjs(`${record.finished}+00:00`).diff(dayjs(record.created_at), 'minute');
+            return isNaN(timeTaken) ? 'In Process' : `${timeTaken} minutes`;
         },
     },
     {
@@ -55,9 +67,10 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
         title: 'Exam',
         dataIndex: ['exam', 'name'],
         key: 'exam',
-        render: (text: string, record: AssessmentQueryResult[number]) => (
-            <Link to={`${ROUTES.EXAM}/open/openAssessment/${record?.id}`}>{text}</Link>
-        ),
+        render: (text: string, record: AssessmentQueryResult[number]) =>
+            // <Link to={`${ROUTES.EXAM}/open/openAssessment/${record?.exam?.id}`} state={{ exam: record?.exam }}>
+            text,
+        // </Link>
     },
     {
         title: 'Challenge',
@@ -65,9 +78,19 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
         key: 'challenge',
         render: (text: string, record) => <Link to={`${ROUTES.CHALLENGES}/${record.challenge?.id}`}>{text}</Link>,
     },
+    {
+        title: 'Actions',
+        key: 'Action',
+        fixed: 'right',
+        render: (text: string, record) => (
+            <Link to={`${ROUTES.ASSESSMENT_RESULT}/${record.id}`} state={{ assessment: record }}>
+                View Report
+            </Link>
+        ),
+    },
 ];
 
-type AssessmentQueryResult = Awaited<ReturnType<typeof CandidateAssessmentAPIService.getAll>>;
+export type AssessmentQueryResult = Awaited<ReturnType<typeof CandidateAssessmentAPIService.getAll>>;
 
 const Dashboard = () => {
     const [assessments, setAssessments] = useState<AssessmentQueryResult>([]);

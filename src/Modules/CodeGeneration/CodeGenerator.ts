@@ -3,8 +3,8 @@ import { CPPHandler } from './CPPHandler';
 import { JavaHandler } from './JavaHandler';
 import { JavascriptHandler } from './JavascriptHandler';
 import { PythonHandler } from './PythonHandler';
-import { languageNameType } from '../common/CodeEditor/Editor';
 import { IParamType } from '../../types/Evaluator.types';
+import { languageNameType } from '../common/CodeEditor/ProgrammingLanguages';
 
 // export enum Language {
 //     JavaScript = 'javascript',

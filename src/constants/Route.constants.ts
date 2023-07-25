@@ -12,5 +12,6 @@ export const ROUTES = {
     CANDIDATE: '/candidate',
     CANDIDATE_ASSESSMENT: '/candidate-assessment',
     ASSESSMENT_OVER: '/assessment-over',
+    ASSESSMENT_RESULT: '/assessment-result',
 
 }

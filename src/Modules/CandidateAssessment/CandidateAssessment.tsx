@@ -9,7 +9,7 @@ import { supabase } from '../API/supabase';
 import { FUNCTIONS } from '../../constants/functions.constants';
 import { useDispatch } from 'react-redux';
 import { IDispatch } from '../../store';
-import { FunctionsHttpError } from "@supabase/supabase-js";
+import { FunctionsHttpError } from '@supabase/supabase-js';
 
 interface FormValues {
     name: string;
@@ -50,7 +50,7 @@ const CandidateAssessment = () => {
         setLoading(false);
         if (error) {
             if (error instanceof FunctionsHttpError) {
-                const errorMessage = await error.context.json()
+                const errorMessage = await error.context.json();
                 throw new Error(errorMessage.error);
             } else {
                 throw error;
@@ -98,9 +98,25 @@ const CandidateAssessment = () => {
                     >
                         <Input />
                     </Form.Item>
-                    <Form.Item style={{ alignSelf: 'center' }} name="condition">
-                        <Checkbox>I Agree all the terms and conditions</Checkbox>
-                    </Form.Item>
+                    {/* <Form.Item
+                        style={{ alignSelf: 'center' }}
+                        rules={[
+                            {
+                                required: true,
+                                validator: (_, value) => {
+                                    if (value) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(new Error('Please agree to the terms and conditions'));
+                                },
+                            },
+                        ]}
+                        name="condition"
+                    >
+                        <Checkbox>
+                            I Agree all the <a>Terms and conditions</a>
+                        </Checkbox>
+                    </Form.Item> */}
                     <Form.Item>
                         <Button
                             loading={loading}
