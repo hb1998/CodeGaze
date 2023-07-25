@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../constants/Route.constants';
 import { ColumnsType } from 'antd/es/table';
+import { StatusColDef } from '../Candidate/CandidateColumn';
 
 const qualifyingScore = 50;
 
@@ -28,12 +29,7 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
         key: 'result',
         render: (value) => (value ? <Tag color={value > qualifyingScore ? 'green' : 'red'}>{value}%</Tag> : ''),
     },
-    {
-        title: 'Status',
-        dataIndex: 'status',
-        key: 'status',
-        render: (status: Status) => Status[status],
-    },
+    StatusColDef('status'),
     {
         title: 'Joined',
         dataIndex: 'created_at',

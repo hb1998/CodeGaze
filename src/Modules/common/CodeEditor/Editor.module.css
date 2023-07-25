@@ -37,6 +37,7 @@
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: small;
   font-weight: 500;
+  min-height: 60%;
 }
 
 .buttonContainer {

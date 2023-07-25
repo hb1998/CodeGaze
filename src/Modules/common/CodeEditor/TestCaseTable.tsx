@@ -1,3 +1,4 @@
+import { useRef, useState, useEffect } from 'react';
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Table, Tag } from 'antd';
 import Title from 'antd/es/typography/Title';
@@ -9,6 +10,17 @@ interface ITestCaseProps {
 }
 
 const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
+
+    const containerRef = useRef();
+    const [tableHeight, setTableHeight] = useState(200)
+    useEffect(() => {
+        const container = containerRef?.current as HTMLDivElement;
+        if (container) {
+            setTableHeight(container.offsetHeight - 200)
+        }
+    }, [containerRef])
+
+
     const testCaseResult = input_output.inputOutput.map((inputOutput, index) => {
         return {
             key: index,
@@ -46,6 +58,7 @@ const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
             dataIndex: 'result',
             key: 'result',
             fixed: 'right',
+            width: 120,
             render: (value: string) => {
                 if (value === '') {
                     return null;
@@ -64,8 +77,9 @@ const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
         },
     ];
 
+    
     return (
-        <div style={{ height: '30%' }}>
+        <div ref={containerRef} className="test-case-table-container">
             <Title level={4}>Test Cases</Title>
             <Table
                 dataSource={testCaseResult}
@@ -73,6 +87,7 @@ const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
                 pagination={false}
                 scroll={{
                     x: 'max-content',
+                    y: tableHeight,
                 }}
             />
         </div>

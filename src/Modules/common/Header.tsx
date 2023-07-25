@@ -31,7 +31,7 @@ const HeaderComponent = () => {
     };
     return (
         <Header>
-            <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['dashboard']}>
+            <Menu theme="dark" mode="horizontal"  defaultSelectedKeys={['dashboard']}>
                 <Menu.Item key="dashboard">
                     <Link to={'/dashboard'}>Dashboard</Link>
                 </Menu.Item>
