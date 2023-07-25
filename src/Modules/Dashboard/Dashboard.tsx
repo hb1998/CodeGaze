@@ -41,8 +41,10 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
     {
         title: 'Time taken',
         key: 'timeTaken',
-        render: (date: string, record) =>
-            dayjs(`${record.finished}+00:00`).diff(dayjs(record.created_at), 'minute') + ' mins',
+        render: (date: string, record) =>{
+            const timeTaken = dayjs(`${record.finished}+00:00`).diff(dayjs(record.created_at), 'minute') 
+            return isNaN(timeTaken) ? 'In Process' : `${timeTaken} minutes`
+        },
     },
     {
         title: 'Language',
