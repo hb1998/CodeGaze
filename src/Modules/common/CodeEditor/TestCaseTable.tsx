@@ -7,19 +7,18 @@ import { ColumnsType } from 'antd/es/table';
 interface ITestCaseProps {
     result: boolean[];
     input_output: Challenge['input_output'];
+    showOnlyFirstTwoTestCases?: boolean;
 }
 
-const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
-
+const TestCaseTable = ({ result, input_output, showOnlyFirstTwoTestCases = true }: ITestCaseProps) => {
     const containerRef = useRef();
-    const [tableHeight, setTableHeight] = useState(200)
+    const [tableHeight, setTableHeight] = useState(200);
     useEffect(() => {
         const container = containerRef?.current as HTMLDivElement;
         if (container) {
-            setTableHeight(container.offsetHeight - 200)
+            setTableHeight(container.offsetHeight - 200);
         }
-    }, [containerRef])
-
+    }, [containerRef]);
 
     const testCaseResult = input_output.inputOutput.map((inputOutput, index) => {
         return {
@@ -35,23 +34,29 @@ const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
             title: 'Input',
             dataIndex: 'input',
             key: 'input',
-            render: (inputs: string[]) => (
-                <div>
-                    {inputs.map((input, index) => (
-                        <Tag key={index}>{input}</Tag>
-                    ))}
-                </div>
-            ),
+            render: (inputs: string[], record, index) =>
+                !showOnlyFirstTwoTestCases || index < 2 ? (
+                    <div>
+                        {inputs.map((input, index) => (
+                            <Tag key={index}>{input}</Tag>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="blur-test-case">Hidden</div>
+                ),
         },
         {
             title: 'Expected',
             dataIndex: 'expected',
             key: 'expected',
-            render: (output: string) => (
-                <div>
-                    <Tag>{output}</Tag>
-                </div>
-            ),
+            render: (output: string, record, index) =>
+            !showOnlyFirstTwoTestCases || index < 2 ? (
+                    <div>
+                        <Tag>{output}</Tag>
+                    </div>
+                ) : (
+                    <div className="blur-test-case">Hidden</div>
+                ),
         },
         {
             title: 'Result',
@@ -77,17 +82,15 @@ const TestCaseTable = ({ result, input_output }: ITestCaseProps) => {
         },
     ];
 
-    
     return (
         <div ref={containerRef} className="test-case-table-container">
-            <Title level={4}>Test Cases</Title>
             <Table
                 dataSource={testCaseResult}
                 columns={colDef}
                 pagination={false}
                 scroll={{
                     x: 'max-content',
-                    y: tableHeight,
+                    y: 500,
                 }}
             />
         </div>

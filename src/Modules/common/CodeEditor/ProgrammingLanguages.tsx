@@ -31,3 +31,14 @@ export const ProgrammingLanguages = {
         lang: python(),
     },
 } as const;
+
+export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
+export type languageNameType = languageObjectType['name'];
+
+export const languagesNameMap = Object.keys(ProgrammingLanguages).reduce(
+    (acc, key) => {
+        acc[ProgrammingLanguages[key].name] = ProgrammingLanguages[key];
+        return acc;
+    },
+    {} as Record<languageNameType, languageObjectType>,
+);

@@ -8,7 +8,7 @@ import QuestionContent from './QuestionContent';
 import CodeEditor from './CodeEditor';
 import Output from './Output';
 import TestCaseTable from './TestCaseTable';
-import { ProgrammingLanguages } from './ProgrammingLanguages';
+import { ProgrammingLanguages, languageNameType, languageObjectType, languagesNameMap } from './ProgrammingLanguages';
 import { CodeGenerator } from '../../CodeGeneration/CodeGenerator';
 import { CodeEvaluator } from '../../CodeEvaluator/CodeEvaluator';
 import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
@@ -20,18 +20,9 @@ import { supabase } from '../../API/supabase';
 import { FUNCTIONS } from '../../../constants/functions.constants';
 import { toast } from 'react-toastify';
 import { ROUTES } from '../../../constants/Route.constants';
-import './styles/Editor.css'
-
-export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
-export type languageNameType = languageObjectType['name'];
-
-const languagesNameMap = Object.keys(ProgrammingLanguages).reduce(
-    (acc, key) => {
-        acc[ProgrammingLanguages[key].name] = ProgrammingLanguages[key];
-        return acc;
-    },
-    {} as Record<languageNameType, languageObjectType>,
-);
+import './styles/Editor.css';
+import { Typography } from 'antd';
+const { Title } = Typography;
 
 const Editor = () => {
     const [sizes, setSizes] = useState([600, '100%', 750]);
@@ -44,6 +35,7 @@ const Editor = () => {
     const [challenge, setChallenge] = useState<Challenge>(null);
     const [runLoading, setrunLoading] = useState(false);
     const [submitLoading, setSubmitLoading] = useState(false);
+    const [saveLoading, setSaveLoading] = useState(false);
     const [testCaseLoading, setTestCaseLoading] = useState(false);
 
     const evaluator = new CodeEvaluator(
@@ -137,24 +129,41 @@ const Editor = () => {
         }
     };
 
+    const handleSave = async () => {
+        try {
+            setSaveLoading(true);
+            const { error } = await supabase.functions.invoke(FUNCTIONS.UPDATE_ASSESSMENT, {
+                body: {
+                    id: assessment.id,
+                    code,
+                    language: selectEditorLanguage.name,
+                } as AssessmentUpdateDto,
+            });
+            if (error) throw error;
+            setSaveLoading(false);
+        } catch (error) {
+            setSaveLoading(false);
+            toast.error(error.message ?? 'Error saving code');
+            console.error('Error evaluating code:', error);
+        }
+    };
+
     const handleSubmit = async () => {
         try {
             setSubmitLoading(true);
             const result = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
-            const correctTestCases = result.reduce((acc, curr) => (curr ? acc + 1 : acc), 0) / result.length;
-            const percentageOfCorrectTestCases = correctTestCases * 100;
             await supabase.functions.setAuth(candidate?.token);
             const { error } = await supabase.functions.invoke(FUNCTIONS.SUBMIT_EXAM, {
                 body: {
                     id: assessment.id,
                     code,
                     language: selectEditorLanguage.name,
-                    result: Math.round(percentageOfCorrectTestCases),
+                    result,
                 } as AssessmentUpdateDto,
             });
             if (error) throw error;
             dispatch.candidate.clearToken();
-            navigate(ROUTES.ASSESSMENT_OVER)
+            navigate(ROUTES.ASSESSMENT_OVER);
             setSubmitLoading(false);
         } catch (error) {
             setSubmitLoading(false);
@@ -182,6 +191,7 @@ const Editor = () => {
                             languageName={selectEditorLanguage.name}
                             handleLanguageChange={handleLanguageChange}
                             handleReset={handleReset}
+                            handleSave={handleSave}
                             code={code}
                             codeEditorLang={selectEditorLanguage.lang}
                             handleCodeChange={handleCodeChange}
@@ -198,6 +208,7 @@ const Editor = () => {
                                 submitLoading={submitLoading}
                                 handleSubmit={handleSubmit}
                             />
+                            <Title level={4}>Test Cases</Title>
                             <TestCaseTable
                                 input_output={
                                     challenge?.input_output || {

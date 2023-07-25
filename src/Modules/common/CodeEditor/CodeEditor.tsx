@@ -1,14 +1,13 @@
 import { Button, Select } from 'antd';
 import CodeMirror from '@uiw/react-codemirror';
-
-import { ProgrammingLanguages } from './ProgrammingLanguages';
-import { languageNameType, languageObjectType } from './Editor';
+import { ProgrammingLanguages, languageNameType, languageObjectType } from './ProgrammingLanguages';
 import classes from './Editor.module.css';
 
 interface ICodeEditorProps {
     languageName: string;
     handleLanguageChange: (lang: languageNameType) => void;
     handleReset: () => void;
+    handleSave: () => void;
     code: string;
     codeEditorLang: languageObjectType['lang'];
     handleCodeChange: (value: string) => void;
@@ -30,8 +29,11 @@ const CodeEditor = (props: ICodeEditorProps) => {
                     options={options}
                 />
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <Button type="primary" onClick={props.handleReset}>
+                    <Button  onClick={props.handleReset}>
                         Reset
+                    </Button>
+                    <Button type="primary" onClick={props.handleSave}>
+                        Save
                     </Button>
                 </div>
             </div>

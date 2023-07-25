@@ -4,3 +4,7 @@
 .test-case-table-container{
     min-height: 40%;
 }
+
+.blur-test-case{
+    filter: blur(3px);
+}

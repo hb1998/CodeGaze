@@ -17,9 +17,9 @@ export type ChallengeResult = Awaited<ReturnType<typeof ChallengeAPIService.getA
 const ExamDetail = () => {
     const { state } = useLocation();
     const exam = state?.exam as ExamQueryResult[number];
-
+    const [name, setName] = useState(exam?.name || '');
     const [challenges, setChallenges] = useState<ChallengeResult>([]);
-    const [selectedChallenges, setSelectedChallenges] = useState<Set<number>>(new Set());
+    const [selectedChallenges, setSelectedChallenges] = useState<Set<string>>(new Set());
     const [loading, setLoading] = useState<boolean>(true);
     const [saveLoading, setSaveLoading] = useState<boolean>(false);
     const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
@@ -27,7 +27,9 @@ const ExamDetail = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setSelectedChallenges(new Set(exam.challenge.map((challenge) => challenge.id)));
+        if (exam.challenge) {
+            setSelectedChallenges(new Set(exam.challenge.map((challenge) => challenge.id)));
+        }
     }, [exam]);
 
     const addChallenge = (challenge: ChallengeResult[number]) => {
@@ -65,11 +67,29 @@ const ExamDetail = () => {
     const handleSave = async () => {
         setSaveLoading(true);
         try {
-            await ExamAPIService.updateExamChallenges(exam.id, selectedChallenges);
+            const challengesFromExam = new Set(exam.challenge.map((challenge) => challenge.id));
+            const hasChallengesChanged = !(
+                challengesFromExam.size === selectedChallenges.size &&
+                [...challengesFromExam].every((challengeId) => selectedChallenges.has(challengeId))
+            );
+            const hasNameChanged = name !== exam.name;
+            if (hasChallengesChanged) await ExamAPIService.updateExamChallenges(exam.id, selectedChallenges);
+            if (hasNameChanged) await saveExamName(name);
         } catch (error) {
             toast.error(error?.message || 'Error saving exam');
         } finally {
             setSaveLoading(false);
+        }
+    };
+
+    const saveExamName = async (name: string) => {
+        try {
+            await ExamAPIService.update({
+                id: exam.id,
+                name,
+            });
+        } catch (error) {
+            toast.error(error?.message || 'Error saving exam');
         }
     };
 
@@ -79,7 +99,6 @@ const ExamDetail = () => {
             await ExamAPIService.delete(exam.id);
             navigate(`${ROUTES.EXAM}/open`);
             toast.success('Exam deleted');
-
         } catch (error) {
             toast.error(error?.message || 'Error deleting exam');
         } finally {
@@ -92,7 +111,6 @@ const ExamDetail = () => {
     return (
         <div style={{ padding: '2rem' }}>
             <Link to="/assessments/open">
-                {' '}
                 <Button type="link" icon={<ArrowLeftOutlined />}></Button> back to candidate results
             </Link>
 
@@ -107,7 +125,14 @@ const ExamDetail = () => {
                     save
                 </Button>
             </div>
-            <Title level={3}>{exam.name}</Title>
+            <Title
+                onInput={(e) => setName((e.target as HTMLElement).textContent)}
+                style={{ outline: 'none' }}
+                contentEditable={true}
+                level={3}
+            >
+                {exam?.name}
+            </Title>
             <div>
                 <Tabs>
                     <TabPane tab="Challenges" key="1">
