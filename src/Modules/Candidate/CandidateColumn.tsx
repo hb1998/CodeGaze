@@ -22,16 +22,31 @@ const compareTimestamps = (a: string, b: string) => {
     return timestampA - timestampB;
 };
 
-export const candidateColumn: ColumnsType<any> = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-        sorter: {
-            compare: (a, b) => a.id - b.id,
-            multiple: 3,
+
+export const StatusColDef = (dataIndex) => ({
+    title: 'Status',
+    dataIndex,
+    key: 'id',
+    render: (status: Status) => statusLabels[status],
+    filters: [
+        {
+            text: 'Joined',
+            value: Status.JOINED.toString(),
         },
+        {
+            text: 'Submitted',
+            value: Status.SUBMITTED.toString(),
+        },
+    ],
+    onFilter: (value, record) => {
+        const filteredAssessments = record.assessment.filter((assessment) => {
+            return assessment.status.toString() === value;
+        });
+        return filteredAssessments.length > 0;
     },
+})
+
+export const candidateColumn: ColumnsType<any> = [
     {
         title: 'Name',
         dataIndex: 'name',
@@ -77,28 +92,7 @@ export const candidateColumn: ColumnsType<any> = [
             return record.assessment.map((item) => <div key={item.id}>{item.language}</div>);
         },
     },
-    {
-        title: 'Status',
-        dataIndex: ['assessment', 0, 'status'],
-        key: 'id',
-        render: (status: Status) => statusLabels[status],
-        filters: [
-            {
-                text: 'Joined',
-                value: Status.JOINED.toString(),
-            },
-            {
-                text: 'Submitted',
-                value: Status.SUBMITTED.toString(),
-            },
-        ],
-        onFilter: (value, record) => {
-            const filteredAssessments = record.assessment.filter((assessment) => {
-                return assessment.status.toString() === value;
-            });
-            return filteredAssessments.length > 0;
-        },
-    },
+    StatusColDef(['assessment', 0, 'status']),
     {
         title: 'Created At',
         dataIndex: 'created_at',

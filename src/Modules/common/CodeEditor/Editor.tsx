@@ -20,6 +20,7 @@ import { supabase } from '../../API/supabase';
 import { FUNCTIONS } from '../../../constants/functions.constants';
 import { toast } from 'react-toastify';
 import { ROUTES } from '../../../constants/Route.constants';
+import './styles/Editor.css'
 
 export type languageObjectType = (typeof ProgrammingLanguages)[keyof typeof ProgrammingLanguages];
 export type languageNameType = languageObjectType['name'];
@@ -187,7 +188,7 @@ const Editor = () => {
                         />
                     </Pane>
                     <Pane>
-                        <div style={{ padding: '1rem' }}>
+                        <div className="output-container" style={{ padding: '1rem' }}>
                             <Output
                                 output={output}
                                 runLoading={runLoading}
