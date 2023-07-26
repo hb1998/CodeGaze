@@ -118,3 +118,6 @@ verify_jwt=false
 
 [functions.submit-exam]
 verify_jwt=false
+
+[functions.get-challenge]
+verify_jwt=false
