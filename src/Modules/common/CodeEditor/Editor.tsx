@@ -52,6 +52,17 @@ const Editor = () => {
     const { challengeId } = useParams<{ challengeId: string }>();
 
     useEffect(() => {
+        if (assessment?.code) {
+            console.log(assessment.code)
+            setCode(assessment.code)
+        }
+        if (assessment?.language) {
+            setSelectEditorLanguage(languagesNameMap[assessment.language])
+        }
+    }, [assessment])
+
+
+    useEffect(() => {
         if (state) {
             setChallenge(state?.challenge);
         } else {
@@ -70,8 +81,9 @@ const Editor = () => {
     };
 
     useEffect(() => {
-        updateBoilerCode(selectEditorLanguage['name']);
-    }, [selectEditorLanguage, challenge]);
+        if (!assessment?.code)
+            updateBoilerCode(selectEditorLanguage['name']);
+    }, [selectEditorLanguage, challenge, assessment]);
 
     const handleCodeChange = (value: string) => {
         setCode(value);
@@ -86,8 +98,7 @@ const Editor = () => {
             setrunLoading(false);
             if (result.stdout === null) {
                 setOutput(
-                    `${result.status.description !== 'Accepted' ? result.status.description : ''}\n${result.stderr}\n${
-                        result.compile_output !== null ? result.compile_output : ''
+                    `${result.status.description !== 'Accepted' ? result.status.description : ''}\n${result.stderr}\n${result.compile_output !== null ? result.compile_output : ''
                     }`,
                 );
             }
@@ -109,7 +120,7 @@ const Editor = () => {
             challenge?.input_output?.outputType,
         );
         const starterCode = generator.generateStarterCode();
-        starterCode !== undefined ? setCode(starterCode) : setCode('');
+        setCode(starterCode);
     };
 
     const handleReset = () => {
@@ -140,6 +151,7 @@ const Editor = () => {
                 } as AssessmentUpdateDto,
             });
             if (error) throw error;
+            dispatch.assessment.update({ ...assessment, code, language: selectEditorLanguage.name })
             setSaveLoading(false);
         } catch (error) {
             setSaveLoading(false);
@@ -162,7 +174,8 @@ const Editor = () => {
                 } as AssessmentUpdateDto,
             });
             if (error) throw error;
-            dispatch.candidate.clearToken();
+            dispatch.candidate.clear();
+            dispatch.assessment.clear();
             navigate(ROUTES.ASSESSMENT_OVER);
             setSubmitLoading(false);
         } catch (error) {
@@ -191,6 +204,7 @@ const Editor = () => {
                             languageName={selectEditorLanguage.name}
                             handleLanguageChange={handleLanguageChange}
                             handleReset={handleReset}
+                            saveLoading={saveLoading}
                             handleSave={handleSave}
                             code={code}
                             codeEditorLang={selectEditorLanguage.lang}

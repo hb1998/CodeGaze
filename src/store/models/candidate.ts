@@ -8,15 +8,12 @@ const candidate = {
         update(_state: Candidate, payload: Candidate): Candidate {
             return payload
         },
-        clearToken(state: Candidate): Candidate {
-            return <Candidate>{
-                ...state,
-                token: null
-            }
+        clear(): Candidate {
+            return <Candidate>{}
         }
     },
     effects: {
-        clearToken(): void {
+        clear(): void {
             supabase.functions.setAuth(null)
         }
     }

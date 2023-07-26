@@ -7,6 +7,7 @@ interface ICodeEditorProps {
     languageName: string;
     handleLanguageChange: (lang: languageNameType) => void;
     handleReset: () => void;
+    saveLoading: boolean;
     handleSave: () => void;
     code: string;
     codeEditorLang: languageObjectType['lang'];
@@ -32,7 +33,7 @@ const CodeEditor = (props: ICodeEditorProps) => {
                     <Button  onClick={props.handleReset}>
                         Reset
                     </Button>
-                    <Button type="primary" onClick={props.handleSave}>
+                    <Button loading={props.saveLoading} disabled={props.saveLoading} type="primary" onClick={props.handleSave}>
                         Save
                     </Button>
                 </div>
