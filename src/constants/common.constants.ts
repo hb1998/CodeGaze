@@ -1,0 +1,1 @@
+export const QUALIFYING_SCORE = 60;

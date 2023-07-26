@@ -24,6 +24,18 @@ export class CandidateAssessmentAPIService {
         return data || [];
     }
 
+    static async getById(id: string) {
+        const { data, error } = await supabase
+            .from('assessment')
+            .select('*, candidate(*), exam(*), challenge(*)')
+            .eq('id', id)
+            .single();
+        if (error) {
+            throw error;
+        }
+        return data || null;
+    }
+
     static async create(payload: Pick<CandidateInsertDto, 'emailId' | 'name'> & { exam_id: string }) {
         const response = await supabase
             .from('candidate')

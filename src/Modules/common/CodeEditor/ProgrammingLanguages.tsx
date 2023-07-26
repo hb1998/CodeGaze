@@ -4,30 +4,38 @@ import { python } from '@codemirror/lang-python';
 import { java } from '@codemirror/lang-java';
 import { cpp } from '@codemirror/lang-cpp';
 
+export enum Language {
+    C = 'C',
+    CPP = 'C++',
+    JAVA = 'Java',
+    JAVASCRIPT = 'Javascript',
+    PYTHON = 'Python',
+}
+
 export const ProgrammingLanguages = {
     c: {
         id: 50,
-        name: 'C',
+        name: Language.C,
         lang: cpp(),
     },
     cpp: {
         id: 54,
-        name: 'C++',
+        name: Language.CPP,
         lang: cpp(),
     },
     java: {
         id: 62,
-        name: 'Java',
+        name: Language.JAVA,
         lang: java(),
     },
     javaScript: {
         id: 63,
-        name: 'Javascript',
+        name: Language.JAVASCRIPT,
         lang: javascript({ jsx: true }),
     },
     python: {
         id: 71,
-        name: 'Python',
+        name: Language.PYTHON,
         lang: python(),
     },
 } as const;
