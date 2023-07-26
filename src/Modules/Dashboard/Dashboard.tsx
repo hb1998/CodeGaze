@@ -9,8 +9,8 @@ import { Link } from 'react-router-dom';
 import { ROUTES } from '../../constants/Route.constants';
 import { ColumnsType } from 'antd/es/table';
 import { StatusColDef } from '../Candidate/CandidateColumn';
-
-const qualifyingScore = 50;
+import CandidateAssessmentUtils from '../CandidateAssessment/services/CanidadateAssessment.utils';
+import { QUALIFYING_SCORE } from '../../constants/common.constants';
 
 const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
     {
@@ -27,13 +27,12 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
         title: 'Result',
         dataIndex: 'result',
         key: 'result',
-        render: (result) => {
+        render: (result,record) => {
             if (result) {
-                const correctTestCases = result.reduce((acc, curr) => (curr ? acc + 1 : acc), 0) / result.length;
-                const percentageOfCorrectTestCases = Math.round(correctTestCases * 100);
+                const percentageOfCorrectTestCases = CandidateAssessmentUtils.getScore(record);
 
                 return percentageOfCorrectTestCases ? (
-                    <Tag color={percentageOfCorrectTestCases > qualifyingScore ? 'green' : 'red'}>
+                    <Tag color={percentageOfCorrectTestCases > QUALIFYING_SCORE ? 'green' : 'red'}>
                         {percentageOfCorrectTestCases}%
                     </Tag>
                 ) : null;
@@ -53,10 +52,7 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
     {
         title: 'Time taken',
         key: 'timeTaken',
-        render: (date: string, record) => {
-            const timeTaken = dayjs(`${record.finished}+00:00`).diff(dayjs(record.created_at), 'minute');
-            return isNaN(timeTaken) ? 'In Process' : `${timeTaken} minutes`;
-        },
+        render: (date: string, record) => CandidateAssessmentUtils.getTimeTaken(record),
     },
     {
         title: 'Language',
@@ -122,29 +118,31 @@ const Dashboard = () => {
         });
     }, [assessments, search]);
 
+    const qualified = assessments.filter((assessment) => {
+        const percentageOfCorrectTestCases = CandidateAssessmentUtils.getScore(assessment);
+        return percentageOfCorrectTestCases > QUALIFYING_SCORE;
+    });
+
+    const totalCompleted = assessments.filter((assessment) => assessment.status === Status.SUBMITTED);
+
     return (
         <div className="container">
             <Title level={2}>Dashboard</Title>
             <Space size={24} direction="vertical" style={{ width: '100%' }}>
                 <Row gutter={16}>
-                    <Col span={6}>
+                    <Col span={8}>
                         <Card>
                             <Statistic title="Total Invited" value={assessments.length} />
                         </Card>
                     </Col>
-                    <Col span={6}>
+                    <Col span={8}>
                         <Card>
-                            <Statistic title="Total Assessed" value={assessments.length} />
+                            <Statistic title="Total Completed" value={totalCompleted.length} />
                         </Card>
                     </Col>
-                    <Col span={6}>
+                    <Col span={8}>
                         <Card>
-                            <Statistic title="Total Qualified" value={assessments.length} />
-                        </Card>
-                    </Col>
-                    <Col span={6}>
-                        <Card>
-                            <Statistic title="Total Challenges" value={assessments.length} />
+                            <Statistic title="Total Qualified" value={qualified.length} />
                         </Card>
                     </Col>
                 </Row>
