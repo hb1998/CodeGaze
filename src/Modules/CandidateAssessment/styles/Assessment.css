@@ -1,9 +1,14 @@
-.begin-button{
+.begin-button {
     background-color: var(--lumel-brand-color) !important;
 }
 
-.timer span{
+.timer span {
     min-width: 100px;
     margin-left: 10px;
     text-align: right;
+}
+
+code {
+    font-family: 'Courier New', monospace;
+    padding: 0px 2px;
 }
