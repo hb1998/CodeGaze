@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Button, Form, Input, Modal, Table } from 'antd';
+import { Button, Form, Input, Modal, Space, Table } from 'antd';
 import { supabase } from '../API/supabase';
 import dayjs from 'dayjs';
 import { FUNCTIONS } from '../../constants/functions.constants';
-import { useSelector } from 'react-redux';
-import { IRootState } from '../../store';
 import { toast } from 'react-toastify';
+import { Typography } from 'antd';
+import { CopyOutlined } from '@ant-design/icons';
+
+const { Text } = Typography;
 interface IEmailProps {
     emailId: string;
 }
@@ -27,9 +29,9 @@ function Admin() {
     const [modalLoading, setModalLoading] = useState(false);
     const [users, setUsers] = useState([]);
     const [usersLoading, setUserLoading] = useState(true);
+    const [inviteLink, setInviteLink] = useState('')
     const [form] = Form.useForm();
 
-    const session = useSelector((state: IRootState) => state.session);
 
     const emailValidator = (rule: any, value: any, callback: any) => {
         if (value && !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
@@ -64,18 +66,24 @@ function Admin() {
                     emailId: details.emailId,
                 },
             });
+            if (error) throw error;
             fetchUsers();
-            console.log(data)
-            if(error) throw error;
-            toast.success(`${details.emailId} invited successfully`);
+            const link = data?.properties?.action_link;
+            navigator.clipboard.writeText(link);
+            setInviteLink(link);
+            toast.success('Copied to clipboard');
             setModalLoading(false);
-            setModalVisible(false);
             form.resetFields();
         } catch (error) {
             setModalLoading(false);
             setModalVisible(false);
         }
     };
+
+    const copyInviteLink = () => {
+        navigator.clipboard.writeText(inviteLink);
+        toast.success('Copied to clipboard');
+    }
 
     return (
         <div>
@@ -92,6 +100,7 @@ function Admin() {
                     onCancel={() => {
                         form.resetFields();
                         setModalVisible(false);
+                        setInviteLink('');
                     }}
                     footer={null}
                 >
@@ -105,15 +114,20 @@ function Admin() {
                         >
                             <Input placeholder="Enter your email" />
                         </Form.Item>
+                        {inviteLink && <div style={{ marginBottom: '1rem' }} >
+                            <Text code>{inviteLink}</Text>
+                            <CopyOutlined onClick={copyInviteLink} />
+                        </div>}
 
                         <Form.Item>
                             <Button
                                 loading={modalLoading}
+                                disabled={modalLoading || !!inviteLink}
                                 type="primary"
                                 htmlType="submit"
                                 style={{ marginRight: '8px' }}
                             >
-                                Invite
+                                Generate Invite Link
                             </Button>
                             <Button
                                 type="default"
@@ -122,14 +136,14 @@ function Admin() {
                                     setModalVisible(false);
                                 }}
                             >
-                                cancel
+                                Close
                             </Button>
                         </Form.Item>
                     </Form>
                 </Modal>
                 <Table dataSource={users} columns={adminTableDef} loading={usersLoading} />
             </div>
-        </div>
+        </div >
     );
 }
 

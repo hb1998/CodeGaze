@@ -11,6 +11,7 @@ import { ColumnsType } from 'antd/es/table';
 import { StatusColDef } from '../Candidate/CandidateColumn';
 import CandidateAssessmentUtils from '../CandidateAssessment/services/CanidadateAssessment.utils';
 import { QUALIFYING_SCORE } from '../../constants/common.constants';
+import { supabase } from '../API/supabase';
 
 const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
     {
@@ -27,7 +28,7 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
         title: 'Result',
         dataIndex: 'result',
         key: 'result',
-        render: (result,record) => {
+        render: (result, record) => {
             if (result) {
                 const percentageOfCorrectTestCases = CandidateAssessmentUtils.getScore(record);
 
