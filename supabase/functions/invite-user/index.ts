@@ -16,8 +16,12 @@ serve(async (req) => {
 
   try {
 
-    const { data, error } = await supabase.auth.admin.inviteUserByEmail(emailId, {
-      redirectTo: Deno.env.get('INVITE_REDIRECT_URL'),
+    const { data, error } = await supabase.auth.admin.generateLink({
+      type: 'invite',
+      email: emailId,
+      options: {
+        redirectTo: Deno.env.get('INVITE_REDIRECT_URL'),
+      }
     });
 
     if (error) {
