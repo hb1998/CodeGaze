@@ -90,6 +90,11 @@ const ChallengesListComponent = () => {
                 You will have a limited amount of time to complete the challenge, and your progress will be tracked.
                 Please do not refresh the page or navigate away from the challenge while you are working on it.
             </p>
+            <ul>
+                <li>Please make sure that all the test cases are handled, there will be some test cases which are hidden from you.</li>
+                <li>Do not modify the starter code, write all your logic inside the <code>solve</code> function</li>
+                <li>Don't use <code>console.log</code> or <code>print</code> when submitting the assessment or running the test cases, you have to return the result.</li>
+            </ul>
             <Divider dashed />
             <Title level={4}>Exams</Title>
             {loading ? (

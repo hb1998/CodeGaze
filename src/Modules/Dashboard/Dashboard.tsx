@@ -32,7 +32,7 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
             if (result) {
                 const percentageOfCorrectTestCases = CandidateAssessmentUtils.getScore(record);
 
-                return percentageOfCorrectTestCases ? (
+                return ![undefined, null].includes(percentageOfCorrectTestCases) ? (
                     <Tag color={percentageOfCorrectTestCases > QUALIFYING_SCORE ? 'green' : 'red'}>
                         {percentageOfCorrectTestCases}%
                     </Tag>

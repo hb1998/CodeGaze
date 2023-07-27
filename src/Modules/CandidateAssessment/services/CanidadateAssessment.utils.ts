@@ -14,6 +14,6 @@ export default class CandidateAssessmentUtils {
         const result = assessment?.result as unknown as Array<boolean> || [];
         const correctTestCases = result.reduce((acc, curr) => (curr ? acc + 1 : acc), 0) / result.length;
         const percentageOfCorrectTestCases = Math.round(correctTestCases * 100);
-        return isNaN(percentageOfCorrectTestCases) ? null :percentageOfCorrectTestCases;
+        return isNaN(percentageOfCorrectTestCases) ? 0 :percentageOfCorrectTestCases;
     }
 }
