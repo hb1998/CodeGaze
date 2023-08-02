@@ -77,7 +77,7 @@ const Home = () => {
                             element={<Editor />}
                         />
                         <Route path={ROUTES.ASSESSMENT_OVER} element={<AssessmentOver />} />
-                        <Route path={`${ROUTES.ASSESSMENT_RESULT}/:assessmentId`} element={<ReportPage />} />
+                        <Route path={`${ROUTES.ASSESSMENT_RESULT}/:assessmentId`} element={getProtectedRoute(<ReportPage />)} />
                     </Routes>
                 </div>
             </Content>

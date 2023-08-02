@@ -17,8 +17,6 @@ export class PythonHandler implements LanguageHandler {
 
     # Return the output
     return output;
-
-# Call the solve function with sample input and print the output
     `;
 
         // Replace the placeholders in the function template with the input parameters and output variables
