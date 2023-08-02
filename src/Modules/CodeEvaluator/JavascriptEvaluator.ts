@@ -26,7 +26,12 @@ export class JavascriptEvaluator {
                     .map((output) => output.replace(/\n/g, ''))
                     .filter((output) => output);
                 return testCases.map((testCase, index) => {
-                    return this.isEqual(outputArray[index], testCase.output);
+                    try {
+                        return this.isEqual(outputArray[index], testCase.output);
+                    } catch (error) {
+                        console.log(error)
+                        return false;
+                    }
                 });
             }
             return testCases.map(() => false);
