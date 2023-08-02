@@ -16,7 +16,7 @@ const TestCaseTable = ({ result, input_output, showOnlyFirstTwoTestCases = true 
     useEffect(() => {
         const container = containerRef?.current as HTMLDivElement;
         if (container) {
-            setTableHeight(container.offsetHeight - 200);
+            setTableHeight(container.offsetHeight - 30);
         }
     }, [containerRef]);
 
@@ -90,7 +90,7 @@ const TestCaseTable = ({ result, input_output, showOnlyFirstTwoTestCases = true 
                 pagination={false}
                 scroll={{
                     x: 'max-content',
-                    y: 500,
+                    y: tableHeight,
                 }}
             />
         </div>

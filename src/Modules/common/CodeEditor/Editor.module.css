@@ -37,13 +37,14 @@
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: small;
   font-weight: 500;
-  min-height: 60%;
+  max-height: 55vh;
 }
 
 .buttonContainer {
   display: flex;
   gap: 0.5rem;
   margin: 1rem;
+  flex-wrap: wrap;
 }
 
 .Resizer {
