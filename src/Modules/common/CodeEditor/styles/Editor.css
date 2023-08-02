@@ -8,3 +8,6 @@
 .blur-test-case{
     filter: blur(3px);
 }
+.input-output-renderer{
+    border: 1px solid #d9d9d9;
+}

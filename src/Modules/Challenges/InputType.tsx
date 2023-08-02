@@ -22,7 +22,7 @@ const InputType: React.FC = () => {
                       <Form.Item {...field} name={[field.name, 'type']}>
                         <Select placeholder="Array Of Integers">
                           {inputOutputTypes.map((type) => (
-                            <Option value={type}>{type}</Option>
+                            <Option value={type.id}>{type.label}</Option>
                           ))}
                         </Select>
                       </Form.Item>
@@ -33,7 +33,7 @@ const InputType: React.FC = () => {
                         name={[field.name, 'name']}
                         rules={[{ required: true, message: 'Missing InputParam' }]}
                       >
-                        <Input placeholder="Input Param" />
+                        {<Input placeholder="Input Param" />}
                       </Form.Item>
                     </Col>
                     <Col span={2}>{index > 0 && <MinusCircleOutlined onClick={() => remove(field.name)} />}</Col>

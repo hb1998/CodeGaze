@@ -1,8 +1,8 @@
 import { CodeOutput, CompilationStatus, FUNCTION_NAME, IInputOutput, IParamType, ParamType } from '../../types/Evaluator.types';
 import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
 import { ProgrammingLanguages } from '../common/CodeEditor/ProgrammingLanguages';
-import EvaluatorUtils from './Evaluator.utils';
 import lodashIsEqual from 'lodash.isequal'
+import lodashIsEqualWith from 'lodash.isequalwith'
 
 const separator = '##--------##';
 export class JavascriptEvaluator {
@@ -37,7 +37,7 @@ export class JavascriptEvaluator {
     }
 
     async evaluateAndReturnOutput(code: string, testCases: IInputOutput[]): Promise<CodeOutput> {
-        const evaluateTemplate = this.getEvaluateTemplate(code, [testCases[1]]);
+        const evaluateTemplate = this.getEvaluateTemplate(code, [testCases[0]]);
         try {
             const output = await CandidateAssessmentAPIService.runCode(
                 evaluateTemplate,
@@ -56,7 +56,7 @@ export class JavascriptEvaluator {
                 ${testCases
                 .map((testCase) => {
                     return `
-                     console.log(JSON.stringify(${FUNCTION_NAME}(${EvaluatorUtils.getInputArgs(testCase, this.inputTypes)})));
+                     console.log(JSON.stringify(${FUNCTION_NAME}(${this.getInputArgs(testCase, this.inputTypes)})));
                      console.log('${separator}');
                    `;
                 })
@@ -70,8 +70,18 @@ export class JavascriptEvaluator {
         try {
             if ([ParamType.ARRAY_OF_STRING, ParamType.ARRAY_OF_NUMBER].includes(this.outputType.type)) {
                 return lodashIsEqual(JSON.parse(result), JSON.parse(expected));
-            } else if (this.outputType.type === ParamType.OBJECT || this.outputType.type === ParamType.ARRAY_OF_OBJECT) {
-                return JSON.stringify(result) === JSON.stringify(expected);
+            } else if (this.outputType.type === ParamType.OBJECT) {
+                return lodashIsEqual(result, expected);
+            } else if (this.outputType.type === ParamType.ARRAY_OF_OBJECT) {
+                const parseResult = (result: string) => JSON.parse(result).sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
+                const resultArray = parseResult(result)
+                const expectedArray = parseResult(expected)
+                return lodashIsEqualWith(resultArray, expectedArray, (obj1, obj2) => {
+                    if (lodashIsEqual(obj1, obj2)) {
+                        return true;
+                    }
+                    return false;
+                })
             } else {
                 return result === expected;
             }
@@ -79,6 +89,18 @@ export class JavascriptEvaluator {
             console.error(error);
             return false;
         }
+    }
+
+    private getInputArgs(testCase: IInputOutput, inputTypes: IParamType[]) {
+        return testCase.input.map((arg, index) => {
+            if (inputTypes[index].type === 'string') {
+                return `'${arg}'`
+            } else if (['object', 'arrayOfObject'].includes(inputTypes[index].type)) {
+                return JSON.stringify(JSON.parse(arg))
+            } else {
+                return `${arg}`
+            }
+        }).join(', ')
     }
 
 }

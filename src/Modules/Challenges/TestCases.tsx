@@ -1,8 +1,10 @@
 import React from 'react';
-import { Button, Col, Divider, Form, Input, Row, Typography } from 'antd';
+import { Button, Col, Form, FormListFieldData, Input, Row, Typography } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { validateInputBasedOnOption } from './ValidateInput';
-import { IParamType } from '../../types/Evaluator.types';
+import { IParamType, ParamType } from '../../types/Evaluator.types';
+import CodeMirror from '@uiw/react-codemirror';
+import { jsonLanguage } from '@codemirror/lang-json';
 
 const { Text } = Typography;
 
@@ -49,22 +51,23 @@ const TestCases: React.FC = () => {
                                             >
                                                 {(fields) => (
                                                     <div>
-                                                        {fields.map((field) => (
-                                                            <Form.Item
-                                                                style={{ marginBottom: 8 }}
-                                                                {...field}
-                                                                rules={[
-                                                                    {
-                                                                        validator: validateInputBasedOnOption(
-                                                                            form.getFieldValue('inputType')[field.key]
-                                                                                ?.type,
-                                                                        ),
-                                                                    },
-                                                                ]}
-                                                            >
-                                                                <Input placeholder="1 or [1,2,3] " />
-                                                            </Form.Item>
-                                                        ))}
+                                                        {fields.map((field) => {
+                                                            const type = form.getFieldValue('inputType')[field.key]
+                                                                ?.type as ParamType;
+                                                            return (
+                                                                <Form.Item
+                                                                    style={{ marginBottom: 8 }}
+                                                                    {...field}
+                                                                    rules={[
+                                                                        {
+                                                                            validator: validateInputBasedOnOption(type),
+                                                                        },
+                                                                    ]}
+                                                                >
+                                                                    <InputOutputRenderer type={type} />
+                                                                </Form.Item>
+                                                            );
+                                                        })}
                                                     </div>
                                                 )}
                                             </Form.List>
@@ -77,7 +80,9 @@ const TestCases: React.FC = () => {
                                             noStyle
                                             rules={[{ validator: validateInputBasedOnOption('') }]}
                                         >
-                                            <Input placeholder="Output" />
+                                            <InputOutputRenderer
+                                                type={form.getFieldValue('outputType')?.type as ParamType}
+                                            />
                                         </Form.Item>
                                     </Col>
                                     <Col span={2}>
@@ -98,4 +103,34 @@ const TestCases: React.FC = () => {
         </>
     );
 };
+
+interface InputOutputRendererProps {
+    type: ParamType;
+    value?: string;
+    onChange?: (value: any) => void;
+}
+const InputOutputRenderer: React.FC<InputOutputRendererProps> = (props: InputOutputRendererProps) => {
+    const { type, value, onChange } = props;
+    switch (type) {
+        case ParamType.OBJECT:
+        case ParamType.ARRAY_OF_OBJECT:
+            return (
+                <CodeMirror
+                    className="input-output-renderer"
+                    height="100px"
+                    value={value}
+                    onChange={onChange}
+                    theme={'light'}
+                    basicSetup={{
+                        lineNumbers: false,
+                        foldGutter: false,
+                    }}
+                    extensions={[jsonLanguage]}
+                />
+            );
+        default:
+            return <Input value={value} onChange={(value) => onChange(value)} placeholder="Input" />;
+    }
+};
+
 export default TestCases;
