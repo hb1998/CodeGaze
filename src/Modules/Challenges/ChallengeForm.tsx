@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Form, Input, Modal, Row, Select } from 'antd';
 import MDEditor from '@uiw/react-md-editor';
-import { Challenge, ChallengeInsertDto, ChallengeUpdateDto, Difficulty } from '../../types/Models';
+import { Challenge, ChallengeInsertDto, Difficulty } from '../../types/Models';
 import { IInputOutput, IParamType, ParamType } from '../../types/Evaluator.types';
 import { ChallengeAPIService } from './services/Challenge.API';
 import InputType from './InputType';
 import OutputType from './OutputType';
 import TestCases from './TestCases';
-import { Json } from '../../types/schema';
 
 const { Option } = Select;
 
@@ -24,12 +23,14 @@ interface ICollectionCreateFormProps {
     onCancel: () => void;
 }
 
-export const inputOutputTypes: IParamType['type'][] = [
-    ParamType.NUMBER,
-    ParamType.STRING,
-    ParamType.ARRAY_OF_NUMBER,
-    ParamType.ARRAY_OF_STRING,
-    ParamType.BOOLEAN,
+export const inputOutputTypes: { id: string; label: string }[] = [
+    { id: ParamType.NUMBER, label: 'Number' },
+    { id: ParamType.STRING, label: 'String' },
+    { id: ParamType.ARRAY_OF_NUMBER, label: 'Array of Numbers' },
+    { id: ParamType.ARRAY_OF_STRING, label: 'Array of Strings' },
+    { id: ParamType.BOOLEAN, label: 'Boolean' },
+    { id: ParamType.OBJECT, label: 'Object' },
+    { id: ParamType.ARRAY_OF_OBJECT, label: 'Array Of Objects' },
 ];
 
 export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, challenge, onCreate, onCancel }) => {
@@ -43,7 +44,7 @@ export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, chal
             setLoading(true);
             const { inputType, outputType, inputOutput } = formValues;
             const dataToSave: ChallengeInsertDto = {
-                id: challenge.id,
+                id: challenge?.id,
                 name: formValues.name,
                 description: formValues.description,
                 difficulty: formValues.difficulty,
@@ -54,7 +55,7 @@ export const ChallengeForm: React.FC<ICollectionCreateFormProps> = ({ open, chal
                     inputOutput: inputOutput,
                 } as Record<string, any>,
             };
-            if (challenge.id) {
+            if (challenge?.id) {
                 await ChallengeAPIService.update(dataToSave);
             } else {
                 await ChallengeAPIService.create(dataToSave);

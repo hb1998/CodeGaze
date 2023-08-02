@@ -171,9 +171,9 @@
     "@lezer/common" "^1.0.0"
     "@lezer/javascript" "^1.0.0"
 
-"@codemirror/lang-json@^6.0.0":
+"@codemirror/lang-json@^6.0.0", "@codemirror/lang-json@^6.0.1":
   version "6.0.1"
-  resolved "https://registry.npmjs.org/@codemirror/lang-json/-/lang-json-6.0.1.tgz"
+  resolved "https://registry.yarnpkg.com/@codemirror/lang-json/-/lang-json-6.0.1.tgz#0a0be701a5619c4b0f8991f9b5e95fe33f462330"
   integrity sha512-+T1flHdgpqDDlJZ2Lkil/rLiRy684WMLc74xUnjJH48GQdfJo/pudlTRreZmKwzP8/tGdKf83wlbAdOCzlJOGQ==
   dependencies:
     "@codemirror/language" "^6.0.0"
@@ -3138,6 +3138,11 @@ lodash.isequal@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
   integrity sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==
+
+lodash.isequalwith@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/lodash.isequalwith/-/lodash.isequalwith-4.4.0.tgz#266726ddd528f854f21f4ea98a065606e0fbc6b0"
+  integrity sha512-dcZON0IalGBpRmJBmMkaoV7d3I80R2O+FrzsZyHdNSFrANq/cgDqKQNmAHE8UEj4+QYWwwhkQOVdLHiAopzlsQ==
 
 lodash.isfunction@^3.0.9:
   version "3.0.9"

@@ -27,7 +27,7 @@ export class JavascriptHandler implements LanguageHandler {
 
     private generateParameterList(): string {
         return this.inputTypes
-            .map((input) => `${input.objectStructure ? ` ${input.objectStructure}` : ''}${input.name}`)
+            .map((input) => input.name)
             .join(', ');
     }
 }

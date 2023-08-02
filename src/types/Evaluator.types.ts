@@ -11,7 +11,6 @@ export enum ParamType {
 export interface IParamType {
     type: ParamType;
     name: string;
-    objectStructure?: string;
 }
 
 export interface IInputOutput {

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
+    "@codemirror/lang-json": "^6.0.1",
     "@rematch/core": "^2.2.0",
     "@rematch/persist": "^2.1.2",
     "@supabase/auth-ui-react": "^0.4.2",
@@ -26,6 +27,7 @@
     "dayjs": "^1.11.9",
     "jwt-decode": "^3.1.2",
     "lodash.isequal": "^4.5.0",
+    "lodash.isequalwith": "^4.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.1",

@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent, useMemo } from 'react';
-import { Button, Card, Col, Row, Space, Statistic, Table, Tag } from 'antd';
+import { Card, Col, Row, Space, Statistic, Table, Tag } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Search from 'antd/es/input/Search';
 import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
@@ -11,7 +11,6 @@ import { ColumnsType } from 'antd/es/table';
 import { StatusColDef } from '../Candidate/CandidateColumn';
 import CandidateAssessmentUtils from '../CandidateAssessment/services/CanidadateAssessment.utils';
 import { QUALIFYING_SCORE } from '../../constants/common.constants';
-import { supabase } from '../API/supabase';
 
 const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
     {
@@ -59,15 +58,6 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
         title: 'Language',
         dataIndex: 'language',
         key: 'language',
-    },
-    {
-        title: 'Exam',
-        dataIndex: ['exam', 'name'],
-        key: 'exam',
-        render: (text: string, record: AssessmentQueryResult[number]) =>
-            // <Link to={`${ROUTES.EXAM}/open/openAssessment/${record?.exam?.id}`} state={{ exam: record?.exam }}>
-            text,
-        // </Link>
     },
     {
         title: 'Challenge',
