@@ -152,7 +152,7 @@ const ExamList = () => {
                                         <div style={{ display: 'flex' }}></div>
                                         <Row gutter={10}>
                                             <Col span={6}>
-                                                <Statistic title="Qualifying" value={70} suffix="%" />
+                                                <Statistic title="Qualifying" value={exam.qualifyingScore} suffix="%" />
                                             </Col>
                                             <Col span={6}>
                                                 <Statistic title="Challenges" value={exam.challenge.length} />

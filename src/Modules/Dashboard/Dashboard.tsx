@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent, useMemo } from 'react';
-import { Card, Col, Row, Space, Statistic, Table, Tag } from 'antd';
+import { Card, Col, Row, Skeleton, Space, Statistic, Table, Tag } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Search from 'antd/es/input/Search';
 import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
@@ -120,20 +120,20 @@ const Dashboard = () => {
         <div className="container">
             <Title level={2}>Dashboard</Title>
             <Space size={24} direction="vertical" style={{ width: '100%' }}>
-                <Row gutter={16}>
+                 <Row gutter={16}>
                     <Col span={8}>
                         <Card>
-                            <Statistic title="Total Invited" value={assessments.length} />
+                            <Statistic loading={loading} title="Total Invited" value={assessments.length} />
                         </Card>
                     </Col>
                     <Col span={8}>
                         <Card>
-                            <Statistic title="Total Completed" value={totalCompleted.length} />
+                            <Statistic loading={loading} title="Total Completed" value={totalCompleted.length} />
                         </Card>
                     </Col>
                     <Col span={8}>
                         <Card>
-                            <Statistic title="Total Qualified" value={qualified.length} />
+                            <Statistic loading={loading} title="Total Qualified" value={qualified.length} />
                         </Card>
                     </Col>
                 </Row>
