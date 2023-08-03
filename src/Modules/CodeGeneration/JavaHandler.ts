@@ -1,5 +1,5 @@
 import { FUNCTION_NAME } from './CodeGenerator';
-import { IParamType } from '../../types/Evaluator.types';
+import { IParamType, ParamType } from '../../types/Evaluator.types';
 import { LanguageHandler } from './Handler.types';
 
 export class JavaHandler implements LanguageHandler {
@@ -29,35 +29,38 @@ public static ${this.generateOutputList()} ${FUNCTION_NAME}(${this.generateInput
     private generateInputList() {
         return this.inputTypes
             .map((input) => {
-                if (input.type === 'arrayOfString') {
-                    return `IParamType ${input.name}`;
-                } else if (input.type === 'arrayOfNumber') {
-                    return `int[] ${input.name}`;
-                } else if (input.type === 'object') {
-                    return `${input.objectStructure} ${input.name}`;
-                } else if (input.type === 'arrayOfObject') {
-                    return `List<${input.objectStructure}> ${input.name}`;
-                } else if (input.type === 'number') {
-                    return `int ${input.name}`;
-                } else {
-                    return `${input.type} ${input.name}`;
+                switch (input.type) {
+                    case ParamType.NUMBER:
+                        return `int ${input.name}`;
+                    case ParamType.ARRAY_OF_NUMBER:
+                        return `int[] ${input.name}`;
+                    case ParamType.ARRAY_OF_STRING:
+                        return `String[] ${input.name}`;
+                    case ParamType.ARRAY_OF_OBJECT:
+                        return `Object[] ${input.name}`;
+                    case ParamType.OBJECT:
+                        return `Object ${input.name}`;
+                    case ParamType.BOOLEAN:
+                        return `boolean ${input.name}`;
+                    case ParamType.STRING:
+                        return `String ${input.name}`;
                 }
             })
             .join(', ');
     }
     private generateOutputList() {
         switch (this.outputType.type) {
-            case 'number':
+            case ParamType.NUMBER:
                 return 'int';
-            case 'arrayOfNumber':
+            case ParamType.ARRAY_OF_NUMBER:
                 return `int[]`;
-            case 'arrayOfString':
+            case ParamType.ARRAY_OF_STRING:
                 return `String[]`;
-            case 'arrayOfObject':
+            case ParamType.ARRAY_OF_OBJECT:
                 return `Object[]`;
-            case 'boolean':
+            case ParamType.OBJECT:
                 return `boolean`;
-            case 'string':
+            case ParamType.STRING:
                 return `String`;
         }
     }

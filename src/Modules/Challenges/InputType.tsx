@@ -22,7 +22,7 @@ const InputType: React.FC = () => {
                       <Form.Item {...field} name={[field.name, 'type']}>
                         <Select placeholder="Array Of Integers">
                           {inputOutputTypes.map((type) => (
-                            <Option value={type.id}>{type.label}</Option>
+                            <Option key={type.id} value={type.id}>{type.label}</Option>
                           ))}
                         </Select>
                       </Form.Item>

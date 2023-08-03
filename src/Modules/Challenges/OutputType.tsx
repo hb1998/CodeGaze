@@ -17,7 +17,7 @@ const OutputType: React.FC = () => {
           <Form.Item name={['outputType', 'type']} rules={[{ required: true, message: 'Output is required' }]}>
             <Select placeholder="Array Of Integer">
               {inputOutputTypes.map((type) => (
-                <Option value={type.id}>{type.label}</Option>
+                <Option key={type.id} value={type.id}>{type.label}</Option>
               ))}
             </Select>
           </Form.Item>
