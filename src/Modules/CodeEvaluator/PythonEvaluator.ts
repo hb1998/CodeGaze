@@ -1,7 +1,6 @@
-import { CodeOutput, CompilationStatus, FUNCTION_NAME, IInputOutput, IParamType } from '../../types/Evaluator.types';
+import { CodeOutput, CompilationStatus, FUNCTION_NAME, IInputOutput, IParamType, ParamType } from '../../types/Evaluator.types';
 import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
 import { ProgrammingLanguages } from '../common/CodeEditor/ProgrammingLanguages';
-import EvaluatorUtils from './Evaluator.utils';
 
 const separator = '##---##';
 export class PythonEvaluator {
@@ -51,7 +50,7 @@ def evaluate():
     ${testCases
                 .map((testCase) => {
                     return `
-    print(${FUNCTION_NAME}(${EvaluatorUtils.getInputArgs(testCase, this.inputTypes)}) == ${EvaluatorUtils.getOutputArgs(testCase.output, this.outputType)})
+    print(${FUNCTION_NAME}(${this.getInputArgs(testCase, this.inputTypes)}) == ${this.getOutputArgs(testCase.output, this.outputType)})
     print('${separator}')
     `;
                 })
@@ -59,5 +58,27 @@ def evaluate():
     
 evaluate()
 `;
+    }
+
+    private getInputArgs(testCase: IInputOutput, inputTypes: IParamType[]) {
+        return testCase.input.map((arg, index) => {
+            if (inputTypes[index].type === ParamType.STRING) {
+                return `'${arg}'`
+            } else if ([ParamType.ARRAY_OF_OBJECT, ParamType.OBJECT].includes(inputTypes[index].type)) {
+                return `${arg}`
+            } else {
+                return `${arg}`
+            }
+        }).join(', ')
+    }
+
+    private getOutputArgs(output: string, outputType: IParamType) {
+        if (outputType.type === 'string') {
+            return `'${output}'`
+        } else if ([ParamType.ARRAY_OF_OBJECT, ParamType.OBJECT].includes(outputType.type)) {
+            return `${output}`
+        } else {
+            return `${output}`
+        }
     }
 }
