@@ -1,13 +1,32 @@
+import { QUALIFYING_SCORE } from '../../../constants/common.constants';
 import { ExamInsertDto, ExamUpdateDto } from '../../../types/Models';
 import { supabase } from '../../API/supabase';
 
 export class ExamAPIService {
     static async getAll() {
-        const { data, error } = await supabase.from('exam').select('*,challenge(*)');
+        const { data, error } = await supabase
+            .from('exam')
+            .select(`
+                *,
+                challenge(*),
+                assessment(result)
+            `);
         if (error) {
             throw error;
         }
-        return data || [];
+        return data.map((exam) => ({
+            ...exam,
+            qualifyingScore: exam.assessment?.reduce((acc, curr) => {
+                if (curr.result) {
+                    const result = (<boolean[]>curr.result)
+                    const passPercent = (result.filter((result) => result).length / result.length) * 100;
+                    if (passPercent >= QUALIFYING_SCORE) {
+                        acc += 1;
+                    }
+                }
+                return acc;
+            }, 0) / exam.assessment?.length || 0,
+        }));
     }
 
     static async getById(id: string) {
