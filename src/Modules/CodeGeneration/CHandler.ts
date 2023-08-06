@@ -33,7 +33,7 @@ return 0;
 
     private generateParameterList(): string {
         return this.inputTypes
-            .map((input) => `${input.type}${input.objectStructure ? ` ${input.objectStructure}` : ''} ${input.name}`)
+            .map((input) => `${input.type}${input.name}`)
             .join(', ');
     }
 }
