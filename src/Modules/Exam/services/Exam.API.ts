@@ -14,9 +14,8 @@ export class ExamAPIService {
         if (error) {
             throw error;
         }
-        return data.map((exam) => ({
-            ...exam,
-            qualifyingScore: exam.assessment?.reduce((acc, curr) => {
+        return data.map((exam) => {
+            const qualifyingScore = (exam.assessment?.reduce((acc, curr) => {
                 if (curr.result) {
                     const result = (<boolean[]>curr.result)
                     const passPercent = (result.filter((result) => result).length / result.length) * 100;
@@ -25,8 +24,12 @@ export class ExamAPIService {
                     }
                 }
                 return acc;
-            }, 0) / exam.assessment?.length || 0,
-        }));
+            }, 0) / exam.assessment?.length)
+            return {
+                ...exam,
+                qualifyingScore: isNaN(qualifyingScore) || !qualifyingScore ? 0 : qualifyingScore.toFixed(2)
+            }
+        })
     }
 
     static async getById(id: string) {
