@@ -1,6 +1,6 @@
 import { CodeOutput, IInputOutput, IParamType } from '../../types/Evaluator.types';
 import { languageNameType } from '../common/CodeEditor/ProgrammingLanguages';
-import { JavaEvaluator } from './JavaEvaluator';
+import { JavaEvaluator } from './Java/JavaEvaluator';
 import { JavascriptEvaluator } from './JavascriptEvaluator';
 import { PythonEvaluator } from './PythonEvaluator';
 

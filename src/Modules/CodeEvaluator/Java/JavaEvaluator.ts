@@ -1,6 +1,6 @@
-import { CodeOutput, CompilationStatus, FUNCTION_NAME, IInputOutput, IParamType, ParamType } from '../../types/Evaluator.types';
-import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
-import { ProgrammingLanguages } from '../common/CodeEditor/ProgrammingLanguages';
+import { CodeOutput, CompilationStatus, FUNCTION_NAME, IInputOutput, IParamType, ParamType } from '../../../types/Evaluator.types';
+import { CandidateAssessmentAPIService } from '../../CandidateAssessment/services/CandidateAssessment.API';
+import { ProgrammingLanguages } from '../../common/CodeEditor/ProgrammingLanguages';
 
 const separator = '##---##';
 export class JavaEvaluator {
@@ -61,10 +61,22 @@ export class JavaEvaluator {
                     return `${this.getCompareCode(testCase)}
                     System.out.println("${separator}");
                     `
-
                 })
                 .join('\n')}
         }
+
+        public static Object getObject(String jsonString){
+            try {
+                 ObjectMapper objectMapper = new ObjectMapper();
+                 Object javaObject = objectMapper.readValue(jsonString, Object.class);
+     
+                 // Now, javaObject contains the appropriate Java representation of the JSON data
+                 return javaObject;
+             } catch (Exception e) {
+                 e.printStackTrace();
+                 return null;
+             }
+         }
     }
       `;
     }
@@ -81,6 +93,9 @@ export class JavaEvaluator {
                 return `System.out.println(${FUNCTION_NAME}(${this.parseTestCase(testCase)}).equals("${outputParam}"));`;
             case ParamType.BOOLEAN:
                 return `System.out.println(${FUNCTION_NAME}(${this.parseTestCase(testCase)}) == ${outputParam});`;
+            case ParamType.OBJECT:
+            case ParamType.ARRAY_OF_OBJECT:
+                return `System.out.println(getObject(${FUNCTION_NAME}(${this.parseTestCase(testCase)})).equals(getObject("${outputParam}")));`;
             default:
                 return `System.out.println(${FUNCTION_NAME}(${this.parseTestCase(testCase)}) == ${outputParam});`;
         }
