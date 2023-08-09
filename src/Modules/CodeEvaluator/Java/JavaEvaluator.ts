@@ -1,53 +1,24 @@
-import { CodeOutput, CompilationStatus, FUNCTION_NAME, IInputOutput, IParamType, ParamType } from '../../../types/Evaluator.types';
-import { CandidateAssessmentAPIService } from '../../CandidateAssessment/services/CandidateAssessment.API';
+import { FUNCTION_NAME, IInputOutput, IParamType, ParamType } from '../../../types/Evaluator.types';
 import { ProgrammingLanguages } from '../../common/CodeEditor/ProgrammingLanguages';
+import { separator } from '../CodeEvaluator';
 
-const separator = '##---##';
 export class JavaEvaluator {
     inputTypes: IParamType[];
     outputType: IParamType;
+    languageId = ProgrammingLanguages.java.id.toString()
 
     constructor(inputTypes: IParamType[], outputType: IParamType) {
         this.inputTypes = inputTypes;
         this.outputType = outputType;
     }
-    async evaluate(code: string, testCases: IInputOutput[]): Promise<boolean[]> {
-        const evaluateTemplate = this.getEvaluateTemplate(code, testCases);
-        try {
-            const output = await CandidateAssessmentAPIService.runCode(
-                evaluateTemplate,
-                ProgrammingLanguages.java.id.toString(),
-            );
-            if (output.status.id === CompilationStatus.ACCEPTED) {
-                const outputArray = output.stdout
-                    .split(separator)
-                    .map((output) => output.replace(/\n/g, ''))
-                    .filter((output) => output);
-                return testCases.map((testCase, index) => {
-                    return outputArray[index] === 'true';
-                });
-            }
-            return null;
-        } catch (error) {
-            console.log(error);
-        }
-        return [true];
+
+    getResult(outputArray: string[], testCases: IInputOutput[]): boolean[] {
+    return testCases.map((testCase, index) => {
+            return outputArray[index] === 'true';
+        })
     }
 
-    async evaluateAndReturnOutput(code: string, testCases: IInputOutput[]): Promise<CodeOutput> {
-        const evaluateTemplate = this.getEvaluateTemplate(code, [testCases[0]]);
-        try {
-            const output = await CandidateAssessmentAPIService.runCode(
-                evaluateTemplate,
-                ProgrammingLanguages.java.id.toString(),
-            );
-            return output;
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    private getEvaluateTemplate(code: string, testCases: IInputOutput[]) {
+    getEvaluateTemplate(code: string, testCases: IInputOutput[]) {
         return `
       import java.util.*;
         
@@ -64,19 +35,7 @@ export class JavaEvaluator {
                 })
                 .join('\n')}
         }
-
-        public static Object getObject(String jsonString){
-            try {
-                 ObjectMapper objectMapper = new ObjectMapper();
-                 Object javaObject = objectMapper.readValue(jsonString, Object.class);
-     
-                 // Now, javaObject contains the appropriate Java representation of the JSON data
-                 return javaObject;
-             } catch (Exception e) {
-                 e.printStackTrace();
-                 return null;
-             }
-         }
+    
     }
       `;
     }
@@ -138,3 +97,17 @@ export class JavaEvaluator {
         }
     }
 }
+
+
+    // public static Object getObject(String jsonString){
+        //     try {
+        //          ObjectMapper objectMapper = new ObjectMapper();
+        //          Object javaObject = objectMapper.readValue(jsonString, Object.class);
+     
+        //          // Now, javaObject contains the appropriate Java representation of the JSON data
+        //          return javaObject;
+        //      } catch (Exception e) {
+        //          e.printStackTrace();
+        //          return null;
+        //      }
+        //  }

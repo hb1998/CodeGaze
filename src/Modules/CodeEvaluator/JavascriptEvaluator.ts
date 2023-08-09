@@ -1,60 +1,31 @@
-import { CodeOutput, CompilationStatus, FUNCTION_NAME, IInputOutput, IParamType, ParamType } from '../../types/Evaluator.types';
-import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
+import { FUNCTION_NAME, IInputOutput, IParamType, ParamType } from '../../types/Evaluator.types';
 import { ProgrammingLanguages } from '../common/CodeEditor/ProgrammingLanguages';
 import lodashIsEqual from 'lodash.isequal'
 import lodashIsEqualWith from 'lodash.isequalwith'
+import { separator } from './CodeEvaluator';
 
-const separator = '##--------##';
 export class JavascriptEvaluator {
     inputTypes: IParamType[];
     outputType: IParamType;
+    languageId: string = ProgrammingLanguages.javaScript.id.toString();
 
     constructor(inputTypes: IParamType[], outputType: IParamType) {
         this.inputTypes = inputTypes;
         this.outputType = outputType;
     }
-    async evaluate(code: string, testCases: IInputOutput[]): Promise<boolean[]> {
-        const evaluateTemplate = this.getEvaluateTemplate(code, testCases);
-        try {
-            const output = await CandidateAssessmentAPIService.runCode(
-                evaluateTemplate,
-                ProgrammingLanguages.javaScript.id.toString(),
-            );
-            if (output.status.id === CompilationStatus.ACCEPTED) {
-                const outputArray = output.stdout
-                    .split(separator)
-                    .map((output) => output.replace(/\n/g, ''))
-                    .filter((output) => output);
-                return testCases.map((testCase, index) => {
-                    try {
-                        return this.isEqual(outputArray[index], testCase.output);
-                    } catch (error) {
-                        console.log(error)
-                        return false;
-                    }
-                });
+
+    getResult(outputArray: string[], testCases: IInputOutput[]): boolean[] {
+        return testCases.map((testCase, index) => {
+            try {
+                return this.isEqual(outputArray[index], testCase.output);
+            } catch (error) {
+                console.log(error)
+                return false;
             }
-            return testCases.map(() => false);
-        } catch (error) {
-            console.log(error);
-        }
-        return [true];
+        });
     }
 
-    async evaluateAndReturnOutput(code: string, testCases: IInputOutput[]): Promise<CodeOutput> {
-        const evaluateTemplate = this.getEvaluateTemplate(code, [testCases[0]]);
-        try {
-            const output = await CandidateAssessmentAPIService.runCode(
-                evaluateTemplate,
-                ProgrammingLanguages.javaScript.id.toString(),
-            );
-            return output;
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    private getEvaluateTemplate(code: string, testCases: IInputOutput[]) {
+    getEvaluateTemplate(code: string, testCases: IInputOutput[]) {
         return `
             ${code}
             function evaluate() {
