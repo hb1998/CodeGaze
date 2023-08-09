@@ -131,7 +131,11 @@ const Editor = () => {
     const handleTestCase = async () => {
         try {
             setTestCaseLoading(true);
-            const result = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
+            const { 
+                result,
+                output,
+            } = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
+            setOutput(output);
             setTestCaseLoading(false);
             setResult(result);
         } catch (error) {
@@ -163,7 +167,7 @@ const Editor = () => {
     const handleSubmit = async () => {
         try {
             setSubmitLoading(true);
-            const result = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
+            const {result} = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
             await supabase.functions.setAuth(candidate?.token);
             const { error } = await supabase.functions.invoke(FUNCTIONS.SUBMIT_EXAM, {
                 body: {

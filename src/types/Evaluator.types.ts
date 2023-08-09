@@ -5,7 +5,7 @@ export enum ParamType {
     ARRAY_OF_NUMBER = 'arrayOfNumber',
     OBJECT = 'object',
     ARRAY_OF_OBJECT = 'arrayOfObject',
-    BOOLEAN = 'boolean'
+    BOOLEAN = 'boolean',
 }
 
 export interface IParamType {
@@ -32,8 +32,17 @@ export enum CompilationStatus {
     RUNTIME_ERROR_NZEC = 11,
     RUNTIME_ERROR_OTHER = 12,
     INTERNAL_ERROR = 13,
-    EXEC_FORMAT_ERROR = 14
+    EXEC_FORMAT_ERROR = 14,
 }
+
+export const RUNTIME_ERRORS = [
+    CompilationStatus.RUNTIME_ERROR_NZEC,
+    CompilationStatus.RUNTIME_ERROR_OTHER,
+    CompilationStatus.RUNTIME_ERROR_SIGABRT,
+    CompilationStatus.RUNTIME_ERROR_SIGFPE,
+    CompilationStatus.RUNTIME_ERROR_SIGSEGV,
+    CompilationStatus.RUNTIME_ERROR_SIGXFSZ,
+];
 
 export interface CodeOutput {
     compile_output: string;
@@ -50,3 +59,11 @@ export interface CodeOutput {
 }
 
 export const FUNCTION_NAME = 'solve';
+
+export interface IEvaluatorResult {
+    result: boolean[];
+    time: string;
+    memory: number;
+    status: CompilationStatus;
+    output: string;
+}

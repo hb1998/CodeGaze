@@ -1,8 +1,11 @@
-import { CodeOutput, IInputOutput, IParamType } from '../../types/Evaluator.types';
+import { CodeOutput, CompilationStatus, IEvaluatorResult, IInputOutput, IParamType, RUNTIME_ERRORS } from '../../types/Evaluator.types';
+import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
 import { languageNameType } from '../common/CodeEditor/ProgrammingLanguages';
 import { JavaEvaluator } from './Java/JavaEvaluator';
 import { JavascriptEvaluator } from './JavascriptEvaluator';
 import { PythonEvaluator } from './PythonEvaluator';
+
+export const separator = '##---##';
 
 export class CodeEvaluator {
     language: languageNameType;
@@ -28,11 +31,50 @@ export class CodeEvaluator {
         }
     }
 
-    evaluate(code: string, testCases: IInputOutput[]): Promise<boolean[]> {
-        return this.evaluator?.evaluate(code, testCases);
+    async evaluate(code: string, testCases: IInputOutput[]): Promise<IEvaluatorResult> {
+        const evaluateTemplate = this.evaluator.getEvaluateTemplate(code, testCases);
+        const evaluatorResult: IEvaluatorResult = {
+            result: [],
+            output: '',
+            status: CompilationStatus.ACCEPTED,
+            memory: 0,
+            time: 'NA',
+        }
+        try {
+            const output = await CandidateAssessmentAPIService.runCode(
+                evaluateTemplate,
+                this.evaluator.languageId,
+            );
+            evaluatorResult.status = output.status.id;
+            evaluatorResult.memory = output.memory;
+            evaluatorResult.time = output.time;
+            if (output.status.id === CompilationStatus.ACCEPTED) {
+                const outputArray = output.stdout
+                .split(separator)
+                .map((output) => output.replace(/\n/g, ''))
+                .filter((output) => output);
+                evaluatorResult.result = this.evaluator.getResult(outputArray, testCases);
+            }
+            if (RUNTIME_ERRORS.includes(output.status.id)) {
+                evaluatorResult.output = output.stderr;
+                evaluatorResult.result = testCases.map(() => false);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        return evaluatorResult;
     }
 
-    runAndEvaluateCode(code: string, testCases: IInputOutput[]): Promise<CodeOutput> {
-        return this.evaluator?.evaluateAndReturnOutput(code, testCases);
+    async runAndEvaluateCode(code: string, testCases: IInputOutput[]): Promise<CodeOutput> {
+        const evaluateTemplate = this.evaluator.getEvaluateTemplate(code, [testCases[0]]);
+        try {
+            const output = await CandidateAssessmentAPIService.runCode(
+                evaluateTemplate,
+                this.evaluator.languageId,
+            );
+            return output;
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
