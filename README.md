@@ -1,6 +1,5 @@
 # CoderGaze: Code Screening Platform
 
-![CoderGaze Logo](https://example.com/codergaze-logo.png)
 
 CoderGaze is an open-source code screening platform that empowers companies to efficiently evaluate the coding skills of candidates. With CoderGaze, you can create and manage coding custom challenges, assess candidates' coding skills easily.
 
@@ -29,7 +28,7 @@ Before you begin, ensure you have met the following requirements:
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/yourusername/codergaze.git
+   git clone https://github.com/visualbis/CoderGaze
    cd codergaze
    ```
 
@@ -124,7 +123,7 @@ CoderGaze is licensed under the [MIT License](LICENSE).
 Have questions or suggestions? Feel free to reach out:
 
 - Email: habeeburr@lumel.com
-- Issue Tracker: [GitHub Issues](https://github.com/yourusername/codergaze/issues)
+- Issue Tracker: [GitHub Issues](https://github.com/visualbis/CoderGaze/issues)
 
 ---
 
