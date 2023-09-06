@@ -1,5 +1,5 @@
 # CoderGaze: Code Screening Platform
-
+ 
 
 CoderGaze is an open-source code screening platform. With CoderGaze, you can create and manage custom coding challenges, assess candidates coding skills easily.
 
