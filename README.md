@@ -1,7 +1,7 @@
 # CoderGaze: Code Screening Platform
 
 
-CoderGaze is an open-source code screening platform that empowers companies to efficiently evaluate the coding skills of candidates. With CoderGaze, you can create and manage coding custom challenges, assess candidates' coding skills easily.
+CoderGaze is an open-source code screening platform. With CoderGaze, you can create and manage custom coding challenges, assess candidates coding skills easily.
 
 ## Features
 
@@ -38,7 +38,7 @@ Before you begin, ensure you have met the following requirements:
 
 3. Supabase setup
   - This is probably the most time consuming part of the setup, but worry not, you should be there if you follow the steps carefully. 
-  - Basically there is not straight forward way to direcly clone/fork the supabase schema, but since its built on top of postgres, we just need to follow the steps to replicate a postgres database. 
+  - Basically there is no straight forward way to direcly clone/fork the supabase schema, but since its built on top of postgres, we just need to follow the steps to replicate a postgres database. 
   - Database setup
       - Before you begin.
          - Install [Supabase CLI](https://supabase.com/docs/guides/cli#installation)

@@ -41,11 +41,16 @@ function LoginForm(props: IDataProps) {
                     style={{
                         display: 'flex',
                         justifyContent: 'center',
+                        flexDirection:'column',
                         alignItems: 'center',
                         marginBottom: '20px',
                     }}
                 >
-                    <img src={logo} alt="" style={{ width: '150px', height: '80px' }} />
+                    <div className="logo-font">&lt;Coder Gaze/&gt;</div>
+                    <div className="logo-footer">
+                        <div>by</div>
+                        <img className='lumel-logo' src={logo} alt="" />
+                    </div>
                 </div>
                 <Row justify="center" align="middle">
                     <Col className="login-form-container" span={12}>
