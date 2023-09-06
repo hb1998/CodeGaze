@@ -2,6 +2,7 @@
 
 
 CodeGaze is an open-source code screening platform. With CodeGaze, you can create and manage custom coding challenges, assess candidates coding skills easily.
+[Demo](https://github.com/visualbis/CodeGaze/tree/main#usage)
 
 ## Features
 
@@ -107,7 +108,11 @@ https://github.com/visualbis/CodeGaze/assets/33490801/3ecc7ecc-79d3-4f81-b129-c4
 https://github.com/visualbis/CodeGaze/assets/33490801/d6fb1de2-e985-451e-963b-c7061735862a
 
 4. Inviting the Candidate to an assessment.
-https://github.com/visualbis/CodeGaze/assets/33490801/b179d6ed-9114-4b5a-b44c-fe9b4a7b22e0
+
+
+https://github.com/visualbis/CodeGaze/assets/33490801/861b0e11-896a-487b-bdad-40308d8814d8
+
+
 
 5. You can view the candidate's code and no. of passed tests in the dashboard.
 
