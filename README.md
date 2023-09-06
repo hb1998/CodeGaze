@@ -92,11 +92,22 @@ Before you begin, ensure you have met the following requirements:
 
 ### Usage
 
-1. Create a new account from supabase and login as admin.
+1. Create a new account from `Project > Authentication` and log in to the web portal, make sure you configure `env` variables by now.
 
-2. Set up coding challenges with custom test cases and assign them to candidates.
+2. Creating a Challenge.
 
-3. Candidates can access the challenges, write code, and submit their solutions.
+    - A challenge is a coding question and a group of challenges can be configured to be an exam, you can send the exam's link to the candidate.
+    - https://github.com/visualbis/CodeGaze/assets/33490801/6138fbcf-9735-4b14-ab00-0bd40e73d865
+3. Creating an Exam. 
+    - An Exam can have one or more challenges and a time limit can be set.
+    - https://github.com/visualbis/CodeGaze/assets/33490801/856b947e-3835-459c-b556-ab40cacb95a8
+4. Inviting the Candidate to an assessment.
+    - https://github.com/visualbis/CodeGaze/assets/33490801/eb37b31f-8830-4124-8b9c-a988afa97c79
+5. You can view the candidate's code and no. of passed tests in the dashboard.
+
+### Note
+At the moment, C and C++ are not working, the support will be soon added. 
+
 
 ## Contributing
 
