@@ -97,12 +97,18 @@ Before you begin, ensure you have met the following requirements:
 2. Creating a Challenge.
 
     - A challenge is a coding question and a group of challenges can be configured to be an exam, you can send the exam's link to the candidate.
-    - https://github.com/visualbis/CodeGaze/assets/33490801/6138fbcf-9735-4b14-ab00-0bd40e73d865
+
+https://github.com/visualbis/CodeGaze/assets/33490801/3ecc7ecc-79d3-4f81-b129-c48c16999ede
+
 3. Creating an Exam. 
     - An Exam can have one or more challenges and a time limit can be set.
-    - https://github.com/visualbis/CodeGaze/assets/33490801/856b947e-3835-459c-b556-ab40cacb95a8
+      
+
+https://github.com/visualbis/CodeGaze/assets/33490801/d6fb1de2-e985-451e-963b-c7061735862a
+
 4. Inviting the Candidate to an assessment.
-    - https://github.com/visualbis/CodeGaze/assets/33490801/eb37b31f-8830-4124-8b9c-a988afa97c79
+https://github.com/visualbis/CodeGaze/assets/33490801/b179d6ed-9114-4b5a-b44c-fe9b4a7b22e0
+
 5. You can view the candidate's code and no. of passed tests in the dashboard.
 
 ### Note
