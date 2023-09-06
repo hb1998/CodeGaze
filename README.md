@@ -67,6 +67,12 @@ Before you begin, ensure you have met the following requirements:
       supabase functions deploy
       ```
       in the root of your project should deploy all the functions. the source code of functions is in `supabase/functions`, if it asks for project ref, you can get that form `Project > Settings > General` under Reference Id  in your supabase dashboard.
+      - configuring secrets to use in edge functions 
+      rename the `.env.example` file in `/supabase` to `.env` and replace the JWT_SECRET with any secret key, make sure its strong.
+         ```sh
+         supabase secrets set --env-file ./supabase/.env
+         ```
+         you can run `supabase list` to see all the secrets, other than the default ones, `JWT_SECRET` should also be there.
 - Configuring the Env file. 
    - you can get supabase url and supabase anon key from `Project > Settings > API` 
    - the compiler endpoint is the ip and port in which judge0 is running.
