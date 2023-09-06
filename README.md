@@ -1,11 +1,11 @@
-# CoderGaze: Code Screening Platform
- 
+# CodeGaze: Code Screening Platform
 
-CoderGaze is an open-source code screening platform. With CoderGaze, you can create and manage custom coding challenges, assess candidates coding skills easily.
+
+CodeGaze is an open-source code screening platform. With CodeGaze, you can create and manage custom coding challenges, assess candidates coding skills easily.
 
 ## Features
 
-- **Language Support**: CoderGaze currently supports three popular programming languages - JavaScript, Python, and Java. Easily create coding challenges in these languages to evaluate candidates proficiently. support for C and C++ will soon be added. 
+- **Language Support**: CodeGaze currently supports three popular programming languages - JavaScript, Python, and Java. Easily create coding challenges in these languages to evaluate candidates proficiently. support for C and C++ will soon be added. 
 
 - **Custom Test Cases**: Tailor your coding challenges by creating custom test cases for questions. This allows you to assess not only the correctness of the code but also its efficiency and edge-case handling.
 
@@ -28,8 +28,8 @@ Before you begin, ensure you have met the following requirements:
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/visualbis/CoderGaze
-   cd codergaze
+   git clone https://github.com/visualbis/CodeGaze
+   cd CodeGaze
    ```
 
 2. Judge0 setup:
@@ -58,11 +58,21 @@ Before you begin, ensure you have met the following requirements:
       -  running the command should add all the tables and roles necessary. 
 4.  [Edge functions setup](https://supabase.com/docs/guides/functions) 
       -  since we dont have a "backend" all our custom logic will go inside supabase edge functions, they are serverless functions which handles stuffs like creating candidate, inviting candidate since these are admin level operations, its not recommended to do these in the frontend, 
-      - deploying the supabase functions is fairly easy, After you login to your project with Supabase CLI. running 
+      - deploying the supabase functions is fairly easy, Login to your project with Supabase CLI 
+      ```sh
+      supabase login
+      ```
+       After you login, running 
       ```sh
       supabase functions deploy
       ```
-      in the root of your project should deploy all the functions. the source code of functions is in `supabase/functions`
+      in the root of your project should deploy all the functions. the source code of functions is in `supabase/functions`, if it asks for project ref, you can get that form `Project > Settings > General` under Reference Id  in your supabase dashboard.
+      - configuring secrets to use in edge functions 
+      rename the `.env.example` file in `/supabase` to `.env` and replace the JWT_SECRET with any secret key, make sure its strong.
+         ```sh
+         supabase secrets set --env-file ./supabase/.env
+         ```
+         you can run `supabase list` to see all the secrets, other than the default ones, `JWT_SECRET` should also be there.
 - Configuring the Env file. 
    - you can get supabase url and supabase anon key from `Project > Settings > API` 
    - the compiler endpoint is the ip and port in which judge0 is running.
@@ -116,17 +126,17 @@ We welcome contributions from the open-source community! To get started, follow 
 
 ## License
 
-CoderGaze is licensed under the [MIT License](LICENSE).
+CodeGaze is licensed under the [MIT License](LICENSE).
 
 ## Contact
 
 Have questions or suggestions? Feel free to reach out:
 
 - Email: habeeburr@lumel.com
-- Issue Tracker: [GitHub Issues](https://github.com/visualbis/CoderGaze/issues)
+- Issue Tracker: [GitHub Issues](https://github.com/visualbis/CodeGaze/issues)
 
 ---
 
-Thank you for choosing CoderGaze! We hope this platform helps you streamline your candidate evaluation process and make better hiring decisions.
+Thank you for choosing CodeGaze! We hope this platform helps you streamline your candidate evaluation process and make better hiring decisions.
 
 **Happy coding!**
