@@ -46,7 +46,7 @@ function LoginForm(props: IDataProps) {
                         marginBottom: '20px',
                     }}
                 >
-                    <div className="logo-font">&lt;Coder Gaze/&gt;</div>
+                    <div className="logo-font">&lt;Code Gaze/&gt;</div>
                     <div className="logo-footer">
                         <div>by</div>
                         <img className='lumel-logo' src={logo} alt="" />
