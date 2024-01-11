@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
+import { useAutosave } from 'react-autosave';
 // SplitPane imports
 import SplitPane, { Pane } from 'split-pane-react';
 import 'split-pane-react/esm/themes/default.css';
@@ -22,6 +23,7 @@ import { toast } from 'react-toastify';
 import { ROUTES } from '../../../constants/Route.constants';
 import './styles/Editor.css';
 import { Typography } from 'antd';
+import { invokeSupabaseFunction } from '../../API/APIUtils';
 const { Title } = Typography;
 
 const Editor = () => {
@@ -37,6 +39,7 @@ const Editor = () => {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [saveLoading, setSaveLoading] = useState(false);
     const [testCaseLoading, setTestCaseLoading] = useState(false);
+    const [lastSaved, setlastSaved] = useState(null);
 
     const evaluator = new CodeEvaluator(
         selectEditorLanguage.name,
@@ -53,14 +56,12 @@ const Editor = () => {
 
     useEffect(() => {
         if (assessment?.code) {
-            console.log(assessment.code)
-            setCode(assessment.code)
+            setCode(assessment.code);
         }
         if (assessment?.language) {
-            setSelectEditorLanguage(languagesNameMap[assessment.language])
+            setSelectEditorLanguage(languagesNameMap[assessment.language]);
         }
-    }, [assessment])
-
+    }, [assessment]);
 
     useEffect(() => {
         if (state) {
@@ -81,8 +82,7 @@ const Editor = () => {
     };
 
     useEffect(() => {
-        if (!assessment?.code)
-            updateBoilerCode(selectEditorLanguage['name']);
+        if (!assessment?.code) updateBoilerCode(selectEditorLanguage['name']);
     }, [selectEditorLanguage, challenge, assessment]);
 
     const handleCodeChange = (value: string) => {
@@ -98,7 +98,8 @@ const Editor = () => {
             setrunLoading(false);
             if (result.stdout === null) {
                 setOutput(
-                    `${result.status.description !== 'Accepted' ? result.status.description : ''}\n${result.stderr}\n${result.compile_output !== null ? result.compile_output : ''
+                    `${result.status.description !== 'Accepted' ? result.status.description : ''}\n${result.stderr}\n${
+                        result.compile_output !== null ? result.compile_output : ''
                     }`,
                 );
             }
@@ -131,10 +132,7 @@ const Editor = () => {
     const handleTestCase = async () => {
         try {
             setTestCaseLoading(true);
-            const { 
-                result,
-                output,
-            } = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
+            const { result, output } = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
             setOutput(output);
             setTestCaseLoading(false);
             setResult(result);
@@ -144,18 +142,10 @@ const Editor = () => {
         }
     };
 
-    const handleSave = async () => {
+    const handleSave = async (code: string) => {
         try {
             setSaveLoading(true);
-            const { error } = await supabase.functions.invoke(FUNCTIONS.UPDATE_ASSESSMENT, {
-                body: {
-                    id: assessment.id,
-                    code,
-                    language: selectEditorLanguage.name,
-                } as AssessmentUpdateDto,
-            });
-            if (error) throw error;
-            dispatch.assessment.update({ ...assessment, code, language: selectEditorLanguage.name })
+            await saveCode(code);
             setSaveLoading(false);
         } catch (error) {
             setSaveLoading(false);
@@ -163,21 +153,27 @@ const Editor = () => {
             console.error('Error evaluating code:', error);
         }
     };
+    async function saveCode(code: string) {
+        await invokeSupabaseFunction<AssessmentUpdateDto>(FUNCTIONS.UPDATE_ASSESSMENT, {
+            id: assessment.id,
+            code,
+            language: selectEditorLanguage.name,
+        } as AssessmentUpdateDto);
+        setlastSaved(Date.now());
+        dispatch.assessment.update({ ...assessment, code, language: selectEditorLanguage.name });
+    }
 
     const handleSubmit = async () => {
         try {
             setSubmitLoading(true);
-            const {result} = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
+            const { result } = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
             await supabase.functions.setAuth(candidate?.token);
-            const { error } = await supabase.functions.invoke(FUNCTIONS.SUBMIT_EXAM, {
-                body: {
-                    id: assessment.id,
-                    code,
-                    language: selectEditorLanguage.name,
-                    result,
-                } as AssessmentUpdateDto,
-            });
-            if (error) throw error;
+            await invokeSupabaseFunction<AssessmentUpdateDto>(FUNCTIONS.SUBMIT_EXAM, {
+                id: assessment.id,
+                code,
+                language: selectEditorLanguage.name,
+                result,
+            } as AssessmentUpdateDto);
             dispatch.candidate.clear();
             dispatch.assessment.clear();
             navigate(ROUTES.ASSESSMENT_OVER);
@@ -188,6 +184,8 @@ const Editor = () => {
             console.error('Error evaluating code:', error);
         }
     };
+
+    useAutosave({ data: code, onSave: saveCode, interval: 10000 });
 
     return (
         <div>
@@ -209,8 +207,9 @@ const Editor = () => {
                             handleLanguageChange={handleLanguageChange}
                             handleReset={handleReset}
                             saveLoading={saveLoading}
-                            handleSave={handleSave}
+                            handleSave={() => handleSave(code)}
                             code={code}
+                            lastSaved={lastSaved}
                             codeEditorLang={selectEditorLanguage.lang}
                             handleCodeChange={handleCodeChange}
                         />

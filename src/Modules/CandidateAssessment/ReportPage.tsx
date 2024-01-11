@@ -68,7 +68,7 @@ const ReportPage: React.FC = () => {
                     <Col span={6}>
                         <Card>
                             <p>
-                                <b>Started:</b> {dayjs(assessment?.joined).format('h:mm A MMM DD, YYYY')}
+                                <b>Started:</b> {dayjs(assessment?.created_at).format('h:mm A MMM DD, YYYY')}
                             </p>
                             <p>
                                 <b>Finished:</b>{' '}

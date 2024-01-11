@@ -4562,6 +4562,11 @@ rc-virtual-list@^3.5.1, rc-virtual-list@^3.5.2:
     rc-resize-observer "^1.0.0"
     rc-util "^5.15.0"
 
+react-autosave@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/react-autosave/-/react-autosave-0.4.4.tgz#efb686709e9af6d1486e0448f6523708e4483786"
+  integrity sha512-BIDBBXeNWgACpDWvFt//d2wDkfnWQn4VJKEI+Fgg19zYgbfF4RGHtAucOuCCN1qs179+iwXOJcytsR+4YcSXWg==
+
 react-dom@^18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
