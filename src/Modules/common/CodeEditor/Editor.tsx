@@ -185,7 +185,7 @@ const Editor = () => {
         }
     };
 
-    useAutosave({ data: code, onSave: saveCode, interval: 10000 });
+    useAutosave({ data: code, onSave: saveCode, interval: 5000 });
 
     return (
         <div>
