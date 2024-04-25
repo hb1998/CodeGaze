@@ -11,7 +11,7 @@ serve(async (req: Request) => {
     return new Response('ok', { headers: corsHeaders })
   }
 
-  const { id, language, code, result } = await req.json();
+  const { id, language, code, result, execution_memory, execution_time } = await req.json();
 
 
   const supabase = createClient(
@@ -40,6 +40,8 @@ serve(async (req: Request) => {
       code,
       status: Status.SUBMITTED,
       finished: new Date(),
+      execution_memory,
+      execution_time,
       result
     }).eq('id', id).select();
     if (error) {

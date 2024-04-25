@@ -40,6 +40,28 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
             return null;
         },
     },
+    {
+        title: 'Execution Time (s)',
+        dataIndex: 'execution_time',
+        key: 'execution_time',
+        sorter: (a, b) => a.execution_time - b.execution_time,
+        render: (time) => time || 'NA',
+    },
+    {
+        title: 'Execution Memory (MB)',
+        dataIndex: 'execution_memory',
+        key: 'execution_memory',
+        sorter: (a, b) => a.execution_memory - b.execution_memory,
+        render: (memory: number) => memory / 1024 || 'NA',
+    },
+    {
+        title: 'Joined',
+        dataIndex: 'created_at',
+        key: 'joined',
+        render: (date: string) => dayjs(date).format('h:mm A MMM DD, YYYY'),
+        sorter: (a, b) => dayjs(a.created_at).unix() - dayjs(b.created_at).unix(),
+        defaultSortOrder: 'descend',
+    },
     StatusColDef('status'),
     {
         title: 'Joined',
@@ -120,7 +142,7 @@ const Dashboard = () => {
         <div className="container">
             <Title level={2}>Dashboard</Title>
             <Space size={24} direction="vertical" style={{ width: '100%' }}>
-                 <Row gutter={16}>
+                <Row gutter={16}>
                     <Col span={8}>
                         <Card>
                             <Statistic loading={loading} title="Total Invited" value={assessments.length} />
