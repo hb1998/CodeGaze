@@ -51,7 +51,7 @@ export class CodeEvaluator {
             if (output.status.id === CompilationStatus.ACCEPTED) {
                 const outputArray = output.stdout
                 .split(separator)
-                .map((output) => output.replace(/\n/g, ''))
+                .map((output) => output.replace(/(\n|['"])/g, ''))
                 .filter((output) => output);
                 evaluatorResult.result = this.evaluator.getResult(outputArray, testCases);
             }
