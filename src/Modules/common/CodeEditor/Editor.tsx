@@ -55,15 +55,6 @@ const Editor = () => {
     const { challengeId } = useParams<{ challengeId: string }>();
 
     useEffect(() => {
-        if (assessment?.code) {
-            setCode(assessment.code);
-        }
-        if (assessment?.language) {
-            setSelectEditorLanguage(languagesNameMap[assessment.language]);
-        }
-    }, [assessment]);
-
-    useEffect(() => {
         if (state) {
             setChallenge(state?.challenge);
         } else {
@@ -166,14 +157,18 @@ const Editor = () => {
     const handleSubmit = async () => {
         try {
             setSubmitLoading(true);
-            const { result } = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
+            const { result, memory, time } = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
             await supabase.functions.setAuth(candidate?.token);
+            debugger;
             await invokeSupabaseFunction<AssessmentUpdateDto>(FUNCTIONS.SUBMIT_EXAM, {
                 id: assessment.id,
                 code,
                 language: selectEditorLanguage.name,
                 result,
+                execution_memory: memory,
+                execution_time: Number(time),
             } as AssessmentUpdateDto);
+            resetLocalState();
             dispatch.candidate.clear();
             dispatch.assessment.clear();
             navigate(ROUTES.ASSESSMENT_OVER);
@@ -185,7 +180,14 @@ const Editor = () => {
         }
     };
 
-    useAutosave({ data: code, onSave: saveCode, interval: 5000 });
+    const resetLocalState = () => {
+        setCode('');
+        setOutput('');
+        setTestCaseLoading(false);
+        setSubmitLoading(false);
+    };
+
+    useAutosave({ data: code, onSave: saveCode, interval: 1000 });
 
     return (
         <div>
