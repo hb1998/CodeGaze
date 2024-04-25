@@ -33,7 +33,7 @@ const CodeEditor = (props: ICodeEditorProps) => {
                     options={options}
                 />
                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    {lastSaved && <div className="last-saved">Last Saved at {dayjs(lastSaved).format('hh:MM ss')}</div>}
+                    {lastSaved && <div className="last-saved">Last Saved at {dayjs(lastSaved).format('hh:mm ss')}</div>}
                     <Button onClick={props.handleReset}>Reset</Button>
                     <Button
                         loading={props.saveLoading}
