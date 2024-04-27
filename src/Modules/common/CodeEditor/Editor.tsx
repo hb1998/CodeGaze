@@ -159,7 +159,6 @@ const Editor = () => {
             setSubmitLoading(true);
             const { result, memory, time } = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
             await supabase.functions.setAuth(candidate?.token);
-            debugger;
             await invokeSupabaseFunction<AssessmentUpdateDto>(FUNCTIONS.SUBMIT_EXAM, {
                 id: assessment.id,
                 code,
