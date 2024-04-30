@@ -1,5 +1,5 @@
 import { FUNCTION_NAME } from './CodeGenerator';
-import { IParamType } from '../../types/Evaluator.types';
+import { IParamType, ParamType } from '../../types/Evaluator.types';
 import { LanguageHandler } from './Handler.types';
 
 export class CPPHandler implements LanguageHandler {
@@ -12,21 +12,17 @@ export class CPPHandler implements LanguageHandler {
     }
 
     generate() {
-        let functionTemplate = `#include <iostream>
+        let functionTemplate = `
+#include <iostream>
+#include <vector>
 using namespace std;
 
-${this.outputType.type} ${FUNCTION_NAME}(${this.generateParameterList()}) {
+${this.generateOutputType()} ${FUNCTION_NAME}(${this.generateParameterList()}) {
     // TODO: Implement the function logic here
     
     // Return the output
 }
 
-
-int main(){
-    // Call the solve function with sample input and print the output
-    cout << ${FUNCTION_NAME}(0, 0) << endl;
-    return 0;
-}
 `;
 
         // Replace the placeholders in the function template with the input parameters
@@ -51,5 +47,23 @@ int main(){
                 }
             })
             .join(', ');
+    }
+
+
+    private generateOutputType() {
+        switch (this.outputType.type) {
+            case ParamType.NUMBER:
+                return `int`;
+            case ParamType.STRING:
+                return `string`;
+            case ParamType.BOOLEAN:
+                return `bool`;
+            case ParamType.ARRAY_OF_NUMBER:
+                return `std::vector<int>`;
+            case ParamType.ARRAY_OF_STRING:
+                return `std::vector<std::string>`;
+            default:
+                return `${this.outputType.type}`
+        }
     }
 }

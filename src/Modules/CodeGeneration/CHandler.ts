@@ -13,7 +13,7 @@ export class CHandler implements LanguageHandler {
     generate(): string {
         let functionTemplate = `#include <stdio.h>
 
-${this.generateOutputType()} main(${this.generateParameterList()}) {
+ main(${this.generateParameterList()}) {
 // TODO: Implement the function logic here
 // Return the output
 }
@@ -48,7 +48,7 @@ ${this.generateOutputType()} main(${this.generateParameterList()}) {
             .join(', ');
     }
 
-    private generateOutputType() {
+    private generateOutputList() {
         switch (this.outputType.type) {
             case ParamType.NUMBER:
                 return 'int';

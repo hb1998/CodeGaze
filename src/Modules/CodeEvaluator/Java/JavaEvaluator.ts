@@ -61,11 +61,9 @@ export class JavaEvaluator {
     }
 
     private parseTestCase = (testCase: IInputOutput) => {
-        return `
-        ${testCase.input.map((caseItem, index) => {
+        return `${testCase.input.map((caseItem, index) => {
             return this.getCodeForParameter(this.inputTypes[index].type, caseItem);
-        }).join(', ')}
-        `;
+        }).join(', ')}`;
     }
 
     private getArrayLiteral = (array: string) => {
@@ -74,9 +72,6 @@ export class JavaEvaluator {
 
     private getCodeForParameter(type: ParamType, caseItem: string) {
         switch (type) {
-            case ParamType.NUMBER:
-                return caseItem;
-
             case ParamType.ARRAY_OF_NUMBER: {
                 const arrayLiteral = this.getArrayLiteral(caseItem);
                 return `new int[] ${arrayLiteral}`;
@@ -85,9 +80,8 @@ export class JavaEvaluator {
                 const arrayLiteral = this.getArrayLiteral(caseItem);
                 return `new String[] ${arrayLiteral}`;
             }
-            case ParamType.STRING: {
-                return `"${caseItem}"`;
-            }
+            case ParamType.NUMBER:
+            case ParamType.STRING:
             case ParamType.BOOLEAN: {
                 return caseItem;
             }
