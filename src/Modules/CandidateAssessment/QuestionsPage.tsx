@@ -18,7 +18,7 @@ const ChallengesListComponent = () => {
     const { examId, candidateId } = useParams();
     const candidate = useSelector((state: IRootState) => state.candidate);
     const [loading, setLoading] = useState(true);
-    const [beginLoading, setBeginLoading] = useState<Record<string, boolean>>({});
+    const [beginState, setBeginState] = useState<Record<string, '' | 'loading' | 'started'>>({});
     const [challenges, setchallenges] = useState<Challenge[]>([]);
 
     const navigate = useNavigate();
@@ -49,7 +49,7 @@ const ChallengesListComponent = () => {
 
     const beginExam = async (challenge: Challenge) => {
         try {
-            setBeginLoading({ ...beginLoading, [challenge.id]: true });
+            setBeginState({ ...beginState, [challenge.id]: 'loading' });
             if (!candidate?.token) throw new Error('No token found');
             const { data, error } = await supabase.functions.invoke(FUNCTIONS.UPDATE_ASSESSMENT, {
                 body: {
@@ -60,15 +60,10 @@ const ChallengesListComponent = () => {
             });
             if (error) throw error;
             dispatch.assessment.update(data?.[0]);
-            setBeginLoading({ ...beginLoading, [challenge.id]: false });
-            navigate(`${ROUTES.CANDIDATE_ASSESSMENT}/${examId}/${candidateId}/${challenge.id}`, {
-                state: {
-                    challenge,
-                    token: candidate?.token,
-                },
-            });
+            setBeginState({ ...beginState, [challenge.id]: 'started' });
+            window.open(`${ROUTES.CANDIDATE_ASSESSMENT}/${examId}/${candidateId}/${challenge.id}`);
         } catch (error) {
-            setBeginLoading({ ...beginLoading, [challenge.id]: false });
+            setBeginState({ ...beginState, [challenge.id]: '' });
             console.error('Error fetching exam:', error);
             toast.error(error?.message || 'Error fetching exam');
         }
@@ -114,14 +109,20 @@ const ChallengesListComponent = () => {
                     renderItem={(challenge) => (
                         <List.Item>
                             <List.Item.Meta title={challenge.name} description={challenge.short_description} />
-                            <Button
-                                loading={beginLoading[challenge.id]}
-                                onClick={() => beginExam(challenge)}
-                                className="begin-button"
-                                type="primary"
-                            >
-                                Begin Exam
-                            </Button>
+                            {beginState[challenge.id] === 'started' ? (
+                                <Button disabled={true} type="primary">
+                                    Started
+                                </Button>
+                            ) : (
+                                <Button
+                                    loading={beginState[challenge.id] === 'loading'}
+                                    onClick={() => beginExam(challenge)}
+                                    className="begin-button"
+                                    type="primary"
+                                >
+                                    Begin Exam
+                                </Button>
+                            )}
                         </List.Item>
                     )}
                 />
