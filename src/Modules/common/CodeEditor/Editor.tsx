@@ -12,7 +12,6 @@ import TestCaseTable from './TestCaseTable';
 import { ProgrammingLanguages, languageNameType, languageObjectType, languagesNameMap } from './ProgrammingLanguages';
 import { CodeGenerator } from '../../CodeGeneration/CodeGenerator';
 import { CodeEvaluator } from '../../CodeEvaluator/CodeEvaluator';
-import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
 import { AssessmentUpdateDto, Challenge } from '../../../types/Models';
 import classes from './Editor.module.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -52,20 +51,29 @@ const Editor = () => {
     const dispatch = useDispatch<IDispatch>();
     const assessment = useSelector((state: IRootState) => state.assessment);
     const candidate = useSelector((state: IRootState) => state.candidate);
+
     const { challengeId } = useParams<{ challengeId: string }>();
 
     useEffect(() => {
-        if (state) {
-            setChallenge(state?.challenge);
-        } else {
-            ChallengeAPIService.getById(challengeId)
-                .then((response) => {
-                    setChallenge(response as unknown as Challenge);
-                })
-                .catch((error) => {
-                    console.log(error);
+        async function setAuth() {}
+        setAuth();
+    }, []);
+
+    useEffect(() => {
+        async function setAuth() {
+            if (state) {
+                setChallenge(state?.challenge);
+            } else {
+                await supabase.functions.setAuth(candidate.token);
+                const { data: challenge, error } = await supabase.functions.invoke(FUNCTIONS.GET_CHALLENGE, {
+                    body: {
+                        challengeId,
+                    },
                 });
+                setChallenge(challenge as Challenge);
+            }
         }
+        setAuth();
     }, [challengeId, state]);
 
     const handleLanguageChange = (selectedLanguage: languageNameType) => {
@@ -159,7 +167,6 @@ const Editor = () => {
             setSubmitLoading(true);
             const { result, memory, time } = await evaluator.evaluate(code, challenge?.input_output?.inputOutput);
             await supabase.functions.setAuth(candidate?.token);
-            debugger;
             await invokeSupabaseFunction<AssessmentUpdateDto>(FUNCTIONS.SUBMIT_EXAM, {
                 id: assessment.id,
                 code,

@@ -52,7 +52,7 @@ const ChallengeTable = ({ challenges, loading, openForm, refreshTable }: IChalle
                     Create Challenge
                 </Button>
             </div>
-            <Table rowKey="id" dataSource={filteredChallenges} columns={columnDef} size="small" loading={loading} />
+            <Table rowKey="id" dataSource={filteredChallenges} columns={columnDef} size="small" pagination={false} loading={loading} />
         </div>
     );
 };

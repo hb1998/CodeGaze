@@ -18,7 +18,7 @@ const ChallengesListComponent = () => {
     const { examId, candidateId } = useParams();
     const candidate = useSelector((state: IRootState) => state.candidate);
     const [loading, setLoading] = useState(true);
-    const [beginLoading, setBeginLoading] = useState(false);
+    const [beginState, setBeginState] = useState<Record<string, '' | 'loading' | 'started'>>({});
     const [challenges, setchallenges] = useState<Challenge[]>([]);
 
     const navigate = useNavigate();
@@ -49,7 +49,7 @@ const ChallengesListComponent = () => {
 
     const beginExam = async (challenge: Challenge) => {
         try {
-            setBeginLoading(true);
+            setBeginState({ ...beginState, [challenge.id]: 'loading' });
             if (!candidate?.token) throw new Error('No token found');
             const { data, error } = await supabase.functions.invoke(FUNCTIONS.UPDATE_ASSESSMENT, {
                 body: {
@@ -60,15 +60,10 @@ const ChallengesListComponent = () => {
             });
             if (error) throw error;
             dispatch.assessment.update(data?.[0]);
-            setBeginLoading(false);
-            navigate(`${ROUTES.CANDIDATE_ASSESSMENT}/${examId}/${candidateId}/${challenge.id}`, {
-                state: {
-                    challenge,
-                    token: candidate?.token,
-                },
-            });
+            setBeginState({ ...beginState, [challenge.id]: 'started' });
+            window.open(`${ROUTES.CANDIDATE_ASSESSMENT}/${examId}/${candidateId}/${challenge.id}`);
         } catch (error) {
-            setBeginLoading(false);
+            setBeginState({ ...beginState, [challenge.id]: '' });
             console.error('Error fetching exam:', error);
             toast.error(error?.message || 'Error fetching exam');
         }
@@ -91,9 +86,17 @@ const ChallengesListComponent = () => {
                 Please do not refresh the page or navigate away from the challenge while you are working on it.
             </p>
             <ul>
-                <li>Please make sure that all the test cases are handled, there will be some test cases which are hidden from you.</li>
-                <li>Do not modify the starter code, write all your logic inside the <code>solve</code> function</li>
-                <li>Don't use <code>console.log</code> or <code>print</code> when submitting the assessment or running the test cases, you have to return the result.</li>
+                <li>
+                    Please make sure that all the test cases are handled, there will be some test cases which are hidden
+                    from you.
+                </li>
+                <li>
+                    Do not modify the starter code, write all your logic inside the <code>solve</code> function
+                </li>
+                <li>
+                    Don't use <code>console.log</code> or <code>print</code> when submitting the assessment or running
+                    the test cases, you have to return the result.
+                </li>
             </ul>
             <Divider dashed />
             <Title level={4}>Exams</Title>
@@ -106,14 +109,20 @@ const ChallengesListComponent = () => {
                     renderItem={(challenge) => (
                         <List.Item>
                             <List.Item.Meta title={challenge.name} description={challenge.short_description} />
-                            <Button
-                                loading={beginLoading}
-                                onClick={() => beginExam(challenge)}
-                                className="begin-button"
-                                type="primary"
-                            >
-                                Begin Exam
-                            </Button>
+                            {beginState[challenge.id] === 'started' ? (
+                                <Button disabled={true} type="primary">
+                                    Started
+                                </Button>
+                            ) : (
+                                <Button
+                                    loading={beginState[challenge.id] === 'loading'}
+                                    onClick={() => beginExam(challenge)}
+                                    className="begin-button"
+                                    type="primary"
+                                >
+                                    Begin Exam
+                                </Button>
+                            )}
                         </List.Item>
                     )}
                 />
