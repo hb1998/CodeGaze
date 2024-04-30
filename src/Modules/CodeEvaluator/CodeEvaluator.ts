@@ -1,6 +1,7 @@
 import { CodeOutput, CompilationStatus, IEvaluatorResult, IInputOutput, IParamType, RUNTIME_ERRORS } from '../../types/Evaluator.types';
 import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
 import { languageNameType } from '../common/CodeEditor/ProgrammingLanguages';
+import { CPPEvaluator } from './CPPEvaluator';
 import { JavaEvaluator } from './Java/JavaEvaluator';
 import { JavascriptEvaluator } from './JavascriptEvaluator';
 import { PythonEvaluator } from './PythonEvaluator';
@@ -11,7 +12,7 @@ export class CodeEvaluator {
     language: languageNameType;
     inputTypes: IParamType[];
     outputType: IParamType;
-    evaluator: JavascriptEvaluator | JavaEvaluator | PythonEvaluator;
+    evaluator: JavascriptEvaluator | JavaEvaluator | PythonEvaluator | CPPEvaluator;
 
     constructor(language: languageNameType, inputTypes: IParamType[], outputType: IParamType) {
         this.language = language;
@@ -20,7 +21,7 @@ export class CodeEvaluator {
         this.evaluator = this.getEvaluator();
     }
 
-    private getEvaluator(): JavascriptEvaluator | JavaEvaluator | PythonEvaluator {
+    private getEvaluator(): JavascriptEvaluator | JavaEvaluator | PythonEvaluator | CPPEvaluator {
         switch (this.language) {
             case 'Javascript':
                 return new JavascriptEvaluator(this.inputTypes, this.outputType);
@@ -28,6 +29,8 @@ export class CodeEvaluator {
                 return new JavaEvaluator(this.inputTypes, this.outputType);
             case 'Python':
                 return new PythonEvaluator(this.inputTypes, this.outputType);
+            case 'C++':
+                return new CPPEvaluator(this.inputTypes, this.outputType);
         }
     }
 
@@ -50,9 +53,9 @@ export class CodeEvaluator {
             evaluatorResult.time = output.time;
             if (output.status.id === CompilationStatus.ACCEPTED) {
                 const outputArray = output.stdout
-                .split(separator)
-                .map((output) => output.replace(/(\n|['"])/g, ''))
-                .filter((output) => output);
+                    .split(separator)
+                    .map((output) => output.replace(/(\n|['"])/g, ''))
+                    .filter((output) => output);
                 evaluatorResult.result = this.evaluator.getResult(outputArray, testCases);
             }
             if (RUNTIME_ERRORS.includes(output.status.id)) {
