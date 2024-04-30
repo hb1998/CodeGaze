@@ -81,8 +81,8 @@ const Editor = () => {
     };
 
     useEffect(() => {
-        if (!assessment?.code) updateBoilerCode(selectEditorLanguage['name']);
-    }, [selectEditorLanguage, challenge, assessment]);
+        updateBoilerCode(selectEditorLanguage['name']);
+    }, [selectEditorLanguage]);
 
     const handleCodeChange = (value: string) => {
         setCode(value);

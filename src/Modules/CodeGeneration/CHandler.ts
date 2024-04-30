@@ -1,4 +1,4 @@
-import { IParamType } from '../../types/Evaluator.types';
+import { IParamType, ParamType } from '../../types/Evaluator.types';
 import { LanguageHandler } from './Handler.types';
 
 export class CHandler implements LanguageHandler {
@@ -13,18 +13,12 @@ export class CHandler implements LanguageHandler {
     generate(): string {
         let functionTemplate = `#include <stdio.h>
 
-${this.generateParameterList()} {
+${this.generateOutputType()} main(${this.generateParameterList()}) {
 // TODO: Implement the function logic here
 // Return the output
 }
 
-
-int main() {
-// Call the solve function with sample input and print the output
-printf("%d", solve(0, 0));
-return 0;
-
-}`;
+`;
 
         // Replace the placeholders in the function template with the input parameters and output variable
         functionTemplate = functionTemplate.replace(/#output/g, this.outputType.name);
@@ -33,7 +27,41 @@ return 0;
 
     private generateParameterList(): string {
         return this.inputTypes
-            .map((input) => `${input.type}${input.name}`)
+            .map((input) => {
+                switch (input.type) {
+                    case ParamType.NUMBER:
+                        return `int ${input.name}`;
+                    case ParamType.ARRAY_OF_NUMBER:
+                        return `int[] ${input.name}`;
+                    case ParamType.ARRAY_OF_STRING:
+                        return `String[] ${input.name}`;
+                    case ParamType.ARRAY_OF_OBJECT:
+                        return `Object[] ${input.name}`;
+                    case ParamType.OBJECT:
+                        return `Object ${input.name}`;
+                    case ParamType.BOOLEAN:
+                        return `boolean ${input.name}`;
+                    case ParamType.STRING:
+                        return `String ${input.name}`;
+                }
+            })
             .join(', ');
+    }
+
+    private generateOutputType() {
+        switch (this.outputType.type) {
+            case ParamType.NUMBER:
+                return 'int';
+            case ParamType.ARRAY_OF_NUMBER:
+                return `int[]`;
+            case ParamType.ARRAY_OF_STRING:
+                return `String[]`;
+            case ParamType.ARRAY_OF_OBJECT:
+                return `Object[]`;
+            case ParamType.OBJECT:
+                return `boolean`;
+            case ParamType.STRING:
+                return `String`;
+        }
     }
 }

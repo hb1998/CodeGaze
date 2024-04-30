@@ -1,4 +1,4 @@
-import { CodeOutput, CompilationStatus, FUNCTION_NAME, IEvaluatorResult, IInputOutput, IParamType, ParamType, RUNTIME_ERRORS } from '../../types/Evaluator.types';
+import { CompilationStatus, FUNCTION_NAME, IEvaluatorResult, IInputOutput, IParamType, ParamType, RUNTIME_ERRORS } from '../../types/Evaluator.types';
 import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
 import { ProgrammingLanguages } from '../common/CodeEditor/ProgrammingLanguages';
 import { separator } from './CodeEvaluator';
@@ -84,6 +84,8 @@ evaluate()
             return `'${output}'`
         } else if ([ParamType.ARRAY_OF_OBJECT, ParamType.OBJECT].includes(outputType.type)) {
             return `${output}`
+        } else if (outputType.type === ParamType.BOOLEAN) {
+            return output === "true" ? "True" : "False"
         } else {
             return `${output}`
         }
