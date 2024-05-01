@@ -62,7 +62,7 @@ const Editor = () => {
     const { challengeId } = useParams<{ challengeId: string }>();
 
     useEffect(() => {
-        async function setAuth() {
+        async function loadChallenge() {
             if (state) {
                 setChallenge(state?.challenge);
             } else if (candidate?.token) {
@@ -83,7 +83,7 @@ const Editor = () => {
                     });
             }
         }
-        setAuth();
+        loadChallenge();
     }, [challengeId, candidate, state]);
 
     const handleLanguageChange = (selectedLanguage: languageNameType) => {
@@ -91,7 +91,7 @@ const Editor = () => {
     };
 
     useEffect(() => {
-        updateBoilerCode(selectEditorLanguage['name'] || Language.JAVASCRIPT);
+        updateBoilerplateCode(selectEditorLanguage['name'] || Language.JAVASCRIPT);
     }, [selectEditorLanguage, challenge]);
 
     const handleCodeChange = (value: string) => {
@@ -123,7 +123,7 @@ const Editor = () => {
         }
     };
 
-    const updateBoilerCode = (languageSelected: languageNameType) => {
+    const updateBoilerplateCode = (languageSelected: languageNameType) => {
         const generator = new CodeGenerator(
             languageSelected,
             challenge?.input_output?.inputType,
@@ -134,7 +134,7 @@ const Editor = () => {
     };
 
     const handleReset = () => {
-        updateBoilerCode(selectEditorLanguage['name']);
+        updateBoilerplateCode(selectEditorLanguage['name']);
         setOutput('');
     };
 
@@ -162,6 +162,7 @@ const Editor = () => {
             console.error('Error evaluating code:', error);
         }
     };
+
     async function saveCode(code: string) {
         if (candidate?.token) {
             await invokeSupabaseFunction<AssessmentUpdateDto>(FUNCTIONS.UPDATE_ASSESSMENT, {

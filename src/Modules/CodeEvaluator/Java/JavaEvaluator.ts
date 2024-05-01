@@ -49,7 +49,7 @@ export class JavaEvaluator {
             case ParamType.ARRAY_OF_STRING:
                 return `System.out.println(Arrays.equals(${FUNCTION_NAME}(${this.parseTestCase(testCase)}), ${outputParam}));`;
             case ParamType.STRING:
-                return `System.out.println(${FUNCTION_NAME}(${this.parseTestCase(testCase)}).equals("${outputParam}"));`;
+                return `System.out.println(${FUNCTION_NAME}(${this.parseTestCase(testCase)}).equals(${outputParam}));`;
             case ParamType.BOOLEAN:
                 return `System.out.println(${FUNCTION_NAME}(${this.parseTestCase(testCase)}) == ${outputParam});`;
             case ParamType.OBJECT:
@@ -80,8 +80,9 @@ export class JavaEvaluator {
                 const arrayLiteral = this.getArrayLiteral(caseItem);
                 return `new String[] ${arrayLiteral}`;
             }
-            case ParamType.NUMBER:
             case ParamType.STRING:
+                return `"${caseItem}"`;
+                case ParamType.NUMBER:
             case ParamType.BOOLEAN: {
                 return caseItem;
             }
