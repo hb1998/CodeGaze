@@ -31,9 +31,9 @@ public static ${this.generateOutputList()} ${FUNCTION_NAME}(${this.generateInput
             .map((input) => {
                 switch (input.type) {
                     case ParamType.NUMBER:
-                        return `int ${input.name}`;
+                        return `long ${input.name}`;
                     case ParamType.ARRAY_OF_NUMBER:
-                        return `int[] ${input.name}`;
+                        return `long[] ${input.name}`;
                     case ParamType.ARRAY_OF_STRING:
                         return `String[] ${input.name}`;
                     case ParamType.ARRAY_OF_OBJECT:
@@ -51,14 +51,14 @@ public static ${this.generateOutputList()} ${FUNCTION_NAME}(${this.generateInput
     private generateOutputList() {
         switch (this.outputType.type) {
             case ParamType.NUMBER:
-                return 'int';
+                return 'long';
             case ParamType.ARRAY_OF_NUMBER:
-                return `int[]`;
+                return `long[]`;
             case ParamType.ARRAY_OF_STRING:
                 return `String[]`;
             case ParamType.ARRAY_OF_OBJECT:
                 return `Object[]`;
-            case ParamType.OBJECT:
+            case ParamType.BOOLEAN:
                 return `boolean`;
             case ParamType.STRING:
                 return `String`;

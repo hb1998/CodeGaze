@@ -74,7 +74,7 @@ export class JavaEvaluator {
         switch (type) {
             case ParamType.ARRAY_OF_NUMBER: {
                 const arrayLiteral = this.getArrayLiteral(caseItem);
-                return `new int[] ${arrayLiteral}`;
+                return `new long[] ${arrayLiteral}`;
             }
             case ParamType.ARRAY_OF_STRING: {
                 const arrayLiteral = this.getArrayLiteral(caseItem);
