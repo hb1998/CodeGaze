@@ -29,6 +29,7 @@ import { ROUTES } from '../../../constants/Route.constants';
 import './styles/Editor.css';
 import { Typography } from 'antd';
 import { invokeSupabaseFunction } from '../../API/APIUtils';
+import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
 const { Title } = Typography;
 
 const Editor = () => {
@@ -61,26 +62,29 @@ const Editor = () => {
     const { challengeId } = useParams<{ challengeId: string }>();
 
     useEffect(() => {
-        async function setAuth() {}
-        setAuth();
-    }, []);
-
-    useEffect(() => {
         async function setAuth() {
             if (state) {
                 setChallenge(state?.challenge);
-            } else {
+            } else if (candidate?.token) {
                 await supabase.functions.setAuth(candidate.token);
-                const { data: challenge, error } = await supabase.functions.invoke(FUNCTIONS.GET_CHALLENGE, {
+                const { data: challenge } = await supabase.functions.invoke(FUNCTIONS.GET_CHALLENGE, {
                     body: {
                         challengeId,
                     },
                 });
                 setChallenge(challenge as Challenge);
+            } else {
+                ChallengeAPIService.getById(challengeId)
+                    .then((response) => {
+                        setChallenge(response as unknown as Challenge);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
             }
         }
         setAuth();
-    }, [challengeId, state]);
+    }, [challengeId, candidate, state]);
 
     const handleLanguageChange = (selectedLanguage: languageNameType) => {
         setSelectEditorLanguage(languagesNameMap[selectedLanguage]);
@@ -159,7 +163,7 @@ const Editor = () => {
         }
     };
     async function saveCode(code: string) {
-        if (!candidate?.token) {
+        if (candidate?.token) {
             await invokeSupabaseFunction<AssessmentUpdateDto>(FUNCTIONS.UPDATE_ASSESSMENT, {
                 id: assessment.id,
                 code,
