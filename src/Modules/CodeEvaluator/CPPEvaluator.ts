@@ -22,17 +22,7 @@ export class CPPEvaluator {
         return `
         #include <algorithm>
         #include <string>
-        ${code}
-       int main() {
-            ${testCases
-                .map((testCase) => {
-                    return `${this.getCompareCode(testCase)}
-                    cout <<"${separator}" << endl;
-                    `
-                })
-                .join('\n')}
-                return 0;
-        }
+        #include <vector>
 
         // utils for comparing test cases.
         
@@ -44,6 +34,17 @@ export class CPPEvaluator {
             return arr1.size() == arr2.size() && std::equal(arr1.begin(), arr1.end(), arr2.begin());
         }
 
+        ${code}
+       int main() {
+            ${testCases
+                .map((testCase) => {
+                    return `${this.getCompareCode(testCase)}
+                    cout <<"${separator}" << endl;
+                    `
+                })
+                .join('\n')}
+                return 0;
+        }
       `;
     }
 
@@ -53,9 +54,9 @@ export class CPPEvaluator {
             case ParamType.NUMBER:
                 return `cout << (${FUNCTION_NAME}(${this.parseTestCase(testCase)}) == ${outputParam}) << endl;`
             case ParamType.ARRAY_OF_NUMBER:
-                return `cout << isNumberArrayEqual(${FUNCTION_NAME}(${this.parseTestCase(testCase)})) << endl;`
+                return `cout << isNumberArrayEqual(${FUNCTION_NAME}(${this.parseTestCase(testCase)}), ${outputParam}) << endl;`
             case ParamType.ARRAY_OF_STRING:
-                return `cout << isStringArrayEqual(${FUNCTION_NAME}(${this.parseTestCase(testCase)})) << endl;`
+                return `cout << isStringArrayEqual(${FUNCTION_NAME}(${this.parseTestCase(testCase)}), ${outputParam}) << endl;`
             default:
                 return `cout << (${FUNCTION_NAME}(${this.parseTestCase(testCase)}) == ${outputParam}) << endl;`
 

@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import { encode, decode } from 'js-base64';
 import { AssessmentUpdateDto, CandidateInsertDto, Status } from '../../../types/Models';
 import { DatabaseCode } from '../../../types/Util.types';
 import { supabase } from '../../API/supabase';
@@ -75,10 +76,17 @@ export class CandidateAssessmentAPIService {
 
     static async runCode(code: string, language_id: string): Promise<CodeOutput> {
         const response = await Axios.post(import.meta.env.VITE_COMPILER_ENDPOINT || '', {
-            source_code: code,
+            source_code: encode(code),
             language_id,
         });
-        return response.data;
+        const data = response.data;
+        const convertToString = (base64String: string) => base64String ? decode(base64String) : base64String;
+        return {
+            ...data,
+            stdout: convertToString(data.stdout),
+            stderr: convertToString(data.stderr),
+            compile_output: convertToString(data.compile_output),
+        }
     }
 
     static async submit(payload: Pick<AssessmentUpdateDto, 'code' | 'language' | 'id'>) {

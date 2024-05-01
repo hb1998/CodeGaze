@@ -9,7 +9,13 @@ import QuestionContent from './QuestionContent';
 import CodeEditor from './CodeEditor';
 import Output from './Output';
 import TestCaseTable from './TestCaseTable';
-import { ProgrammingLanguages, languageNameType, languageObjectType, languagesNameMap } from './ProgrammingLanguages';
+import {
+    Language,
+    ProgrammingLanguages,
+    languageNameType,
+    languageObjectType,
+    languagesNameMap,
+} from './ProgrammingLanguages';
 import { CodeGenerator } from '../../CodeGeneration/CodeGenerator';
 import { CodeEvaluator } from '../../CodeEvaluator/CodeEvaluator';
 import { AssessmentUpdateDto, Challenge } from '../../../types/Models';
@@ -81,8 +87,8 @@ const Editor = () => {
     };
 
     useEffect(() => {
-        updateBoilerCode(selectEditorLanguage['name']);
-    }, [selectEditorLanguage]);
+        updateBoilerCode(selectEditorLanguage['name'] || Language.JAVASCRIPT);
+    }, [selectEditorLanguage, challenge]);
 
     const handleCodeChange = (value: string) => {
         setCode(value);
@@ -93,7 +99,7 @@ const Editor = () => {
             setrunLoading(true);
             setOutput('');
             const result = await evaluator.runAndEvaluateCode(code, challenge?.input_output?.inputOutput);
-            setOutput(result.stdout);
+            setOutput(result.stderr || result.stdout);
             setrunLoading(false);
             if (result.stdout === null) {
                 setOutput(
@@ -153,13 +159,15 @@ const Editor = () => {
         }
     };
     async function saveCode(code: string) {
-        await invokeSupabaseFunction<AssessmentUpdateDto>(FUNCTIONS.UPDATE_ASSESSMENT, {
-            id: assessment.id,
-            code,
-            language: selectEditorLanguage.name,
-        } as AssessmentUpdateDto);
-        setlastSaved(Date.now());
-        dispatch.assessment.update({ ...assessment, code, language: selectEditorLanguage.name });
+        if (!candidate?.token) {
+            await invokeSupabaseFunction<AssessmentUpdateDto>(FUNCTIONS.UPDATE_ASSESSMENT, {
+                id: assessment.id,
+                code,
+                language: selectEditorLanguage.name,
+            } as AssessmentUpdateDto);
+            setlastSaved(Date.now());
+            dispatch.assessment.update({ ...assessment, code, language: selectEditorLanguage.name });
+        }
     }
 
     const handleSubmit = async () => {
