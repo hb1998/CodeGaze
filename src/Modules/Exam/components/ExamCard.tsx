@@ -37,7 +37,7 @@ const ExamCard = ({
                     </Tag>
                 </div>
                 <div>
-                    <Link to={`/challenges/${challenge.id}`} state={challenge}>
+                    <Link to={`/challenges/${challenge.id}`} state={{ challenge }}>
                         <Button type="link" icon={<SelectOutlined />}>
                             Preview
                         </Button>

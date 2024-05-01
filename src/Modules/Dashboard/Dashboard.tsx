@@ -64,14 +64,6 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
     },
     StatusColDef('status'),
     {
-        title: 'Joined',
-        dataIndex: 'created_at',
-        key: 'joined',
-        render: (date: string) => dayjs(date).format('h:mm A MMM DD, YYYY'),
-        sorter: (a, b) => dayjs(a.created_at).unix() - dayjs(b.created_at).unix(),
-        defaultSortOrder: 'descend',
-    },
-    {
         title: 'Time taken',
         key: 'timeTaken',
         render: (date: string, record) => CandidateAssessmentUtils.getTimeTaken(record),
