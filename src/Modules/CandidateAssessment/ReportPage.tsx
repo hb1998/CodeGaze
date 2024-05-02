@@ -10,6 +10,7 @@ import { CandidateAssessmentAPIService } from './services/CandidateAssessment.AP
 import CandidateAssessmentUtils from './services/CanidadateAssessment.utils';
 import { QUALIFYING_SCORE } from '../../constants/common.constants';
 import dayjs from 'dayjs';
+import QuestionContent from '../common/CodeEditor/QuestionContent';
 
 const ReportPage: React.FC = () => {
     const state = useLocation().state;
@@ -88,7 +89,21 @@ const ReportPage: React.FC = () => {
                             </p>
                         </Card>
                     </Col>
-
+                    <Row gutter={[16, 16]}>
+                        <Col span={24}>
+                            <Card title={assessment?.challenge?.name}>
+                                <QuestionContent
+                                    challenge={assessment?.challenge}
+                                    hideTitle={true}
+                                    editorStyles={{
+                                        height: '200px',
+                                        overflowY: 'auto',
+                                        width: `calc(100vw - 7.5rem)`,
+                                    }}
+                                />
+                            </Card>
+                        </Col>
+                    </Row>
                     <Row gutter={[16, 16]}>
                         <Col span={12}>
                             <Card title="Code">
