@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useAutosave } from 'react-autosave';
 // SplitPane imports
 import SplitPane, { Pane } from 'split-pane-react';
@@ -20,7 +20,7 @@ import { CodeGenerator } from '../../CodeGeneration/CodeGenerator';
 import { CodeEvaluator } from '../../CodeEvaluator/CodeEvaluator';
 import { AssessmentUpdateDto, Challenge } from '../../../types/Models';
 import classes from './Editor.module.css';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { IDispatch, IRootState } from '../../../store';
 import { supabase } from '../../API/supabase';
 import { FUNCTIONS } from '../../../constants/functions.constants';
@@ -29,18 +29,22 @@ import { ROUTES } from '../../../constants/Route.constants';
 import './styles/Editor.css';
 import { Typography } from 'antd';
 import { invokeSupabaseFunction } from '../../API/APIUtils';
-import { ChallengeAPIService } from '../../Challenges/services/Challenge.API';
 const { Title } = Typography;
 
-const Editor = () => {
+interface IProps {
+    assessment: IRootState['assessment'];
+    challenge: Challenge;
+    candidate: IRootState['candidate'];
+}
+
+const Editor = ({ challenge, assessment, candidate }: IProps) => {
     const [sizes, setSizes] = useState([600, '100%', 750]);
     const [selectEditorLanguage, setSelectEditorLanguage] = useState<languageObjectType>(
-        ProgrammingLanguages.javaScript,
+        languagesNameMap[assessment?.language] || ProgrammingLanguages.javaScript,
     );
-    const [code, setCode] = useState<string>('');
+    const [code, setCode] = useState<string>(assessment?.code || '');
     const [output, setOutput] = useState<string>('');
     const [result, setResult] = useState<boolean[]>([]);
-    const [challenge, setChallenge] = useState<Challenge>(null);
     const [runLoading, setrunLoading] = useState(false);
     const [submitLoading, setSubmitLoading] = useState(false);
     const [saveLoading, setSaveLoading] = useState(false);
@@ -53,46 +57,20 @@ const Editor = () => {
         challenge?.input_output?.outputType,
     );
 
-    const { state } = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch<IDispatch>();
-    const assessment = useSelector((state: IRootState) => state.assessment);
-    const candidate = useSelector((state: IRootState) => state.candidate);
-
-    const { challengeId } = useParams<{ challengeId: string }>();
-
-    useEffect(() => {
-        async function loadChallenge() {
-            if (state) {
-                setChallenge(state?.challenge);
-            } else if (candidate?.token) {
-                await supabase.functions.setAuth(candidate.token);
-                const { data: challenge } = await supabase.functions.invoke(FUNCTIONS.GET_CHALLENGE, {
-                    body: {
-                        challengeId,
-                    },
-                });
-                setChallenge(challenge as Challenge);
-            } else {
-                ChallengeAPIService.getById(challengeId)
-                    .then((response) => {
-                        setChallenge(response as unknown as Challenge);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            }
-        }
-        loadChallenge();
-    }, [challengeId, candidate, state]);
 
     const handleLanguageChange = (selectedLanguage: languageNameType) => {
         setSelectEditorLanguage(languagesNameMap[selectedLanguage]);
+        updateBoilerplateCode(selectedLanguage);
     };
 
     useEffect(() => {
-        updateBoilerplateCode(selectEditorLanguage['name'] || Language.JAVASCRIPT);
-    }, [selectEditorLanguage, challenge]);
+        if (!assessment?.code) {
+            updateBoilerplateCode(selectEditorLanguage['name'] || Language.JAVASCRIPT);
+        }
+    }, []);
+
 
     const handleCodeChange = (value: string) => {
         setCode(value);
@@ -172,6 +150,8 @@ const Editor = () => {
             } as AssessmentUpdateDto);
             setlastSaved(Date.now());
             dispatch.assessment.update({ ...assessment, code, language: selectEditorLanguage.name });
+        } else {
+            toast.warn('Token not found!, Only applicable for candidates');
         }
     }
 
@@ -189,7 +169,6 @@ const Editor = () => {
                 execution_time: Number(time),
             } as AssessmentUpdateDto);
             resetLocalState();
-            dispatch.candidate.clear();
             dispatch.assessment.clear();
             navigate(ROUTES.ASSESSMENT_OVER);
             setSubmitLoading(false);
@@ -221,7 +200,7 @@ const Editor = () => {
                     }}
                 >
                     <Pane>
-                        <QuestionContent challenge={challenge} />
+                        <QuestionContent challenge={challenge} editorStyles={{ height: 'calc(100% - 30px)' }} />
                     </Pane>
                     <Pane className={classes.Resizer} minSize="50%" maxSize="80%" style={{ margin: '2px' }}>
                         <CodeEditor

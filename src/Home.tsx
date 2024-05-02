@@ -8,7 +8,6 @@ import Login from './Modules/Auth/Login';
 import './App.css';
 import { useSelector } from 'react-redux';
 import { IRootState } from './store';
-import Editor from './Modules/common/CodeEditor/Editor';
 import ProtectedRoute from './Routes/ProtectedRoute';
 import Account from './Modules/Account/Account';
 import Admin from './Modules/Account/Admin';
@@ -25,6 +24,7 @@ import ExamList from './Modules/Exam/ExamList';
 import SignUp from './Modules/Auth/SignUp';
 import AssessmentOver from './Modules/CandidateAssessment/AssessmentOver';
 import ReportPage from './Modules/CandidateAssessment/ReportPage';
+import EditorContainer from './Modules/common/CodeEditor/EditorContainer';
 const { Content } = Layout;
 
 const getProtectedRoute = (component: React.ReactNode) => {
@@ -64,7 +64,7 @@ const Home = () => {
                             <Route index path="admin" element={getProtectedRoute(<Admin />)} />
                             <Route path="personal-settings" element={getProtectedRoute(<PersonalSettings />)} />
                         </Route>
-                        <Route path={`${ROUTES.CHALLENGES}/:challengeId`} element={getProtectedRoute(<Editor />)} />
+                        <Route path={`${ROUTES.CHALLENGES}/:challengeId`} element={getProtectedRoute(<EditorContainer />)} />
 
                         <Route path={`${ROUTES.EXAM_DETAIL}/:id`} element={getProtectedRoute(<ExamDetail />)}></Route>
                         <Route path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId`} element={<CandidateAssessment />} />
@@ -74,7 +74,7 @@ const Home = () => {
                         />
                         <Route
                             path={`${ROUTES.CANDIDATE_ASSESSMENT}/:examId/:candidateId/:challengeId`}
-                            element={<Editor />}
+                            element={<EditorContainer />}
                         />
                         <Route path={ROUTES.ASSESSMENT_OVER} element={<AssessmentOver />} />
                         <Route path={`${ROUTES.ASSESSMENT_RESULT}/:assessmentId`} element={getProtectedRoute(<ReportPage />)} />
