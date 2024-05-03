@@ -1,9 +1,9 @@
-import { Button, Divider, List, Skeleton, Typography } from 'antd';
+import { Button, Divider, List, Skeleton, Tag, Typography } from 'antd';
 import jwt_decode from 'jwt-decode';
 import { Content } from 'antd/es/layout/layout';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Challenge } from '../../types/Models';
+import { Challenge, difficultyMap } from '../../types/Models';
 import { ROUTES } from '../../constants/Route.constants';
 import './styles/Assessment.css';
 import { supabase } from '../API/supabase';
@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import Timer from './components/Timer';
 import { useDispatch, useSelector } from 'react-redux';
 import { IDispatch, IRootState } from '../../store';
+import CommonUtils from '../common/utils/Common.utils';
 const { Title } = Typography;
 
 const ChallengesListComponent = () => {
@@ -21,7 +22,6 @@ const ChallengesListComponent = () => {
     const [beginState, setBeginState] = useState<Record<string, '' | 'loading' | 'started'>>({});
     const [challenges, setchallenges] = useState<Challenge[]>([]);
 
-    const navigate = useNavigate();
     const dispatch = useDispatch<IDispatch>();
     const fetchExam = async () => {
         try {
@@ -108,7 +108,21 @@ const ChallengesListComponent = () => {
                     dataSource={challenges}
                     renderItem={(challenge) => (
                         <List.Item>
-                            <List.Item.Meta title={challenge.name} description={challenge.short_description} />
+                            <List.Item.Meta
+                                title={
+                                    <div>
+                                        {challenge.name}
+                                        <Tag
+                                            style={{ marginLeft: 10 }}
+                                            color={CommonUtils.getColor(challenge.difficulty)}
+                                        >
+                                            {difficultyMap[challenge.difficulty]}
+                                        </Tag>
+                                    </div>
+                                }
+                                description={challenge.short_description}
+                            />
+
                             {beginState[challenge.id] === 'started' ? (
                                 <Button disabled={true} type="primary">
                                     Started
