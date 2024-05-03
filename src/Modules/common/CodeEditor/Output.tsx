@@ -1,6 +1,6 @@
 import { FileDoneOutlined, OrderedListOutlined, PlaySquareOutlined, SaveOutlined } from '@ant-design/icons';
 import classes from './Editor.module.css';
-import { Button } from 'antd';
+import { Button, Popconfirm } from 'antd';
 
 interface OutputProps {
     output: string;
@@ -32,14 +32,17 @@ const Output = (props: OutputProps) => {
                 >
                     Run Test Cases
                 </Button>
-                <Button
-                    loading={props.submitLoading}
-                    type="primary"
-                    icon={<FileDoneOutlined />}
-                    onClick={props.handleSubmit}
+                <Popconfirm
+                    title="Submit the assessment"
+                    description="Are you sure you want to submit?"
+                    okText="Yes"
+                    cancelText="No"
+                    onConfirm={props.handleSubmit}
                 >
-                    Submit
-                </Button>
+                    <Button loading={props.submitLoading} type="primary" icon={<FileDoneOutlined />}>
+                        Submit
+                    </Button>
+                </Popconfirm>
             </div>
             <div
                 style={{
