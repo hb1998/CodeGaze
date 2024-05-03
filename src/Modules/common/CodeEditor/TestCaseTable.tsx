@@ -1,7 +1,5 @@
-import { useRef, useState, useEffect } from 'react';
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Table, Tag } from 'antd';
-import Title from 'antd/es/typography/Title';
 import { Challenge } from '../../../types/Models';
 import { ColumnsType } from 'antd/es/table';
 interface ITestCaseProps {
@@ -11,14 +9,6 @@ interface ITestCaseProps {
 }
 
 const TestCaseTable = ({ result, input_output, showOnlyFirstTwoTestCases = true }: ITestCaseProps) => {
-    const containerRef = useRef();
-    const [tableHeight, setTableHeight] = useState(200);
-    useEffect(() => {
-        const container = containerRef?.current as HTMLDivElement;
-        if (container) {
-            setTableHeight(container.offsetHeight - 30);
-        }
-    }, [containerRef]);
 
     const testCaseResult = input_output.inputOutput.map((inputOutput, index) => {
         return {
@@ -50,7 +40,7 @@ const TestCaseTable = ({ result, input_output, showOnlyFirstTwoTestCases = true 
             dataIndex: 'expected',
             key: 'expected',
             render: (output: string, record, index) =>
-            !showOnlyFirstTwoTestCases || index < 2 ? (
+                !showOnlyFirstTwoTestCases || index < 2 ? (
                     <div>
                         <Tag>{output}</Tag>
                     </div>
@@ -83,16 +73,15 @@ const TestCaseTable = ({ result, input_output, showOnlyFirstTwoTestCases = true 
     ];
 
     return (
-        <div ref={containerRef} className="test-case-table-container">
-            <Table
-                dataSource={testCaseResult}
-                columns={colDef}
-                pagination={false}
-                scroll={{
-                    x: 'max-content',
-                    y: tableHeight,
-                }}
-            />
+        <div
+            style={{
+                height: '28vh',
+                overflowY: 'auto',
+            }}
+        >
+            <div  className="test-case-table-container">
+                <Table dataSource={testCaseResult} columns={colDef} pagination={false} />
+            </div>
         </div>
     );
 };

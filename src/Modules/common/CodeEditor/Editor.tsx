@@ -71,7 +71,6 @@ const Editor = ({ challenge, assessment, candidate }: IProps) => {
         }
     }, []);
 
-
     const handleCodeChange = (value: string) => {
         setCode(value);
     };
@@ -150,8 +149,6 @@ const Editor = ({ challenge, assessment, candidate }: IProps) => {
             } as AssessmentUpdateDto);
             setlastSaved(Date.now());
             dispatch.assessment.update({ ...assessment, code, language: selectEditorLanguage.name });
-        } else {
-            toast.warn('Token not found!, Only applicable for candidates');
         }
     }
 
@@ -202,7 +199,7 @@ const Editor = ({ challenge, assessment, candidate }: IProps) => {
                     <Pane>
                         <QuestionContent challenge={challenge} editorStyles={{ height: 'calc(100% - 30px)' }} />
                     </Pane>
-                    <Pane className={classes.Resizer} minSize="50%" maxSize="80%" style={{ margin: '2px' }}>
+                    <Pane className={classes.Resizer} style={{ margin: '2px' }}>
                         <CodeEditor
                             languageName={selectEditorLanguage.name}
                             handleLanguageChange={handleLanguageChange}
@@ -226,7 +223,10 @@ const Editor = ({ challenge, assessment, candidate }: IProps) => {
                                 submitLoading={submitLoading}
                                 handleSubmit={handleSubmit}
                             />
-                            <Title level={4}>Test Cases</Title>
+                            <Title level={4}>
+                                Test Cases{' '}
+                                {result?.length ? `${result.filter((_) => _).length}/${result.length} Passed` : ''}
+                            </Title>
                             <TestCaseTable
                                 input_output={
                                     challenge?.input_output || {

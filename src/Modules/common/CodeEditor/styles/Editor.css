@@ -1,9 +1,7 @@
 .output-container{
     min-height: 100%;
 }
-.test-case-table-container{
-    min-height: 40vh;
-}
+
 
 .blur-test-case{
     filter: blur(3px);
