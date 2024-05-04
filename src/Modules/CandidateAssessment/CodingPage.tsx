@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Editor from '../common/CodeEditor/Editor';
 import { CandidateAssessmentAPIService } from './services/CandidateAssessment.API';
+import EditorContainer from '../common/CodeEditor/EditorContainer';
 
 type AssessmentDataResponse = Awaited<ReturnType<typeof CandidateAssessmentAPIService.getByExam>>;
 
@@ -26,7 +26,7 @@ function CodingPage() {
             .catch((error) => console.error(error));
     }, [assessmentID]);
 
-    return <>{assessmentData ? <Editor /> : <div>Loading...</div>}</>;
+    return <>{assessmentData ? <EditorContainer /> : <div>Loading...</div>}</>;
 }
 
 export default CodingPage;
