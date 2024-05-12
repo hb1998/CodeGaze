@@ -1,5 +1,5 @@
-import { useState, useEffect, ChangeEvent, useMemo } from 'react';
-import { Card, Col, Result, Row, Skeleton, Space, Statistic, Table, Tag } from 'antd';
+import { useState, ChangeEvent, useMemo } from 'react';
+import { Card, Col, Row, Space, Statistic, Table, Tag } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Search from 'antd/es/input/Search';
 import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
@@ -11,6 +11,7 @@ import { ColumnsType } from 'antd/es/table';
 import { StatusColDef } from '../Candidate/CandidateColumn';
 import CandidateAssessmentUtils from '../CandidateAssessment/services/CanidadateAssessment.utils';
 import { QUALIFYING_SCORE } from '../../constants/common.constants';
+import { useQuery } from '@tanstack/react-query';
 
 const AssessmentColumnDef: (challenges: string[], exams: string[]) => ColumnsType<AssessmentQueryResult[number]> = (
     challenges,
@@ -44,7 +45,6 @@ const AssessmentColumnDef: (challenges: string[], exams: string[]) => ColumnsTyp
             return null;
         },
         sorter: (a, b) => CandidateAssessmentUtils.getScore(a) - CandidateAssessmentUtils.getScore(b),
-
     },
     {
         title: 'Execution Time (s)',
@@ -57,13 +57,13 @@ const AssessmentColumnDef: (challenges: string[], exams: string[]) => ColumnsTyp
         title: 'Difficulty',
         dataIndex: 'difficulty',
         key: 'difficulty',
-        render: (data, record) => difficultyMap[record.challenge.difficulty],
+        render: (data, record) => difficultyMap[record.challenge?.difficulty],
         filters: Object.keys(difficultyMap).map((key) => ({
             text: difficultyMap[key],
             value: key,
         })),
         onFilter: (value, record) => {
-            return record.challenge.difficulty == +value;
+            return record.challenge?.difficulty == +value;
         },
     },
     {
@@ -133,36 +133,72 @@ const AssessmentColumnDef: (challenges: string[], exams: string[]) => ColumnsTyp
 export type AssessmentQueryResult = Awaited<ReturnType<typeof CandidateAssessmentAPIService.getAll>>;
 
 const Dashboard = () => {
-    const [assessments, setAssessments] = useState<AssessmentQueryResult>([]);
     const [search, setsearch] = useState('');
-    const [loading, setLoading] = useState<boolean>(true);
-    const fetchAssessments = async () => {
-        try {
-            const data = await CandidateAssessmentAPIService.getAll();
-            setAssessments(data);
-        } catch (error) {
-            console.error('Error fetching assessments:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchAssessments();
-    }, []);
+    const { data: assessments, isFetching: isLoading } = useQuery({
+        queryKey: ['assessments'],
+        queryFn: CandidateAssessmentAPIService.getAll,
+        initialData: [],
+    });
 
     const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setsearch(value);
     };
 
-    const filteredChallenges = useMemo(() => {
-        return assessments.filter((challenge) => {
-            return challenge.candidate?.name?.toLowerCase?.().includes(search.toLowerCase());
-        });
+    const fitleredAssessments = useMemo(() => {
+        return assessments.filter(
+            (challenge) => challenge.candidate?.name?.toLowerCase?.().includes(search.toLowerCase()),
+        );
     }, [assessments, search]);
 
-    const { qualified, totalCompleted, uniqueChallenges, uniqueExams } = assessments.reduce(
+    const { qualified, totalCompleted, uniqueChallenges, uniqueExams } = useMemo(
+        () => getAssessmentsMetadata(assessments),
+        [assessments],
+    );
+
+    return (
+        <div className="container">
+            <Title level={2}>Dashboard</Title>
+            <Space size={24} direction="vertical" style={{ width: '100%' }}>
+                <Row gutter={16}>
+                    <Col span={8}>
+                        <Card>
+                            <Statistic loading={isLoading} title="Total Invited" value={assessments.length} />
+                        </Card>
+                    </Col>
+                    <Col span={8}>
+                        <Card>
+                            <Statistic loading={isLoading} title="Total Completed" value={totalCompleted} />
+                        </Card>
+                    </Col>
+                    <Col span={8}>
+                        <Card>
+                            <Statistic loading={isLoading} title="Total Qualified" value={qualified} />
+                        </Card>
+                    </Col>
+                </Row>
+                <div>
+                    <Search
+                        placeholder="Search Candidate"
+                        style={{ width: 200, marginBottom: '10px' }}
+                        onChange={handleSearch}
+                    />
+                    <Table
+                        rowKey="id"
+                        dataSource={fitleredAssessments}
+                        columns={AssessmentColumnDef([...uniqueChallenges], [...uniqueExams])}
+                        size="small"
+                        pagination={false}
+                        loading={isLoading}
+                    />
+                </div>
+            </Space>
+        </div>
+    );
+};
+
+const getAssessmentsMetadata = (assessments: AssessmentQueryResult) => {
+    return assessments.reduce(
         (acc, assessment) => {
             const percentageOfCorrectTestCases = CandidateAssessmentUtils.getScore(assessment);
             if (percentageOfCorrectTestCases > QUALIFYING_SCORE) {
@@ -177,47 +213,12 @@ const Dashboard = () => {
 
             return acc;
         },
-        { qualified: 0, totalCompleted: 0, uniqueChallenges: new Set<string>(), uniqueExams: new Set<string>() },
-    );
-
-    return (
-        <div className="container">
-            <Title level={2}>Dashboard</Title>
-            <Space size={24} direction="vertical" style={{ width: '100%' }}>
-                <Row gutter={16}>
-                    <Col span={8}>
-                        <Card>
-                            <Statistic loading={loading} title="Total Invited" value={assessments.length} />
-                        </Card>
-                    </Col>
-                    <Col span={8}>
-                        <Card>
-                            <Statistic loading={loading} title="Total Completed" value={totalCompleted} />
-                        </Card>
-                    </Col>
-                    <Col span={8}>
-                        <Card>
-                            <Statistic loading={loading} title="Total Qualified" value={qualified} />
-                        </Card>
-                    </Col>
-                </Row>
-                <div>
-                    <Search
-                        placeholder="Search Candidate"
-                        style={{ width: 200, marginBottom: '10px' }}
-                        onChange={handleSearch}
-                    />
-                    <Table
-                        rowKey="id"
-                        dataSource={filteredChallenges}
-                        columns={AssessmentColumnDef([...uniqueChallenges], [...uniqueExams])}
-                        size="small"
-                        pagination={false}
-                        loading={loading}
-                    />
-                </div>
-            </Space>
-        </div>
+        {
+            qualified: 0,
+            totalCompleted: 0,
+            uniqueChallenges: new Set<string>(),
+            uniqueExams: new Set<string>(),
+        },
     );
 };
 
