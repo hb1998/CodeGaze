@@ -22,7 +22,6 @@ const compareTimestamps = (a: string, b: string) => {
     return timestampA - timestampB;
 };
 
-
 export const StatusColDef = (dataIndex) => ({
     title: 'Status',
     dataIndex,
@@ -39,12 +38,9 @@ export const StatusColDef = (dataIndex) => ({
         },
     ],
     onFilter: (value, record) => {
-        const filteredAssessments = record.assessment.filter((assessment) => {
-            return assessment.status.toString() === value;
-        });
-        return filteredAssessments.length > 0;
+        return record.status == value;
     },
-})
+});
 
 export const candidateColumn: ColumnsType<any> = [
     {

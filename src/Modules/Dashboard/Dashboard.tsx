@@ -1,9 +1,9 @@
 import { useState, useEffect, ChangeEvent, useMemo } from 'react';
-import { Card, Col, Row, Skeleton, Space, Statistic, Table, Tag } from 'antd';
+import { Card, Col, Result, Row, Skeleton, Space, Statistic, Table, Tag } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Search from 'antd/es/input/Search';
 import { CandidateAssessmentAPIService } from '../CandidateAssessment/services/CandidateAssessment.API';
-import { Status } from '../../types/Models';
+import { Status, difficultyMap } from '../../types/Models';
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../constants/Route.constants';
@@ -12,7 +12,10 @@ import { StatusColDef } from '../Candidate/CandidateColumn';
 import CandidateAssessmentUtils from '../CandidateAssessment/services/CanidadateAssessment.utils';
 import { QUALIFYING_SCORE } from '../../constants/common.constants';
 
-const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
+const AssessmentColumnDef: (challenges: string[], exams: string[]) => ColumnsType<AssessmentQueryResult[number]> = (
+    challenges,
+    exams,
+) => [
     {
         title: 'Name',
         dataIndex: ['candidate', 'name'],
@@ -21,6 +24,7 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
     {
         title: 'Email',
         dataIndex: ['candidate', 'emailId'],
+        sorter: (a, b) => a.candidate.emailId.localeCompare(b.candidate.emailId),
         key: 'email',
     },
     {
@@ -39,6 +43,8 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
             }
             return null;
         },
+        sorter: (a, b) => CandidateAssessmentUtils.getScore(a) - CandidateAssessmentUtils.getScore(b),
+
     },
     {
         title: 'Execution Time (s)',
@@ -46,6 +52,19 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
         key: 'execution_time',
         sorter: (a, b) => a.execution_time - b.execution_time,
         render: (time) => time || 'NA',
+    },
+    {
+        title: 'Difficulty',
+        dataIndex: 'difficulty',
+        key: 'difficulty',
+        render: (data, record) => difficultyMap[record.challenge.difficulty],
+        filters: Object.keys(difficultyMap).map((key) => ({
+            text: difficultyMap[key],
+            value: key,
+        })),
+        onFilter: (value, record) => {
+            return record.challenge.difficulty == +value;
+        },
     },
     {
         title: 'Execution Memory (MB)',
@@ -74,9 +93,29 @@ const AssessmentColumnDef: ColumnsType<AssessmentQueryResult[number]> = [
         key: 'language',
     },
     {
+        title: 'Exam',
+        dataIndex: 'exam',
+        key: 'exam',
+        render: (data, record) => record.exam.name,
+        filters: exams.map((exam) => ({
+            text: exam,
+            value: exam,
+        })),
+        onFilter: (value, record) => {
+            return record.exam.name == value;
+        },
+    },
+    {
         title: 'Challenge',
         dataIndex: ['challenge', 'name'],
         key: 'challenge',
+        filters: challenges.map((challenge) => ({
+            text: challenge,
+            value: challenge,
+        })),
+        onFilter: (value, record) => {
+            return record.challenge.name == value;
+        },
         render: (text: string, record) => <Link to={`${ROUTES.CHALLENGES}/${record.challenge?.id}`}>{text}</Link>,
     },
     {
@@ -123,12 +162,23 @@ const Dashboard = () => {
         });
     }, [assessments, search]);
 
-    const qualified = assessments.filter((assessment) => {
-        const percentageOfCorrectTestCases = CandidateAssessmentUtils.getScore(assessment);
-        return percentageOfCorrectTestCases > QUALIFYING_SCORE;
-    });
+    const { qualified, totalCompleted, uniqueChallenges, uniqueExams } = assessments.reduce(
+        (acc, assessment) => {
+            const percentageOfCorrectTestCases = CandidateAssessmentUtils.getScore(assessment);
+            if (percentageOfCorrectTestCases > QUALIFYING_SCORE) {
+                acc.qualified += 1;
+            }
+            if (assessment.status === Status.SUBMITTED) {
+                acc.totalCompleted += 1;
+            }
 
-    const totalCompleted = assessments.filter((assessment) => assessment.status === Status.SUBMITTED);
+            assessment.challenge?.name && acc.uniqueChallenges.add(assessment.challenge.name);
+            assessment.exam?.name && acc.uniqueExams.add(assessment.exam.name);
+
+            return acc;
+        },
+        { qualified: 0, totalCompleted: 0, uniqueChallenges: new Set<string>(), uniqueExams: new Set<string>() },
+    );
 
     return (
         <div className="container">
@@ -142,12 +192,12 @@ const Dashboard = () => {
                     </Col>
                     <Col span={8}>
                         <Card>
-                            <Statistic loading={loading} title="Total Completed" value={totalCompleted.length} />
+                            <Statistic loading={loading} title="Total Completed" value={totalCompleted} />
                         </Card>
                     </Col>
                     <Col span={8}>
                         <Card>
-                            <Statistic loading={loading} title="Total Qualified" value={qualified.length} />
+                            <Statistic loading={loading} title="Total Qualified" value={qualified} />
                         </Card>
                     </Col>
                 </Row>
@@ -160,8 +210,9 @@ const Dashboard = () => {
                     <Table
                         rowKey="id"
                         dataSource={filteredChallenges}
-                        columns={AssessmentColumnDef}
+                        columns={AssessmentColumnDef([...uniqueChallenges], [...uniqueExams])}
                         size="small"
+                        pagination={false}
                         loading={loading}
                     />
                 </div>
