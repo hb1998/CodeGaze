@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ChallengesTable from './ChallengesTable';
 import { Challenge } from '../../types/Models';
 import { ChallengeForm } from './ChallengeForm';
 import { ChallengeAPIService } from './services/Challenge.API';
+import { useQuery } from '@tanstack/react-query';
 
 export type ChallengeResult = Awaited<ReturnType<typeof ChallengeAPIService.getAll>>;
 
@@ -11,32 +12,24 @@ const Challenges: React.FC = () => {
         open: false,
         values: null,
     });
-    const [challenges, setChallenges] = useState<ChallengeResult>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+
+    const {
+        data: challenges,
+        isLoading,
+        refetch,
+    } = useQuery({
+        queryKey: ['challenges'],
+        queryFn: ChallengeAPIService.getAll,
+    });
 
     const onCreate = () => {
         setModalState({
             open: false,
             values: null,
         });
-        fetchChallenges();
+        refetch();
     };
 
-    const fetchChallenges = async () => {
-        try {
-            setLoading(true);
-            const data = await ChallengeAPIService.getAll();
-            setChallenges(data);
-        } catch (error) {
-            console.error('Error fetching candidates:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchChallenges();
-    }, []);
     return (
         <>
             <div>
@@ -53,10 +46,10 @@ const Challenges: React.FC = () => {
                 />
             </div>
             <ChallengesTable
-                loading={loading}
-                challenges={challenges}
+                loading={isLoading}
+                challenges={challenges || []}
                 refreshTable={() => {
-                    fetchChallenges();
+                    refetch();
                 }}
                 openForm={(values: Challenge) => {
                     setModalState({

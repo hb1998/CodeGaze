@@ -76,7 +76,7 @@ export const getChallengesColDef = (openForm: (values: Challenge) => void, refre
         render: (_: any, challenge: Challenge) => {
             const handleDelete = async () => {
                 try {
-                    await ChallengeAPIService.delete(Number(challenge.id));
+                    await ChallengeAPIService.delete(challenge.id);
                     refreshTable();
                 } catch (error) {
                     console.error('Error deleting record:', error);

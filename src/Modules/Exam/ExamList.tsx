@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { CopyOutlined, PlusCircleFilled } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { Button, Card, Col, Divider, Input, Row, Skeleton, Statistic, Tag } from 'antd';
@@ -10,31 +10,24 @@ import { IRootState } from '../../store';
 import { ExamAPIService } from './services/Exam.API';
 import { toast } from 'react-toastify';
 import { ROUTES } from '../../constants/Route.constants';
+import { useQuery } from '@tanstack/react-query';
 
 export type ExamQueryResult = Awaited<ReturnType<typeof ExamAPIService.getAll>>;
 
 const ExamList = () => {
     const session = useSelector((state: IRootState) => state.session);
-    const [exams, setExams] = useState<ExamQueryResult>([]);
-    const [loading, setLoading] = useState<boolean>(true);
     const [newExamLoading, setNewExamLoading] = useState<boolean>(false);
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
 
-    const fetchExams = async () => {
-        try {
-            const data = await ExamAPIService.getAll();
-            setExams(data);
-            setLoading(false);
-        } catch (error) {
-            setLoading(false);
-            console.error('Error fetching assessments:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchExams();
-    }, []);
+    const {
+        data: exams,
+        isLoading,
+        refetch,
+    } = useQuery({
+        queryKey: ['exams'],
+        queryFn: ExamAPIService.getAll,
+    });
 
     const addExam = async () => {
         setNewExamLoading(true);
@@ -43,7 +36,7 @@ const ExamList = () => {
                 name: `Technical Assessment ${exams.length + 1}`,
                 created_by: session?.user?.email || '',
             });
-            await fetchExams();
+            await refetch();
             navigate(`${ROUTES.EXAM_DETAIL}/${exam.id}`, {
                 state: {
                     exam,
@@ -66,7 +59,7 @@ const ExamList = () => {
                     created_by: session.user.email,
                 };
                 await ExamAPIService.create(newExam);
-                await fetchExams();
+                await refetch();
             } catch (error) {
                 console.error('Error duplicating assessment:', error);
             } finally {
@@ -118,7 +111,7 @@ const ExamList = () => {
                 New Exam
             </Button>
             <div>
-                {loading ? (
+                {isLoading ? (
                     <Skeleton />
                 ) : (
                     <Row gutter={[16, 16]} style={{ marginTop: '1rem' }}>

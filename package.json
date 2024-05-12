@@ -18,6 +18,7 @@
     "@rematch/persist": "^2.1.2",
     "@supabase/auth-ui-react": "^0.4.2",
     "@supabase/supabase-js": "^2.26.0",
+    "@tanstack/react-query": "^5.35.5",
     "@types/antd": "^1.0.0",
     "@uiw/codemirror-extensions-langs": "^4.21.4",
     "@uiw/react-codemirror": "^4.21.4",

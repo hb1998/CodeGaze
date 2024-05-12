@@ -3,7 +3,7 @@ import { supabase } from '../../API/supabase';
 
 export class ChallengeAPIService {
     static async getAll() {
-        const { data, error } = await supabase.from('challenge').select('*, exam_challenge(*,exam(*,assessment(*)))');
+        const { data, error } = await supabase.from('challenge').select('*, exam_challenge(*,exam(*,assessment(*)))').order('created_at', { ascending: false });
         if (error) {
             throw error;
         }
@@ -34,7 +34,7 @@ export class ChallengeAPIService {
         return data ? data[0] : null;
     }
 
-    static async delete(id: number): Promise<void> {
+    static async delete(id: string): Promise<void> {
         const { error } = await supabase.from('challenge').delete().eq('id', id);
         if (error) {
             throw error;
