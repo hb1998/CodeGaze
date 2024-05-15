@@ -9,15 +9,11 @@ import { useQuery } from '@tanstack/react-query';
 
 const { Title } = Typography;
 
-
 const Candidates = () => {
     const [search, setSearch] = useState('');
 
-    const {
-        data: exams,
-        isLoading,
-    } = useQuery({
-        queryKey: ['exams'],
+    const { data: exams, isLoading } = useQuery({
+        queryKey: ['candidates'],
         queryFn: CandidateAPIService.getAll,
     });
 
@@ -26,9 +22,10 @@ const Candidates = () => {
         setSearch(value);
     };
 
-    const filteredCandidates = useMemo(() => {
-        return exams?.filter((exam) => exam.name.toLowerCase().includes(search.toLowerCase()));
-    }, [exams, search]);
+    const filteredCandidates = useMemo(
+        () => exams?.filter((exam) => exam.name.toLowerCase().includes(search.toLowerCase())),
+        [exams, search],
+    );
 
     return (
         <div className="container">
